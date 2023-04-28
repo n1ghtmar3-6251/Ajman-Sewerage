@@ -1,0 +1,28 @@
+.mobile-nav-icon1 {
+  width: 24px;
+  height: 24px;
+}
+
+.mobile-nav-icon1-bell {
+  width: 15px;
+  height: 15px;
+  background-color: #62aa51;
+  border-radius: 50px;
+top: 0;
+right: 0;
+margin-right: 3px;
+}
+
+.mobile-nav-icon1-bell span{
+    font-family: 'Segoe UI';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 8px;
+    line-height: 100%;
+    text-align: center;
+    color: #FFFFFF;
+}
+
+.fluid-container-nav{
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+}

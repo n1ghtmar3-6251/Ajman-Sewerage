@@ -1,0 +1,184 @@
+@font-face {
+  font-family: "NotoSans Medium";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url(../../assets/font/Noto_Sans/NotoSans-Medium.ttf) format("truetype");
+}
+
+@font-face {
+  font-family: "NotoSans Bold";
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+  src: url(../../assets/font/Noto_Sans/NotoSans-Bold.ttf) format("truetype");
+}
+
+.crousel-left-border {
+  width: 3px;
+  min-height: 77px;
+  background-color: #101e8e;
+}
+
+.crousel-text-1 {
+  font-family: "NotoSans Medium";
+  font-style: normal;
+  font-weight: 400;
+  font-size: 30px;
+  line-height: 120%;
+  color: #101e8e;
+}
+
+.crousel-text-2 {
+  font-family: "NotoSans Bold";
+  font-style: normal;
+  font-weight: 700;
+  font-size: 12px;
+  color: #101e8e;
+}
+
+.crousel-img {
+  width: 29px;
+  height: 29px;
+  background-color: #61aa516a;
+  /* opacity: 0.15; */
+  border-radius: 50%;
+}
+
+.crousel-img img {
+  width: 15px;
+}
+
+.slick-slider {
+  height: 100%;
+  width: 100%;
+}
+
+.range-slider-main .slick-slider {
+  height: 558px;
+  width: 100%;
+  /* overflow: hidden; */
+}
+
+.range-slider-main .slick-dots {
+  bottom: 4% !important;
+  z-index: 10000;
+  font-size: 20px;
+  opacity: 1 !important;
+}
+
+.slick-dots li button:before {
+  font-size: 7px !important;
+  color:  #101E8E !important;
+  opacity: 1 !important;
+}
+
+li.slick-active button:before {
+  color: #101E8E !important;
+  opacity: 1 !important;
+}
+
+.slick-dots {
+  bottom: -30% !important;
+  z-index: 10000;
+  font-size: 20px;
+  opacity: 1 !important;
+}
+
+.slick-prev {
+  left: 2% !important;
+  top: 44% !important;
+  width: 40px !important;
+  height: 40px !important;
+  z-index: 10;
+  /* background: #4699FB !important; */
+  color: rgb(196, 12, 12) !important;
+}
+
+.slick-next {
+  right: 2% !important;
+  top: 44% !important;
+  width: 40px !important;
+  height: 40px !important;
+  z-index: 10;
+  /* background: #4699FB !important; */
+  color: rgb(196, 12, 12) !important;
+}
+
+.slick-next:before,
+.slick-prev::before {
+  font-size: 35px !important;
+}
+
+.slick-list {
+  overflow: hidden;
+}
+
+button {
+  z-index: 1000;
+}
+
+.slider-buttons {
+  text-align: center;
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  font-weight: 600;
+  font-size: 17px;
+  text-decoration: none;
+}
+
+.slider-buttons button {
+  background: transparent;
+  padding: 10px 14px;
+  border: 2px solid #a70c0c;
+  border-radius: 4px;
+  color: rgb(129, 34, 34);
+  outline: none;
+}
+
+/* arrow  */
+
+.slick-prev:before {
+  /* content: '\3c' !important;
+      font-family: FontAwesome !important; 
+      width: 20px;
+      height: 20px;
+      background-image: url("../img/home/LeftArrow.svg");
+      font-weight: bold !important;
+      font-size: 40px !important;
+      color: black !important; */
+
+  content: "" !important;
+  display: inline-block !important;
+  width: 40px !important;
+  height: 40px !important;
+  /* background-image: url("../img/home/LeftArrow.svg") !important; */
+  background-size: contain !important;
+  margin-left: -40% !important;
+  background-repeat: no-repeat;
+}
+
+.slick-next:before {
+  /* content: "\3e" !important;
+    font-family: FontAwesome !important;
+    font-weight: bold !important;
+    font-size: 40px !important;
+    color: black !important; */
+
+  content: "" !important;
+  display: inline-block !important;
+  width: 40px !important;
+  height: 40px !important;
+  /* background-image: url("../img/home/RightArrow.svg") !important; */
+  background-size: contain !important;
+  margin-left: 40% !important;
+  background-repeat: no-repeat;
+}
+
+@media (min-width: 992px) and (max-width: 90000px) {
+  .main-slider {
+    width: 96.8%;
+    height: 460px;
+  }
+}

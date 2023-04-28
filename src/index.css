@@ -1,0 +1,140 @@
+body {
+  margin: 0;
+  font-family:"Segoe UI";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: 'Segoe UI';
+  src: url('./assets/font/SegoeUI.eot');
+  src: url('./assets/font/SegoeUI.eot?#iefix') format('embedded-opentype'),
+      url('./assets/font/SegoeUI.woff2') format('woff2'),
+      url('./assets/font/SegoeUI.woff') format('woff'),
+      url('./assets/font/SEGOEUI.TTF') format('truetype'),
+      url('./assets/font/SegoeUI.svg#SegoeUI') format('svg');
+  font-weight: normal;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Segoe UI Bold';
+  src: url('./assets/font/Segoe\ UI\ Bold.ttf') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'SegoeUIEOT';
+  src: url('./assets/font/Segoe_UI/SegoeUI.eot') format('truetype');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+
+
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace;
+}
+
+.MuiTabs-scroller {
+  margin-left: 5%;
+}
+.bold {
+  font-weight: bold;
+}
+.Mui-selected {
+  background-color: #e7e9f8 !important;
+  color: #101e8e !important;
+  transition: ease-in-out 0.3s;
+  border-top: 7px solid #101e8e !important;
+  border-bottom: none;
+}
+.MuiTab-root {
+  border-top: 7px solid #101e8e !important;
+}
+.MuiTabs-indicator {
+  background-color: #e7e9f8 !important;
+}
+
+.MuiTabs-root {
+  left: 5px !important;
+}
+.css-ahj2mt-MuiTypography-root {
+  color: #101e8e !important;
+}
+
+.responsive-navbar {
+  display: none !important;
+}
+
+@media (max-width: 768px) {
+  .responsive-navbar {
+    display: block !important;
+  }
+  .marginer {
+    display: none;
+  }
+}
+.mui-move-in.Mui-selected {
+  background: #fff !important;
+}
+
+.Mui-selected svg {
+  fill: #62aa51;
+}
+
+select,
+input,
+textarea {
+  border: none;
+  outline: none;
+}
+select:focus {
+  border: none;
+  outline: none;
+}
+
+h1 {
+  margin: 2px 0;
+  /* font-family: "Noto Sans"; */
+  font-style: normal;
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 48px;
+  color: #101e8e;
+}
+
+h3 {
+  /* font-family: "Noto Sans"; */
+  font-style: normal;
+  font-weight: 400;
+  font-size: 20px;
+  line-height: 16px;
+
+  color: #101e8e;
+}
+
+@media (min-width: 1200px) {
+  .MuiContainer-root {
+    padding-left: 6% !important;
+    padding-right: 6% !important;
+    max-width: 100% !important;
+  }
+}
+
+input,
+select,
+textarea {
+  padding: 1rem !important;
+}
+
+.mapWrapper {
+  height: 400px;
+  overflow: hidden;
+}

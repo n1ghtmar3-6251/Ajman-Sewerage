@@ -1,0 +1,70 @@
+.footer{
+    background: #101E8E;
+}
+
+.footer-text1 p{
+    font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 40px;
+/* or 286% */
+
+
+/* white */
+
+color: #FFFFFF;
+}
+
+.footer-social p{
+    font-family: 'Segoe UI';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 20px;
+    line-height: 27px;
+    /* identical to box height */
+    
+    text-align: center;
+    
+    /* white */
+    
+    color: #FFFFFF;
+    
+
+}
+
+.footer-social-icon{
+    width: 40px;
+    height: 40px;
+    border: 1px solid #FFFFFF;
+}
+
+.footer-text2{
+    font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 20px;
+line-height: 130%;
+/* identical to box height, or 26px */
+
+text-align: center;
+
+/* white */
+
+color: #FFFFFF;
+}
+
+.footer-text3{
+    font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 16px;
+/* identical to box height */
+
+text-align: center;
+
+/* white */
+
+color: #FFFFFF;
+}

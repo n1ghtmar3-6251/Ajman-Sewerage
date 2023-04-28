@@ -1,0 +1,588 @@
+
+
+body {
+  font-family: "Segoe UI";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+@font-face {
+  font-family: "Segoe UI" !important;
+  src: url("../src/assets/font/Segoe_UI/SegoeUI.eot");
+  src: url("../src/assets/font/Segoe_UI/SegoeUI.eot?#iefix") format("embedded-opentype")
+  url("../src/assets/font/Segoe_UI/SegoeUI.woff2") format("woff2"),
+    url("../src/assets/font/Segoe_UI/SegoeUI.woff") format("woff"),
+    url("../src/assets/font/Segoe_UI/SEGOEUI.TTF") format("TTF"),
+    url("../src/assets/font/Segoe_UI/SegoeUI.svg#SegoeUI") format("svg");
+
+  font-weight: normal !important;
+  font-style: normal !important;
+  font-display: swap !important;
+}
+
+.font-segoe{
+  font-family: 'Segoe UI' !important;
+}
+
+/* this css is common for header (lower code ) */
+
+.top-back-form-text{
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 50px;
+line-height: 42px;
+/* or 117% */
+
+
+/* white */
+
+color: #FFFFFF;
+/* margin-left: 19px; */
+}
+
+.top-dashboard-form-btn {
+  width: 117px;
+  height: 30px;
+  border: 1px solid #ffffff;
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+/* line-height: 19px; */
+text-align: center;
+text-transform: uppercase;
+
+/* white */
+
+color: #FFFFFF;
+}
+
+.top-back-form-btn {
+  width: 81px;
+  height: 30px;
+  border: 1px solid #ffffff;
+  /* margin-left: 19px; */
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+/* line-height: 19px; */
+text-align: center;
+text-transform: uppercase;
+
+/* white */
+
+color: #FFFFFF;
+}
+
+/* this css is common for header (upper code) */
+
+.dwvDnk .viewall{
+  font-family: 'Segoe UI' !important;
+}
+
+.dwvDnk h3 {
+  font-family: sans-serif !important;
+}
+
+ .css-4ne1im{
+ /* min-height: 100vh !important; */
+ background-color: red;
+}
+
+.popup-viewall{
+  display: grid;
+}
+
+.greenn{
+  background-color: #62AA51 !important;
+}
+
+.blackk{
+  background-color: #1D1D1B !important;
+}
+
+.bluee{
+background-color: #101E8E !important;
+}
+
+
+
+.MuiTab-root{
+  /* border: none !important; */
+}
+
+.cardspaccerr{
+  display: flex !important;
+}
+
+.popup-suf-display{
+  display: grid;
+}
+
+.MuiButtonBase-root{
+  z-index: 0;
+}
+
+.profile-drop-down-body {
+  margin-top: -1px;
+  min-height: 284px;
+  min-width: 332px;
+  background-color: #101E8E;
+}
+
+.font-btn-text{
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 130%;
+
+color: #FFFFFF;
+}
+
+.font-btn{
+  width: 46px;
+height: 34px;
+background: #FFFFFF;
+border: 2px solid #FFFFFF;
+margin: 0 4px 0 4px;
+
+}
+
+
+
+.font-btn1{
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 12px;
+line-height: 130%;
+/* identical to box height, or 16px */
+
+text-align: center;
+
+color: #101E8E;
+}
+
+.font-btn2{
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 130%;
+/* identical to box height, or 16px */
+
+text-align: center;
+
+color: #101E8E;
+}
+
+.font-btn3{
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 130%;
+/* identical to box height, or 16px */
+
+text-align: center;
+
+color: #101E8E;
+}
+
+.font-btn4{
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 18px;
+line-height: 130%;
+/* identical to box height, or 16px */
+
+text-align: center;
+
+color: #101E8E;
+}
+
+.font-btn5{
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 20px;
+line-height: 130%;
+/* identical to box height, or 16px */
+
+text-align: center;
+
+color: #101E8E;
+}
+
+.view-detail-font{
+  
+font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 16px;
+
+color: #101E8E;
+}
+
+.contact-form-style{
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 16px;
+
+color: #101E8E;
+}
+
+.iqpHsA{
+  padding: 0 !important;
+}
+
+.gESKRs{
+  min-width: 38% !important;
+  margin: 0 !important;
+}
+
+
+
+@media (min-width: 0px) and (max-width: 991px) {
+
+  .ivYhrg{
+    /* display: block !important;
+    min-height: 200px ;
+    padding-left: 0px;
+    padding-right: 0px;
+    margin-bottom: 15px !important; */
+  }
+
+  .bIdblz{
+    margin-top: 10px;
+    min-width: 150px !important;
+  }
+
+  /* .bGYILh{
+    width: 100% !important;
+  } */
+
+.fzTvft{
+  padding-left: 3%;
+}
+
+/* .jOllLB, .ePQZvC, .dkmwdQ{
+
+} */
+
+
+
+
+  .MuiDataGrid-main{
+    display: none !important;
+  }
+
+  .MuiDataGrid-root{
+    height: auto !important;
+  }
+
+  .popup-suf-display{
+    display: block;
+  }
+
+  .view-all-heading-text1{
+    font-family: 'Segoe UI Bold';
+font-style: normal;
+font-weight: 600;
+font-size: 12px;
+line-height: 120%;
+/* or 14px */
+
+
+/* primory */
+
+color: #101E8E;
+  }
+  .sc-cyZbSi{
+    width: 100% !important;
+  }
+
+  .filter-responsive{
+    width: 100% !important;
+    display: flex !important;
+  }
+
+  .filter-responsive-select{
+    width: 80% !important;
+    margin-left: 0px !important;
+    margin-bottom: 10px;
+    height: 60px;
+  }
+
+  .view-all-header-text2{
+    font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 10px;
+line-height: 120%;
+/* identical to box height, or 12px */
+
+
+/* primory */
+
+color: #101E8E;
+  }
+
+.form-heading-top{
+  font-family: 'Segoe UI Bold';
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+line-height: 16px;
+/* identical to box height, or 100% */
+
+display: flex;
+align-items: center;
+
+/* primory */
+
+color: #101E8E;
+}
+
+.form-heading-text{
+  font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 18px;
+line-height: 20px;
+/* identical to box height, or 111% */
+
+
+/* primory */
+
+color: #101E8E;
+}
+
+  .contact-name-view-all{
+    padding-right: 26px !important;
+  }
+
+  .sc-jsEegt {
+    width: 100%;
+  }
+  .iJuNiZ {
+    gap: 0rem !important;
+  }
+  .MuiButtonBase-root {
+    width: 50% !important;
+  }
+  .sc-eDLJxc {
+    /* width: 100% !important; */
+    flex-direction: column !important;
+  }
+
+  .sc-jsEegt {
+    width: 100% !important;
+  }
+/* 
+  .iWKZJu {
+    display: block !important;
+    width: 100% !important;
+    padding: 30px 19px 2rem !important;
+  }
+
+  .guRXEO{
+    display: block !important;
+    width: 100% !important;
+    padding: 30px 19px 2rem !important;
+  } */
+
+  .XOEak {
+    margin-top: 11px !important;
+  }
+  .sc-jTQDnj {
+    width: 100% !important;
+    height: 53px !important;
+  }
+  .top-back-form-btn {
+    width: 81px;
+    height: 30px;
+    border: 1px solid #ffffff;
+    /* margin-left: 19px; */
+    font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+/* line-height: 19px; */
+text-align: center;
+text-transform: uppercase;
+
+/* white */
+
+color: #FFFFFF;
+  }
+  .top-dashboard-form-btn {
+    width: 117px;
+    height: 30px;
+    border: 1px solid #ffffff;
+    font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+/* line-height: 19px; */
+text-align: center;
+text-transform: uppercase;
+
+/* white */
+
+color: #FFFFFF;
+  }
+
+  .top-back-form-text{
+    font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 600;
+font-size: 36px;
+line-height: 42px;
+/* or 117% */
+
+
+/* white */
+
+color: #FFFFFF;
+/* margin-left: 19px; */
+  }
+
+  .top-form-img-select{
+    background: #E5EFF2;
+border: 1px solid rgba(16, 30, 142, 0.25);
+  }
+
+  .top-form-img{
+    width: 1.5em;
+    /* height: 18px; */
+  }
+
+  .top-form-img-text1{
+    font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 16px;
+line-height: 120%;
+/* or 19px */
+
+text-transform: capitalize;
+
+/* blue */
+
+color: #101E8E;
+  }
+
+  .top-form-img-text2{
+    font-family: 'Segoe UI';
+font-style: normal;
+font-weight: 400;
+font-size: 14px;
+line-height: 120%;
+/* identical to box height, or 17px */
+
+
+/* blue */
+
+color: #101E8E;
+  }
+
+  .top-form-img-btn{
+  
+
+font-family: 'Segoe UI Bold';
+font-style: normal;
+font-weight: 700;
+font-size: 16px;
+line-height: 120%;
+/* or 19px */
+
+text-transform: capitalize;
+
+/* blue */
+
+color: #101E8E;
+  }
+
+  .sc-jYnRlT , .sc-jYnRlT:focus,  .sc-hnmMDg, .sc-hnmMDg:focus{
+    width: 92% !important;
+    outline: none;
+    height: 55px !important;
+  }
+
+  .popup-viewall{
+    display: block;
+  }
+  
+  
+
+}
+
+@media (min-width: 991px) and (max-width: 1280px) {
+  .sc-jTQDnj {
+    width: 32% !important;
+  }
+  .dwvDnk h3{
+font-size: 1.25rem !important;
+  }
+  .dwvDnk .viewall{
+font-size: 0.75rem !important;
+  }
+  .iWKZJu{
+    display: block !important;
+  }
+  .ivYhrg{
+    margin-top: 10px;
+
+  }
+}
+
+.evTTOX{
+  width: 111% !important;
+}
+
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
