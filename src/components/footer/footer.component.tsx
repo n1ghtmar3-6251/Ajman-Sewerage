@@ -129,7 +129,7 @@ export const Footer: FC = (): ReactElement => {
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-                >ASPCL Careers</p>
+                >{language?.result?.cm_aspcl_careers ? language?.result?.cm_aspcl_careers.label:'ASPCL Careers ' }</p>
               </Link>
               <Link
                 to="/school-trip"
@@ -142,7 +142,7 @@ export const Footer: FC = (): ReactElement => {
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-                >Request Visit for School Trip</p>
+                >{language?.result?.cm_request_visit_for_school_trip ? language?.result?.cm_request_visit_for_school_trip.label:'Request Visit for School Trip ' }</p>
               </Link>
               <Link
                 to="/bird-watching"
@@ -155,7 +155,9 @@ export const Footer: FC = (): ReactElement => {
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-                >Request Visit for Bird Watching</p>
+                >
+                  {language?.result?.cm_request_visit_for_bird_watching ? language?.result?.cm_request_visit_for_bird_watching.label:'Request Visit for Bird Watching' } 
+                  </p>
               </Link>
             </RequestsAndInfo>
             <FaqSection>
@@ -188,7 +190,7 @@ export const Footer: FC = (): ReactElement => {
               </Link>
             </FaqSection>
             <Socials>
-              <h3 className="text-light">Follow Us On</h3>
+              <h3 className="text-light">  {language?.result?.cm_follow_us_on ? language?.result?.cm_follow_us_on.label:'Follow Us On' }</h3>
               <SvgsContainer>
                 <a
                   href="https://www.facebook.com"
@@ -253,7 +255,7 @@ export const Footer: FC = (): ReactElement => {
               </SvgsContainer>
             </Socials>
             <MobileApp>
-              <h3 className="text-light" >Our Mobile App</h3>
+              <h3 className="text-light" > {language?.result?.cm_our_mobile_app ? language?.result?.cm_our_mobile_app.label:'Our Mobile App  ' } </h3>
               <PlatformContainer>
                 <Platforms>
                   <img

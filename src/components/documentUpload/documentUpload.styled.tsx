@@ -91,6 +91,11 @@ const DocumentName = styled.div`
   font-size: 12px;
   align-items: center;
   margin: auto;
+
+  @media (max-width: 991px) {
+    margin-left: 3.5%;
+ }
+
 `;
 
 const DocumentTrailing = styled.div`
@@ -98,7 +103,7 @@ const DocumentTrailing = styled.div`
   display: flex;
   margin: auto;
   flex-direction: row;
-  width: 25%;
+  width: 39%;
   justify-content: center;
   align-items: center;
   color: #101e8e;
@@ -137,7 +142,8 @@ const DocumentFileButton = styled.input.attrs({
   accept: "application/pdf",
 })`
   display: none;
-  
+  z-index: 0;
+  width: 100%;
 `;
 
 
@@ -151,6 +157,8 @@ const DocumentButton = styled.button`
   height: 36px;
   margin-right: 10px;
   font-weight: 700;
+
+  z-index: 0;
 
   @media (max-width: 991px) {
     width: 100%;

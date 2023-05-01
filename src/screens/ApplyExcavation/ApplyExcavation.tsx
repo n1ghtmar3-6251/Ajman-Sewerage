@@ -168,7 +168,7 @@ const ApplyExcavation = () => {
      setError(1)
     
     }
-    else if(!(ContactPersonPhoneNumber.length > 9)){
+    else if(!(ContactPersonPhoneNumber.length > 8)){
       setError(2)
     }
     else if(!(TypeOfWorkIds.length>0)){
@@ -186,6 +186,16 @@ const ApplyExcavation = () => {
       }
 
       else if(!(attachmentsFileError == 2)){
+        setError(6)
+        // console.log("10 MBb")
+      }
+
+      else if((SitePlanFile===undefined)){
+        setError(6)
+        // console.log("10 MBb")
+      }
+
+      else if((ConstructionDetailsFile===undefined)){
         setError(6)
         // console.log("10 MBb")
       }
@@ -222,6 +232,7 @@ const ApplyExcavation = () => {
       setValid(false);
     }
 
+    console.log("ConstructionDetailsFile", ConstructionDetailsFile)
 
     // if (
     //   ContactPersonName &&
@@ -358,6 +369,8 @@ const ApplyExcavation = () => {
 
   const [fontSize, setFontSize] = useState<number>(14);
 
+  const [isPaymentExemptlocal, setIsPaymentExemptlocal] = useState<boolean>(false);
+
   const [colorNumber, setColorNumber] = useState<number>(14);
 
   useEffect(()=>{
@@ -374,6 +387,17 @@ const ApplyExcavation = () => {
     if (colorNumb) {
       setColorNumber(Number(colorNumb));
     }
+
+    const isPaymentExemptlocal1 = localStorage.getItem("isPaymentExempt");
+    if (isPaymentExemptlocal1) {
+      setIsPaymentExemptlocal(false);
+    }
+    else{
+      setIsPaymentExemptlocal(true);
+    }
+
+    // setIsPaymentExemptlocal(isPaymentExemptlocal1);
+
   })
 
   // console.log("colorNumber", fontSize)
@@ -387,6 +411,8 @@ const ApplyExcavation = () => {
          url("myfont.woff") format("woff");
   }
 `;
+
+// console.log("isPaymentExemptlocal", isPaymentExemptlocal)
 
   return (
     <div className="font-segoe " style={{ background: "#eee",
@@ -498,7 +524,7 @@ const ApplyExcavation = () => {
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
             >
-              DASHBOARD
+              {language?.result?.cm_dashboard ? language?.result?.cm_dashboard.label:'DASHBOARD ' }
             </div>
           </div>
           <div>
@@ -510,7 +536,7 @@ const ApplyExcavation = () => {
             : fontSize === 5 ? '54px'
             : '50px'}` }}
             >
-              Apply for Excavation NOC
+               {language?.result?.cm_apply_for_excavation_noc ? language?.result?.cm_apply_for_excavation_noc.label:'Apply for Excavation NOC ' }
             </span>
           </div>
         </div>
@@ -548,7 +574,7 @@ const ApplyExcavation = () => {
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
             >
-              DASHBOARD
+              {language?.result?.cm_dashboard ? language?.result?.cm_dashboard.label:'DASHBOARD ' }
             </div>
           </div>
           <div>
@@ -560,7 +586,7 @@ const ApplyExcavation = () => {
             : fontSize === 5 ? '40px'
             : '36px'}` }}
             >
-              Apply for Excavation NOC
+              {language?.result?.cm_apply_for_excavation_noc ? language?.result?.cm_apply_for_excavation_noc.label:'Apply for Excavation NOC ' }
             </span>
           </div>
         </div>
@@ -629,8 +655,11 @@ const ApplyExcavation = () => {
             >
               <tbody>
                 <tr>
-                  <td>Amount</td>
-                  <td>52.50 (AED)</td>
+                  <td>
+                  {language?.result?.cm_amount ? language?.result?.cm_amount.label:'Amount' }
+                    </td>
+                  {/* <td>52.50 (AED)</td> */}
+                  <td>{PaymentFee && PaymentFee.total}</td>
                 </tr>
                 <tr>
                   <td colSpan={2} style={{ border: "none" }}>
@@ -642,11 +671,15 @@ const ApplyExcavation = () => {
                 </tr>
                 <tr>
                   <td style={{ border: "none" }}>
-                    <label style={{ float: "left" }}>Expiry Date</label>
+                    <label style={{ float: "left" }}>
+                    {language?.result?.cm_expiry_date ? language?.result?.cm_expiry_date.label:'Expiry Date' }
+                      </label>
                     <ExpiryDate style={{ height: "35px" }} />
                   </td>
                   <td style={{ border: "none" }}>
-                    <label style={{ float: "left" }}>CVV Number</label>
+                    <label style={{ float: "left" }}>
+                    {language?.result?.cm_cvv_number ? language?.result?.cm_cvv_number.label:'CVV Number' }
+                      </label>
                     <Cvv style={{ height: "35px" }} />
                   </td>
                 </tr>
@@ -675,8 +708,9 @@ const ApplyExcavation = () => {
                           placeSelf: "start",
                         }}
                       >
-                        {" "}
-                        PAY NOW
+                        
+                         {language?.result?.cm_paynow ? language?.result?.cm_paynow.label:'PAY NOW' }
+                        
                       </ButtonSecondary>
                     )}
                   </td>
@@ -696,7 +730,8 @@ const ApplyExcavation = () => {
             : fontSize === 5 ? '20px'
             : '16px'}` }}
             >
-            Contact Person's Name*
+              {language?.result?.cm_contact_persons_name ? language?.result?.cm_contact_persons_name.label:"Contact Person's Name*" }
+            
             </span>
             <input
               type="text"
@@ -719,11 +754,12 @@ const ApplyExcavation = () => {
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
             >
-            Contact Number*
+               {language?.result?.cm_contact_number ? language?.result?.cm_contact_number.label:"Contact Number*" }
+          
             </span>
-            <div style={{ width: "100%", gridColumn: "1 / span 2" }}>
+            <div className="d-flex" style={{ width: "100%", gridColumn: "1 / span 2" }}>
               <input
-                style={{ width: "12%", marginRight: "2%" }}
+                style={{ width: "18%", marginRight: "2%" }}
                 type="text"
                 readOnly
                 placeholder="+971"
@@ -899,7 +935,8 @@ const ApplyExcavation = () => {
               <Document
                 exists={false}
                 mainText={language?.result?.cm_siteplan ? language?.result?.cm_siteplan.label:'Site Plan' }
-                subText={"Mandatory Document"}
+                subText={language?.result?.cm_mandatory_document ? language?.result?.cm_mandatory_document.label:"Mandatory Document" }
+                
                 onChange={handleFileChange}
                 inputName={"sitePlanFile"}
               />
@@ -962,7 +999,8 @@ const ApplyExcavation = () => {
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
             >
-            Owner's ID Proof (Non Mandatory)
+              {language?.result?.cm_owners_id_proof_non_mandatory ? language?.result?.cm_owners_id_proof_non_mandatory.label:" Owner's ID Proof (Non Mandatory)" }
+           
             </span>
             <select
               defaultValue={OwnerIdProof}
@@ -1076,6 +1114,8 @@ const ApplyExcavation = () => {
             </>
           )}
 
+          { 
+         isPaymentExemptlocal == false?
           <Table style={{ width: "100%", gridColumn: "1 / span 2" }}>
             <thead>
               <tr>
@@ -1087,7 +1127,8 @@ const ApplyExcavation = () => {
                   : fontSize === 5 ? '16px'
                   : '12px'}` }}
                 >
-                  Description</th>
+                  {language?.result?.cm_description ? language?.result?.cm_description.label:'Description' }
+                  </th>
                 <th
                  style={{ fontWeight:"600", fontSize: `${fontSize === 1 ? '12px' 
                   : fontSize === 2 ? '10px'
@@ -1133,7 +1174,8 @@ const ApplyExcavation = () => {
                 : '12px'}` }}>{PaymentFee && PaymentFee.total}</td>
               </tr>
             </tbody>
-          </Table>
+          </Table> 
+          : ''}
 
           <div
             className="check-box-button"
@@ -1146,14 +1188,17 @@ const ApplyExcavation = () => {
             }}
           >
             <Checkbox
+            
               checked={agreementChecked === "true" ? true : false}
               onClick={onCheckboxClick}
+             className="pr-3"
             />
             <div>
               <Label style={{ width: "100%", paddingTop: "10px" }}>
-                For each Excavation form submission, a declaration text will be
-                displayed with checkbox, which the customer has to check to
-                submit the application and is mandatory.
+
+              {language?.result?.cm_checkbox_declaration ? language?.result?.cm_checkbox_declaration.label:'For each Excavation form submission, a declaration text will be displayed with checkbox, which the customer has to check to submit the application and is mandatory.' }
+
+               
               </Label>
             </div>
           </div>
@@ -1179,7 +1224,8 @@ const ApplyExcavation = () => {
                   : '14px'}`
             }}
           >
-            PROCEED TO PAY
+            {language?.result?.cm_proceed_to_pay ? language?.result?.cm_proceed_to_pay.label:'PROCEED TO PAY' }
+            
           </ButtonSecondary>
 
           {valid ? (

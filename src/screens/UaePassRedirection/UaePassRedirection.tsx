@@ -5,6 +5,7 @@ import Constants from "../../core/Constants";
 import RequestEngine from "../../core/RequestEngine";
 import { Memory } from "../../core/Memory";
 import {Spinner} from "../../components/spinner.component"
+import ConsultationTabs from "../consultation/ConsultationTabs";
 
 
 
@@ -15,6 +16,7 @@ const UaePassRedirection = () => {
   const [searchParams] = useSearchParams();
 
   useEffect(() => {
+    // alert("code");
     prepareData();
   }, []);
 
@@ -26,23 +28,26 @@ const UaePassRedirection = () => {
 
     let error = searchParams.get('error');
     console.log("error: " + error);
+    
 
     let code = searchParams.get('code');
     console.log("code: " + code);
+   
 
     let state = searchParams.get('state');
     console.log("state: " + state);
 
     if (error && state === '_login_redirection_') {
-      console.log("/login");
+      console.log("loginnn");
       navigate('/login');
     }
     else {
-
+      
       console.log("/");
 
       if (state === '_login_redirection_') 
       {
+        
         let response = await engine.getItem('api/appUser/UAEPassRedirect/' + code + '/' + state);
 
         if (response && response.status === 200) {

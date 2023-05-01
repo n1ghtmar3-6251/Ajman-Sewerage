@@ -43,9 +43,10 @@ const Popup: FC<Props> = ({ onClose, onSubmit, propertyTypeList }: Props): React
           justifyContent: "space-between",
           paddingLeft: "1rem",
           paddingRight: "1rem",
+          zIndex:'0'
         }}
       >
-        <h1 style={{ color: "#fff", justifySelf: "flex-start" }}>
+        <h1 style={{ color: "#fff", justifySelf: "flex-start", zIndex:"0" }}>
           Add Property Type
         </h1>
         <img src={CloseIcon} alt="Close" onClick={onClose}/>
@@ -66,11 +67,12 @@ const Popup: FC<Props> = ({ onClose, onSubmit, propertyTypeList }: Props): React
         <div
           style={{
             width: "95%",
-            display: "grid",
+
             placeItems: "center",
             gridTemplateColumns: "1fr 1fr",
             margin: "0 auto",
           }}
+          className="add-property-type"
         >
           <p style={{ fontWeight: "700", gridColumn: ShowAreaSqMeter ? "1 / span 3" : "1 / span 2", placeSelf: "start" }}></p>
 
@@ -100,7 +102,8 @@ const Popup: FC<Props> = ({ onClose, onSubmit, propertyTypeList }: Props): React
 
             }}
 
-              style={{ width: "100%", background: "#e5eff2" }}>
+              style={{ width:"100%", background: "#e5eff2" }}>
+                
               <option value="select">Select</option>
               {propertyTypeList.map((item: any) => { return <option key={item.id} value={item.id}>{item.propertyType}</option>; })}
             </select>
@@ -108,7 +111,7 @@ const Popup: FC<Props> = ({ onClose, onSubmit, propertyTypeList }: Props): React
 
           <Label>
             Property Count*
-            <input type="text" defaultValue={PropertyCount} value={PropertyCount} placeholder="Property Count" onChange={(e) => { setPropertyCount(e.target.value); }} />
+            <input  type="text" defaultValue={PropertyCount} value={PropertyCount} placeholder="Property Count" onChange={(e) => { setPropertyCount(e.target.value); }} />
           </Label>
 
           <Label style={{ visibility: ShowAreaSqMeter ? 'visible' : 'hidden' }}>
@@ -127,8 +130,8 @@ const Popup: FC<Props> = ({ onClose, onSubmit, propertyTypeList }: Props): React
             margin: "10px auto"
           }}
         >
-          <p style={{ fontWeight: "700", gridColumn: "1 / span 1", placeSelf: "end", marginRight: "10px" }}>
-            <ButtonSecondary onClick={(e) => { submit(e) }} style={{ width: "100%" }}>ADD</ButtonSecondary>
+          <p className="add-property-type-button-secondary" style={{ fontWeight: "700", gridColumn: "1 / span 1", placeSelf: "end",  }}>
+            <ButtonSecondary onClick={(e) => { submit(e) }} style={{ width: "100px" }}>ADD</ButtonSecondary>
           </p>
 
         </div>

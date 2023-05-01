@@ -96,7 +96,9 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
       <CardHeader style={{ justifyContent: "space-between", paddingLeft: "1rem", paddingRight: "1rem",                 backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E',
  }}>
         <h1 style={{ color: "#fff", justifySelf: "flex-start" }}>
-          Request ID: {application?.requestId}
+          
+          {language?.result?.cm_request_id ? language?.result?.cm_request_id.label:' Request ID' }
+          : {application?.requestId}
         </h1>
         <img src={CloseIcon} alt="Close" onClick={onClose} />
       </CardHeader>
@@ -216,7 +218,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
               </p>
 
               {application && application.demolishLetter &&
-                <Label style={{ marginBottom: '10px' }}>
+                <Label style={{ marginBottom: '10px', width:"90%" }}>
                   <DocumentDownload exists={true}
                     mainText={"Demolition Letter"}
                     subText={application && application.demolishLetter ? (application.demolishLetter.substring(application.demolishLetter.lastIndexOf('/') + 1)) : ""}
@@ -224,7 +226,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                 </Label>
               }
               {application && application.sitePlan &&
-                <Label style={{ marginBottom: '10px' }}>
+                <Label style={{ marginBottom: '10px', width:"90%" }}>
                   <DocumentDownload exists={true}
                     mainText={"Site Plan"}
                     subText={application && application.sitePlan ? (application.sitePlan.substring(application.sitePlan.lastIndexOf('/') + 1)) : ""}
@@ -232,7 +234,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                 </Label>
               }
               {application && application.floorPlan &&
-                <Label style={{ marginBottom: '10px' }}>
+                <Label style={{ marginBottom: '10px', width:"90%" }}>
                   <DocumentDownload exists={true}
                     mainText={language?.result?.cm_flrplan ? language?.result?.cm_flrplan.label:'Floor Plan' }
                     subText={application && application.floorPlan ? (application.floorPlan.substring(application.floorPlan.lastIndexOf('/') + 1)) : ""}
@@ -240,7 +242,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                 </Label>
               }
               {application && application.layoutPlan &&
-                <Label style={{ marginBottom: '10px' }}>
+                <Label style={{ marginBottom: '10px', width:"90%" }}>
                   <DocumentDownload exists={true}
                     mainText={"Layout Plan"}
                     subText={application && application.layoutPlan ? (application.layoutPlan.substring(application.layoutPlan.lastIndexOf('/') + 1)) : ""}
@@ -248,7 +250,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                 </Label>
               }
               {application && application.emiratesIdOrTradeLicense &&
-                <Label style={{ marginBottom: '10px' }}>
+                <Label style={{ marginBottom: '10px', width:"90%" }}>
                   <DocumentDownload exists={true}
                     mainText={"Owner’s Emirates ID"}
                     subText={application && application.emiratesIdOrTradeLicense ? (application.emiratesIdOrTradeLicense.substring(application.emiratesIdOrTradeLicense.lastIndexOf('/') + 1)) : ""}
@@ -301,7 +303,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
               && (application.comments || application.usercomments)
               &&
               <div style={{ width: "100%", margin: "auto" }}>
-                <p style={{ fontWeight: "700" }}>Application Related Communication</p>
+                <p style={{ fontWeight: "700" }}>{language?.result?.cm_application_related_communication ? language?.result?.cm_application_related_communication.label:"Application Related Communication" }</p>
                 {application && application.comments && <PopupCenterSection><p>{application.comments}</p></PopupCenterSection>}
                 <br />
                 {application && application.usercomments && <PopupCenterSection style={{ height: "10rem" }}><p>{application.usercomments}</p></PopupCenterSection>}
@@ -315,7 +317,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
               application.status === 'InfoNeeded' &&
               application.infoNeeded.length > 0 && <>
                 <div style={{ width: "100%", margin: "auto" }}>
-                  <p style={{ fontWeight: "700" }}>Application Related Communication</p>
+                  <p style={{ fontWeight: "700" }}>{language?.result?.cm_application_related_communication ? language?.result?.cm_application_related_communication.label:"Application Related Communication" }</p>
                   {
                     application.infoNeeded.map((item: any) => {
                       return <>
@@ -485,7 +487,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-              >Parcel ID</span>
+              >{language?.result?.cm_ascreate_label_parcelid ? language?.result?.cm_ascreate_label_parcelid.label:'Parcel ID' }</span>
               <span
               style={{fontWeight:"400",
             fontSize: `${fontSize === 1 ? '12px' 
@@ -505,7 +507,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-              >Created Date</span>
+              >{language?.result?.cm_createddate ? language?.result?.cm_createddate.label:'Created Date' }</span>
               <span
               style={{fontWeight:"400",
             fontSize: `${fontSize === 1 ? '12px' 
@@ -545,7 +547,9 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-              >Contact Number</span>
+              >
+                {language?.result?.cm_contact_number ? language?.result?.cm_contact_number.label:'Contact Number' }
+                </span>
               <span
               style={{fontWeight:"400",
             fontSize: `${fontSize === 1 ? '12px' 
@@ -565,7 +569,9 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-              >Work Type</span>
+              >
+                 {language?.result?.cm_wrktypes ? language?.result?.cm_wrktypes.label:'Work Type' }
+                </span>
               <span
               style={{fontWeight:"400",
             fontSize: `${fontSize === 1 ? '12px' 
@@ -591,7 +597,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-            >Parcel ID</span></div>
+            >{language?.result?.cm_ascreate_label_parcelid ? language?.result?.cm_ascreate_label_parcelid.label:'Parcel ID' }</span></div>
             <div><span className="form-heading-text"
             style={{ fontSize: `${fontSize === 1 ? '14px' 
                   : fontSize === 2 ? '16px'
@@ -610,7 +616,9 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-            >Contact Name</span></div>
+            >
+              {language?.result?.cm_contact_name ? language?.result?.cm_contact_name.label:'Contact Name' }
+              </span></div>
             <div><span className="form-heading-text"
             style={{ fontSize: `${fontSize === 1 ? '14px' 
                   : fontSize === 2 ? '16px'
@@ -633,7 +641,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-              >Created Date</span></div>
+              >{language?.result?.cm_createddate ? language?.result?.cm_createddate.label:'Created Date' }</span></div>
               <div><span className="form-heading-tex
               style={{ fontSize: `${fontSize === 1 ? 412px' 
                   : fontSize === 2 ? '16px'
@@ -652,7 +660,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-              >Contact Number</span></div>
+              > {language?.result?.cm_contact_number ? language?.result?.cm_contact_number.label:'Contact Number' }</span></div>
               <div><span className="form-heading-tex
               style={{ fontSize: `${fontSize === 1 ? 412px' 
                   : fontSize === 2 ? '16px'
@@ -677,7 +685,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-              >Work Type</span></div>
+              >{language?.result?.cm_wrktypes ? language?.result?.cm_wrktypes.label:'Work Type' }</span></div>
               <div><span className="form-heading-tex
               style={{ fontSize: `${fontSize === 1 ? 412px' 
                   : fontSize === 2 ? '16px'
@@ -731,14 +739,17 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                 : fontSize === 4 ? '18px'
                 : fontSize === 5 ? '20px'
                 : '16px'}` }}>
-                Application Documents
+                  {language?.result?.cm_application_documents ? language?.result?.cm_application_documents.label:'Application Documents' }
+                
                 </span>
               </p>
 
               {application && application.constructionDetails &&
-                <Label style={{ marginBottom: '10px',  }}>
-                  <DocumentDownload exists={true} 
-                    mainText={"Construction Details"}
+                <Label  style={{ marginBottom: '10px',  }}>
+                  <DocumentDownload exists={true}  
+                    mainText={language?.result?.cm_const_details ? language?.result?.cm_const_details.label:"Construction Details" }
+                    
+                    
                     subText={application && application.constructionDetails ? (application.constructionDetails.substring(application.constructionDetails.lastIndexOf('/') + 1)) : ""}
                     inputName={application && application.constructionDetails ? application.constructionDetails : ""} />
                 </Label>
@@ -746,7 +757,8 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
               {application && application.sitePlan &&
                 <Label style={{ marginBottom: '10px' }}>
                   <DocumentDownload exists={true}
-                    mainText={"Site Plan"}
+                    mainText={language?.result?.cm_siteplan ? language?.result?.cm_siteplan.label:"Site Plan"}
+                    
                     subText={application && application.sitePlan ? (application.sitePlan.substring(application.sitePlan.lastIndexOf('/') + 1)) : ""}
                     inputName={application && application.sitePlan ? application.sitePlan : ""} />
                 </Label>
@@ -777,7 +789,8 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                 : fontSize === 4 ? '18px'
                 : fontSize === 5 ? '20px'
                 : '16px'}` }}>
-                  Application Related Communication
+                  {language?.result?.cm_application_related_communication ? language?.result?.cm_application_related_communication.label:"Application Related Communication" }
+                  
                   </span>
                   </p><span className="view-detail-font" 
                style={{ fontSize: `${fontSize === 1 ? '10px' 
@@ -799,7 +812,7 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
               application.infoNeeded &&
               application.infoNeeded.length > 0 && <>
                 <div style={{ width: "100%", margin: "auto" }}>
-                  <p style={{ fontWeight: "700" }}>Application Related Communication</p>
+                  <p style={{ fontWeight: "700" }}>{language?.result?.cm_application_related_communication ? language?.result?.cm_application_related_communication.label:"Application Related Communication" }</p>
                   {
                     application.infoNeeded.map((item: any) => {
                       return <>
@@ -832,21 +845,23 @@ const Popup: FC<Props> = ({ nocType, application, onClose }: Props): ReactElemen
                 <br />
                 <br />
                 <Label style={{ gridColumn: "1 / span 2", width: "100%" }}>
-                  Comments
+                {language?.result?.cm_cmts ? language?.result?.cm_cmts.label:"Comments" }
+                  
                   <textarea name="" id="" cols={30} rows={10}
                     onChange={(e) => { setComments(e.target.value); }}
                     style={{ width: "100%", background: "#e5eff2", resize: "none", border: "1px solid #b6bfdc", marginTop: 7 }}
-                    placeholder="Select"
+                    placeholder= {language?.result?.cm_pdc_select ? language?.result?.cm_pdc_select.label:"Select" }
                   ></textarea>
                 </Label>
                 <br />
                 <Label style={{ width: '100%' }}>
-                  Attachment
+                {language?.result?.cm_attachment ? language?.result?.cm_attachment.label:"Attachment" }
+                  
                   <input name="attachment" type="file" accept="application/pdf" placeholder="Select" onChange={(e) => { handleFileChange(e); }} style={{ width: "100%" }} />
                 </Label>
                 <br />
-                <ButtonSecondary onClick={() => submit()} style={{ background: "#101e8e", color: "#fff", gridColumn: "1 /span 2", width: "25%", placeSelf: "start", }}>
-                  SUBMIT
+               <ButtonSecondary onClick={() => submit()} style={{ backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E', color: "#fff", gridColumn: "1 /span 2", width: "25%", placeSelf: "start", }}>
+                {language?.result?.cm_submit ? language?.result?.cm_submit.label:"SUBMIT" } 
                 </ButtonSecondary>
 
               </>

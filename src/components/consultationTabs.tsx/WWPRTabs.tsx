@@ -116,7 +116,7 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   Hi, {Memory.getItem("fullName")}
                 </h1>
                 <h3 style={{ fontWeight: 400, fontSize: "20px", margin: 0 }}>
-                  Here’s your WWPR NOCs Dashboard
+                {language?.result?.cm_heres_your_wwpr_nocs_dashboard ? language?.result?.cm_heres_your_wwpr_nocs_dashboard.label:'Here’s your WWPR NOCs Dashboard' }  
                 </h3>
               </p>
               <ButtonSecondary
@@ -203,14 +203,14 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
             <div className="col-12 ">
               <p className="mb-0 pt-3  header-body-text1">Hi, {Memory.getItem("fullName")}</p>
               <p className="mb-0 pt-1  header-body-text2">
-                Here’s your WWPR NOCs Dashboard
+              {language?.result?.cm_heres_your_wwpr_nocs_dashboard ? language?.result?.cm_heres_your_wwpr_nocs_dashboard.label:'Here’s your WWPR NOCs Dashboard' }
               </p>
             </div>
-            <div className="col-12 my-4 py-2">
+            <div className="col-12 my-4 py-2 px-0">
               <Link to="/apply-wwpr">
                 {" "}
                 <div className=" mx-3 d-flex justify-content-center align-items-center apply-button"
-                  style={{ width: "100%",                 backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E',
+                  style={{ width: "92%",                 backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E',
                 }}
                 > 
                 <span 
@@ -220,12 +220,12 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   : fontSize === 4 ? '18px'
                   : fontSize === 5 ? '20px'
                   : '16px'}` }}
-                >  Apply WWP Review NOC </span>
+                > {language?.result?.cm_apply_wwp_review_noc ? language?.result?.cm_apply_wwp_review_noc.label:' Apply WWP Review NOC' }  </span>
                 </div>
               </Link>
             </div>
 
-            <div className="col-12 mb-4">
+            <div className="col-12 mb-4 px-0">
               <Carousel data={data} />
             </div>
           </div>
@@ -235,7 +235,7 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
       <BottomContainer>
         <div className="px-4">
           <span className="" style={{ color: "#101E8E", fontSize: "20px", paddingLeft:"5%" }}>
-            Here are some of your WWPR requests that need your attention
+          {language?.result?.cm_wwpr_requests_need_attention ? language?.result?.cm_wwpr_requests_need_attention.label:'Here are some of your WWPR requests that need your attention' }      
           </span>
         </div>
         <MainCardsContainer
@@ -249,21 +249,39 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
           <BaseCard>
             <div className="title">
               <h3
-              style={{ fontSize: `${fontSize === 1 ? '1.6rem' 
+              style={{ fontSize: 
+                isLargeScreen ?
+                `${fontSize === 1 ? '1.6rem' 
               : fontSize == 2 ? '1.7rem'
               : fontSize == 3 ? '1.8rem' 
               : fontSize == 4 ? '1.9rem'
               : fontSize == 5 ? '2.0rem'
-              : '1.8rem'}` }}
+              : '1.8rem'}`:
+              `${fontSize === 1 ? '1rem' 
+              : fontSize == 2 ? '1.1rem'
+              : fontSize == 3 ? '1.2rem' 
+              : fontSize == 4 ? '1.3rem'
+              : fontSize == 5 ? '1.4rem'
+              : '1.2rem'}`
+            }}
               >{language?.result?.cm_info_needed ? language?.result?.cm_info_needed.label:'Info Needed' } </h3>
               <span
                 style={{ cursor: "pointer" ,
-                fontSize: `${fontSize === 1 ? '0.9rem' 
+                fontSize:  
+                isLargeScreen ?
+                `${fontSize === 1 ? '0.9rem' 
                 : fontSize == 2 ? '0.9rem'
                 : fontSize == 3 ? '1rem' 
                 : fontSize == 4 ? '1.1rem'
                 : fontSize == 5 ? '1.2rem'
-                : '1rem'}`}}
+                : '1rem'}` : `${fontSize === 1 ? '0.6rem' 
+                : fontSize == 2 ? '0.7rem'
+                : fontSize == 3 ? '0.8rem' 
+                : fontSize == 4 ? '0.9rem'
+                : fontSize == 5 ? '1rem'
+                : '0.8rem'}`
+              
+              }}
                 className={"viewall"}
                 onClick={() => {
                   Memory.setItem("NocType", 1);
@@ -271,7 +289,7 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   onViewAll();
                 }}
               >
-                VIEW ALL <img className="pb-1" src={path} alt="View All" />{" "}
+                {language?.result?.cm_view_all ? language?.result?.cm_view_all.label:'VIEW ALL' } <img className="pb-1" src={path} alt="View All" />{" "}
               </span>
             </div>
             {infoList.length > 0 ? (
@@ -285,7 +303,8 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   : fontSize === 4 ? '14px'
                   : fontSize === 5 ? '16px'
                   : '12px'}` }}
-                    >{language?.result?.cm_rq_id ? language?.result?.cm_rq_id.label:'Request ID' }</Th>
+                    >
+                      {language?.result?.cm_rq_id ? language?.result?.cm_rq_id.label:'Request ID' }</Th>
                     <Th
                     style={{ fontSize: `${fontSize === 1 ? '8px' 
                   : fontSize === 2 ? '10px'
@@ -301,7 +320,7 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   : fontSize === 4 ? '14px'
                   : fontSize === 5 ? '16px'
                   : '12px'}` }}
-                    >Created On</Th>
+                    >  {language?.result?.cm_created_on ? language?.result?.cm_created_on.label:'Created On' }</Th>
                   </Tr>
                 </thead>
                 <tbody>
@@ -346,21 +365,34 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
           <BaseCard>
             <div className="title">
               <h3
-              style={{ fontSize: `${fontSize === 1 ? '1.6rem' 
+              style={{ fontSize: isLargeScreen ?
+                `${fontSize === 1 ? '1.6rem' 
               : fontSize == 2 ? '1.7rem'
               : fontSize == 3 ? '1.8rem' 
               : fontSize == 4 ? '1.9rem'
               : fontSize == 5 ? '2.0rem'
-              : '1.8rem'}` }}
+              : '1.8rem'}`:
+              `${fontSize === 1 ? '1rem' 
+              : fontSize == 2 ? '1.1rem'
+              : fontSize == 3 ? '1.2rem' 
+              : fontSize == 4 ? '1.3rem'
+              : fontSize == 5 ? '1.4rem'
+              : '1.2rem'}` }}
               >Pending Payment</h3>
               <span
                 style={{ cursor: "pointer",
-                fontSize: `${fontSize === 1 ? '0.9rem' 
+                fontSize: isLargeScreen ?
+                `${fontSize === 1 ? '0.9rem' 
                 : fontSize == 2 ? '0.9rem'
                 : fontSize == 3 ? '1rem' 
                 : fontSize == 4 ? '1.1rem'
                 : fontSize == 5 ? '1.2rem'
-                : '1rem'}` }}
+                : '1rem'}` : `${fontSize === 1 ? '0.6rem' 
+                : fontSize == 2 ? '0.7rem'
+                : fontSize == 3 ? '0.8rem' 
+                : fontSize == 4 ? '0.9rem'
+                : fontSize == 5 ? '1rem'
+                : '0.8rem'}` }}
                 className={"viewall"}
                 onClick={() => {
                   Memory.setItem("NocType", 1);
@@ -368,7 +400,7 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   onViewAll();
                 }}
               >
-                VIEW ALL <img className="pb-1" src={path} alt="View All" />
+             {language?.result?.cm_view_all ? language?.result?.cm_view_all.label:'VIEW ALL' } <img className="pb-1" src={path} alt="View All" />
               </span>
             </div>
             {pendingPayment && pendingPayment.length > 0 ? (
@@ -398,7 +430,7 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   : fontSize === 4 ? '14px'
                   : fontSize === 5 ? '16px'
                   : '12px'}` }}
-                    >Created On</Th>
+                    >  {language?.result?.cm_created_on ? language?.result?.cm_created_on.label:'Created On' }</Th>
                   </Tr>
                 </thead>
                 <tbody>
@@ -442,20 +474,33 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
           </BaseCard>
           <BaseCard>
             <div className="title">
-              <h3 style={{ fontSize: `${fontSize === 1 ? '1.6rem' 
+              <h3 style={{ fontSize: isLargeScreen ?
+                `${fontSize === 1 ? '1.6rem' 
               : fontSize == 2 ? '1.7rem'
               : fontSize == 3 ? '1.8rem' 
               : fontSize == 4 ? '1.9rem'
               : fontSize == 5 ? '2.0rem'
-              : '1.8rem'}` }}>Due For Completion</h3>
+              : '1.8rem'}`:
+              `${fontSize === 1 ? '1rem' 
+              : fontSize == 2 ? '1.1rem'
+              : fontSize == 3 ? '1.2rem' 
+              : fontSize == 4 ? '1.3rem'
+              : fontSize == 5 ? '1.4rem'
+              : '1.2rem'}` }}>  {language?.result?.cm_due_for_completion ? language?.result?.cm_due_for_completion.label:'Due For Completion ' } </h3>
               <span
                 style={{ cursor: "pointer",
-                fontSize: `${fontSize === 1 ? '0.9rem' 
+                fontSize: isLargeScreen ?
+                `${fontSize === 1 ? '0.9rem' 
                 : fontSize == 2 ? '0.9rem'
                 : fontSize == 3 ? '1rem' 
                 : fontSize == 4 ? '1.1rem'
                 : fontSize == 5 ? '1.2rem'
-                : '1rem'}`
+                : '1rem'}` : `${fontSize === 1 ? '0.6rem' 
+                : fontSize == 2 ? '0.7rem'
+                : fontSize == 3 ? '0.8rem' 
+                : fontSize == 4 ? '0.9rem'
+                : fontSize == 5 ? '1rem'
+                : '0.8rem'}`
               }}
                 className={"viewall"}
                 onClick={() => {
@@ -464,7 +509,7 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   onViewAll();
                 }}
               >
-                VIEW ALL <img className="pb-1" src={path} alt="View All" />
+                {language?.result?.cm_view_all ? language?.result?.cm_view_all.label:'VIEW ALL' } <img className="pb-1" src={path} alt="View All" />
               </span>
             </div>
             {dueCompletion.length > 0 ? (
@@ -494,7 +539,7 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   : fontSize === 4 ? '14px'
                   : fontSize === 5 ? '16px'
                   : '12px'}` }}
-                    >Created On</Th>
+                    >  {language?.result?.cm_created_on ? language?.result?.cm_created_on.label:'Created On' }</Th>
                   </Tr>
                 </thead>
                 <tbody>

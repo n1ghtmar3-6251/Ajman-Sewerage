@@ -78,6 +78,24 @@ color: #FFFFFF;
 
 /* this css is common for header (upper code) */
 
+.add-property-type{
+  display: grid;
+}
+
+.language-change-text{
+  font-family: 'Segoe UI';
+  font-style: normal;
+  font-weight: 400;
+  font-size: 16px;
+line-height: 130%;
+/* identical to box height, or 21px */
+
+
+color: #FFFFFF;
+
+/* border-radius: 2px solid white; */
+}
+
 .dwvDnk .viewall{
   font-family: 'Segoe UI' !important;
 }
@@ -248,9 +266,25 @@ color: #101E8E;
   margin: 0 !important;
 }
 
+.add-property-type-button-secondary{
+  width: 97%;
+  margin-right: 1.2%;
+}
 
+.sdfsdf{
+  background-color: red !important;
+}
 
 @media (min-width: 0px) and (max-width: 991px) {
+
+  .add-property-type{
+    display: block;
+    width: 90%;
+  }
+
+  .add-property-type-button-secondary{
+    width: 98.5;
+  }
 
   .ivYhrg{
     /* display: block !important;
@@ -527,7 +561,7 @@ color: #101E8E;
 
 @media (min-width: 991px) and (max-width: 1280px) {
   .sc-jTQDnj {
-    width: 32% !important;
+    /* width: 32% !important; */
   }
   .dwvDnk h3{
 font-size: 1.25rem !important;

@@ -116,7 +116,7 @@ const Excavation = ({ data, viewAll, infoList, dueCompletion }) => {
                 : fontSize === 5 ? '24px'
                 : '20px'}`
               }}
-              >Here’s your Excavation NOCs Dashboard</h3>
+              > {language?.result?.cm_heres_your_excavation_nocs_dashboard ? language?.result?.cm_heres_your_excavation_nocs_dashboard.label:' Here’s your Excavation NOCs Dashboard' }</h3>
             </p>
             <ButtonSecondary
               style={{ width: "24%", 
@@ -333,10 +333,10 @@ const Excavation = ({ data, viewAll, infoList, dueCompletion }) => {
               : fontSize === 5 ? '14px'
               : '10px'}` }}
               >
-                Here’s your WWPR NOCs Dashboard
+            {  language?.result?.cm_apply_exc ? language?.result?.cm_apply_exc.label:  'Here’s your WWPR NOCs Dashboard' }
               </p>
             </div>
-            <div className="col-12 my-4 py-2">
+            <div className="col-12 my-4 py-2  px-0">
               <Link to="/apply-excavation">
                 {" "}
                 <div className=" mx-3 d-flex justify-content-center align-items-center apply-button"
@@ -356,7 +356,7 @@ const Excavation = ({ data, viewAll, infoList, dueCompletion }) => {
               </Link>
             </div>
 
-            <div className="col-12 mb-4">
+            <div className="col-12 mb-4 px-0">
               <Carousel data={data} />
             </div>
           </div>
@@ -372,7 +372,7 @@ const Excavation = ({ data, viewAll, infoList, dueCompletion }) => {
                 : fontSize === 4 ? '22px'
                 : fontSize === 5 ? '24px'
                 : '20px'}`, }}>
-        Here’s your Excavation NOCs Dashboard
+     {language?.result?.cm_heres_your_excavation_nocs_dashboard ? language?.result?.cm_heres_your_excavation_nocs_dashboard.label:' Here’s your Excavation NOCs Dashboard' }   
         </span>
         </div>
         <MainCardsContainer
@@ -386,26 +386,39 @@ const Excavation = ({ data, viewAll, infoList, dueCompletion }) => {
           <BaseCard style={{ width: "45%" }}>
             <div className="title">
               <h3
-              style={{ fontSize: `${fontSize === 1 ? '1.6rem' 
+              style={{ fontSize: isLargeScreen ?
+                `${fontSize === 1 ? '1.6rem' 
               : fontSize == 2 ? '1.7rem'
               : fontSize == 3 ? '1.8rem' 
               : fontSize == 4 ? '1.9rem'
               : fontSize == 5 ? '2.0rem'
-              : '1.8rem'}` }}
+              : '1.8rem'}`:
+              `${fontSize === 1 ? '1rem' 
+              : fontSize == 2 ? '1.1rem'
+              : fontSize == 3 ? '1.2rem' 
+              : fontSize == 4 ? '1.3rem'
+              : fontSize == 5 ? '1.4rem'
+              : '1.2rem'}` }}
               >
                 
               {language?.result?.cm_info_needed ? language?.result?.cm_info_needed.label:'Info Needed' } 
               </h3>
               <span style={{ cursor: "pointer",
-              fontSize: `${fontSize === 1 ? '0.9rem' 
+              fontSize: isLargeScreen ?
+              `${fontSize === 1 ? '0.9rem' 
               : fontSize == 2 ? '0.9rem'
               : fontSize == 3 ? '1rem' 
               : fontSize == 4 ? '1.1rem'
               : fontSize == 5 ? '1.2rem'
-              : '1rem'}` }} className={"viewall"} onClick={() => { 
+              : '1rem'}` : `${fontSize === 1 ? '0.6rem' 
+              : fontSize == 2 ? '0.7rem'
+              : fontSize == 3 ? '0.8rem' 
+              : fontSize == 4 ? '0.9rem'
+              : fontSize == 5 ? '1rem'
+              : '0.8rem'}` }} className={"viewall"} onClick={() => { 
                 Memory.setItem("NocType", 2);  
                 Memory.setItem("CurrentStatusId", 3);
-                 viewAll(); }}>VIEW ALL <img className="pb-1" src={path} alt="View All" /></span>
+                 viewAll(); }}> {language?.result?.cm_view_all ? language?.result?.cm_view_all.label:'VIEW ALL' } <img className="pb-1" src={path} alt="View All" /></span>
             </div>
             <Table>
               <thead>
@@ -427,7 +440,9 @@ const Excavation = ({ data, viewAll, infoList, dueCompletion }) => {
                   : fontSize === 3 ? '12px' 
                   : fontSize === 4 ? '14px'
                   : fontSize === 5 ? '16px'
-                  : '12px'}` }}>Created On</Th>
+                  : '12px'}` }}>
+                    {language?.result?.cm_created_on ? language?.result?.cm_created_on.label:'Created On' }
+                    </Th>
                 </Tr>
               </thead>
               <tbody>
@@ -465,24 +480,37 @@ const Excavation = ({ data, viewAll, infoList, dueCompletion }) => {
           <BaseCard style={{ width: "45%" }}>
             <div className="title">
               <h3
-              style={{ fontSize: `${fontSize === 1 ? '1.6rem' 
+              style={{ fontSize: isLargeScreen ?
+                `${fontSize === 1 ? '1.6rem' 
               : fontSize == 2 ? '1.7rem'
               : fontSize == 3 ? '1.8rem' 
               : fontSize == 4 ? '1.9rem'
               : fontSize == 5 ? '2.0rem'
-              : '1.8rem'}` }}
-              >Due For Completion</h3>
+              : '1.8rem'}`:
+              `${fontSize === 1 ? '1rem' 
+              : fontSize == 2 ? '1.1rem'
+              : fontSize == 3 ? '1.2rem' 
+              : fontSize == 4 ? '1.3rem'
+              : fontSize == 5 ? '1.4rem'
+              : '1.2rem'}` }}
+              >{language?.result?.cm_due_for_completion ? language?.result?.cm_due_for_completion.label:'Due For Completion ' }</h3>
               <span style={{cursor:"pointer",
-            fontSize: `${fontSize === 1 ? '0.9rem' 
+            fontSize: isLargeScreen ?
+            `${fontSize === 1 ? '0.9rem' 
             : fontSize == 2 ? '0.9rem'
             : fontSize == 3 ? '1rem' 
             : fontSize == 4 ? '1.1rem'
             : fontSize == 5 ? '1.2rem'
-            : '1rem'}`  
+            : '1rem'}` : `${fontSize === 1 ? '0.6rem' 
+            : fontSize == 2 ? '0.7rem'
+            : fontSize == 3 ? '0.8rem' 
+            : fontSize == 4 ? '0.9rem'
+            : fontSize == 5 ? '1rem'
+            : '0.8rem'}` 
             }}  className={"viewall"} onClick={() => {  
                 Memory.setItem("NocType", 2); 
                 Memory.setItem("CurrentStatusId", 7); 
-                viewAll();}}>VIEW ALL <img className="pb-1" src={path} alt="View All" /></span>
+                viewAll();}}>{language?.result?.cm_view_all ? language?.result?.cm_view_all.label:'VIEW ALL' } <img className="pb-1" src={path} alt="View All" /></span>
             </div>
             <Table>
               <thead>

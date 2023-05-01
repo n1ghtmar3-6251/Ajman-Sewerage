@@ -6,6 +6,11 @@ export const CardsContainer = styled.div`
   display: flex;
   flex-direction: column;
   gap: 1.5rem;
+
+  @media (max-width: 991px) {
+    width: 100%;
+ }
+
 `;
 
 export const MainCardsContainer = styled.div`
@@ -40,12 +45,20 @@ export const ButtonSecondary = styled.button`
   height: 3rem;
   align-items: center;
   justify-content: center;
+  z-index: 0;
   &:hover {
     opacity: 0.8;
   }
   &:focus {
     border: none;
   }
+
+  @media screen and (min-width: 991px) {
+    padding: 0px;
+    width: 80%;
+  }
+
+
 `;
 
 export const BottomContainer = styled.div`

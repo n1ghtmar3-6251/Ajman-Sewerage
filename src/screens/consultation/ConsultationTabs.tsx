@@ -62,6 +62,17 @@ const ConsultationTabs = () => {
     setValue(3);
   };
 
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth > 991);
+    }
+    window.addEventListener("resize", handleResize);
+    handleResize(); 
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const prepareData = async () => {
     let engine = new RequestEngine();
 
@@ -154,7 +165,13 @@ const ConsultationTabs = () => {
 
   const [colorNumber, setColorNumber] = useState<number>(14);
 
+  const [language, setLanguage] =  useState<any>()
+
   useEffect(()=>{
+    const reciveLanguage:any = localStorage.getItem('LanguageChange');
+    const reciveLanguage1:any = JSON.parse(reciveLanguage)
+    setLanguage(reciveLanguage1)
+
     const colorNumb = localStorage.getItem("colorNum");
     if (colorNumb) {
       setColorNumber(Number(colorNumb));
@@ -181,7 +198,7 @@ const ConsultationTabs = () => {
             value={value}
             onChange={handleChange}
             aria-label="basic tabs example"
-            sx={{ alignSelf: "flex-end", width: "95%",  }}
+            sx={{ alignSelf: "flex-end", width: "95%", ...(!isLargeScreen && { width: "95%" }),  }}
             style={{}}
             // variant="scrollable"
             // scrollButtons
@@ -189,13 +206,17 @@ const ConsultationTabs = () => {
           >
             <Tab
               label={
-                <TabWithCount justifyContent="center"  style={{ backgroundColor: '' }}>
+                <TabWithCount justifyContent="center"  
+                
+                >
                   <PrinterSVG fill="white" />
                   <span className={"bold"}
                   style={{
                     
                   }}
-                  >WWPR NOCs</span>
+                  >
+                    {language?.result?.cm_wwpr_nocs ? language?.result?.cm_wwpr_nocs.label:'WWPR NOCs' }
+                    </span>
                 </TabWithCount>
               }
               {...a11yProps(0)}
@@ -214,7 +235,9 @@ const ConsultationTabs = () => {
               label={
                 <TabWithCount justifyContent="center" flexDirection="column" >
                   <TruckSVG fill="white" />
-                  <span className={"bold"}>EXCAVATION NOCs</span>
+                  <span className={"bold"}>
+                  {language?.result?.cm_excavation_nocs ? language?.result?.cm_excavation_nocs.label:'EXCAVATION NOCs' }
+                    </span>
                 </TabWithCount>
               }
               {...a11yProps(1)}
@@ -244,6 +267,7 @@ const ConsultationTabs = () => {
           <TabPanel value={value} index={3} background="#eee">
             <ConsultantTable StatusId={StatusId} NocType={NocType} />
           </TabPanel>
+          
           <TabPanel value={value} index={0} width="100%" background="#e7e9f8" padding={1}>
             <WWPRNocTab data={tab1} onViewAll={viewAll} infoList={infoList} pendingPayment={pendingPayment} dueCompletion={dueCompletion} />
           </TabPanel>

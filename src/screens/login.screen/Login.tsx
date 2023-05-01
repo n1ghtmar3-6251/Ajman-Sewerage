@@ -49,7 +49,8 @@ const Login = () => {
 
 
   const uaepassRedirection = (redirect_type: string) => {
-    window.open(Constants.uaePassLoginLink, '_self')
+    window.open('https://stg-id.uaepass.ae/idshub/authorize?redirect_uri=http://213.42.234.23:8904/CustomerPortal/Home/redirect&client_id=sandbox_stage&response_type=code&state=_login_redirection_&scope=urn:uae:digitalid:profile:general&acr_values=urn:safelayer:tws:policies:authentication:level:low&ui_locales=en')
+    // navigate(Constants.uaePassLoginLink+ '_self')
   }
 
   const handleSubmit = async () => {
@@ -159,7 +160,7 @@ const Login = () => {
           Forgot Password?
         </a>
         {loading ? (
-          <Spinner />
+         <Spinner />
         ) : (
           <ButtonContainer>
             <ButtonPrimary

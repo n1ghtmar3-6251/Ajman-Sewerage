@@ -215,4 +215,12 @@ export const Label = styled.label`
     border: 1px solid #b6bfdc;
     width: 100%;
   }
+
+  @media (max-width: 991px) {
+    width: 100%;
+
+   
+
+  }
+
 `;

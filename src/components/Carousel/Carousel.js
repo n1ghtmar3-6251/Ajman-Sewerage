@@ -74,7 +74,8 @@ const Carousel = ({data}) => {
             pic: BoxArrowIcon,
             num: data.cancelledCount,
             fontSize: fontSize,
-            data: 'CANCELED / INCOMPLETE'
+            data: language?.result?.cm_canceled__incomplete ? language?.result?.cm_canceled__incomplete.label: 'CANCELED / INCOMPLETE'
+            
         },
         {
             id: 5,

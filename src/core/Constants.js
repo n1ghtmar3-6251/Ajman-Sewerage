@@ -20,8 +20,18 @@ const Constants = {
     
   //Stg
   //uaePassLoginLink:'https://stg-ids.uaepass.ae/authenticationendpoint/login.do?acr_values=urn:safelayer:tws:policies:authentication:level:low&client_id=sandbox_stage&commonAuthCallerPath=/oauth2/authorize&forceAuth=false&passiveAuth=false&redirect_uri=http://213.42.234.23:8903/Home/redirect&response_type=code&scope=urn:uae:digitalid:profile:general&state=_login_redirection_&tenantDomain=carbon.super&ui_locales=en&sessionDataKey=ff9b5d34-5008-4bca-9ba5-127bb6191d40&relyingParty=sandbox_stage&type=oauth2&sp=UAE+PASS+Staging+Sandbox&isSaaSApp=false&authenticators=BasicAuthenticator:LOCAL',
-  uaePassLoginLink :'https://stg-id.uaepass.ae/idshub/authorize?redirect_uri=http://213.42.234.23:8903/Home/redirect&client_id=sandbox_stage&response_type=code&state=_login_redirection_&scope=urn:uae:digitalid:profile:general&acr_values=urn:safelayer:tws:policies:authentication:level:low&ui_locales=en',
-  uaePassLogoutLink:'https://stg-id.uaepass.ae/trustedx-authserver/digitalid-idp/logout?redirect_uri==http://213.42.234.23:8903/Home/redirect',
+  // uaePassLoginLink :'https://stg-id.uaepass.ae/idshub/authorize?redirect_uri=http://213.42.234.23:8904/Home/redirect&client_id=sandbox_stage&response_type=code&state=_login_redirection_&scope=urn:uae:digitalid:profile:general&acr_values=urn:safelayer:tws:policies:authentication:level:low&ui_locales=en',
+  // uaePassLogoutLink:'https://stg-id.uaepass.ae/trustedx-authserver/digitalid-idp/logout?redirect_uri==http://213.42.234.23:8904/Home/redirect',
+  // uaePassLoginLink :'https://stg-id.uaepass.ae/idshub/authorize?redirect_uri=http://213.42.234.23:8904/CustomerPortal/Home/redirect&client_id=sandbox_stage&response_type=code&state=_login_redirection_&scope=urn:uae:digitalid:profile:general&acr_values=urn:safelayer:tws:policies:authentication:level:low&ui_locales=en',
+  
+  // rough
+  
+  uaePassLoginLink :'https://stg-id.uaepass.ae/idshub/authorize?redirect_uri=http://213.42.234.23:8904/CustomerPortal/Home/redirect&client_id=sandbox_stage&response_type=code&state=_login_redirection_&scope=urn:uae:digitalid:profile:general&acr_values=urn:safelayer:tws:policies:authentication:level:low&ui_locales=en',
+  // uaePassLoginLink :'https://stg-id.uaepass.ae/idshub/authorize?redirect_uri=http://localhost:3000/CustomerPortal/Home/redirect&client_id=sandbox_stage&response_type=code&state=_login_redirection_&scope=urn:uae:digitalid:profile:general&acr_values=urn:safelayer:tws:policies:authentication:level:low&ui_locales=en',
+  
+  // rough
+  
+  uaePassLogoutLink:'https://stg-id.uaepass.ae/trustedx-authserver/digitalid-idp/logout?redirect_uri==http://213.42.234.23:8904/CustomerPortal/Home/redirect',
 
   //uaePassLoginLink :'https://stg-id.uaepass.ae/idshub/authorize?redirect_uri=http://213.42.234.19:8494/AjmanSewerageNOCChangesCustomerPortal/Home/redirect&client_id=sandbox_stage&response_type=code&state=_login_redirection__&scope=urn:uae:digitalid:profile:general&acr_values=urn:safelayer:tws:policies:authentication:level:low&ui_locales=en',
   //uaePassLogoutLink:'https://stg-ids.uaepass.ae/trustedx-authserver/digitalid-idp/logout?redirect_uri=http://213.42.234.19:8494',
@@ -34,6 +44,8 @@ const Constants = {
   CONNECTION_NOC_VALIDATE : 'api/noc/validateproperty',
   INFO_NEEDED : 'api/noc/additionalinformation',
 
+  // SUCCESS_PAYMENT_URL : 'http://213.42.234.23:8903/payment/success',
+  // FAILURE_PAYMENT_URL : 'http://213.42.234.23:8903/payment/failure',
   EXCAVATION_NOC_AFTER_THREE_DS : 'api/noc/excavationNocAfterThreeDS',
 
 };

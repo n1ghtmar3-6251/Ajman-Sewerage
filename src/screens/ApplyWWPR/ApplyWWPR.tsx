@@ -428,7 +428,7 @@ const ApplyWWPR = () => {
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
             >
-              DASHBOARD
+                {language?.result?.cm_dashboard ? language?.result?.cm_dashboard.label:'DASHBOARD ' }
             </div>
           </div>
           <div>
@@ -440,7 +440,7 @@ const ApplyWWPR = () => {
             : fontSize === 5 ? '54px'
             : '50px'}` }}
             >
-              Apply for WWPR
+                {language?.result?.cm_apply_for_wwpr ? language?.result?.cm_apply_for_wwpr.label:'Apply for WWPR ' }
             </span>
           </div>
         </div>
@@ -478,7 +478,7 @@ const ApplyWWPR = () => {
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
             >
-              DASHBOARD
+              {language?.result?.cm_dashboard ? language?.result?.cm_dashboard.label:'DASHBOARD ' }
             </div>
           </div>
           <div>
@@ -490,7 +490,7 @@ const ApplyWWPR = () => {
             : fontSize === 5 ? '40px'
             : '36px'}` }}
             >
-              Apply for WWPR
+               {language?.result?.cm_apply_for_wwpr ? language?.result?.cm_apply_for_wwpr.label:'Apply for WWPR ' }
             </span>
           </div>
         </div>
@@ -511,7 +511,7 @@ const ApplyWWPR = () => {
           <input type="text" placeholder={language?.result?.cm_mob_select ? language?.result?.cm_mob_select.label:'Select' } onChange={(e) => { setParcelNumber(e.target.value); }} style={{ width: "100%" }} />
         </Label>
         <Label style={{ width: '100%' , fontWeight:"400"}}>
-          Property Type *
+        {language?.result?.cm_nocpropertytype ? language?.result?.cm_nocpropertytype.label:'Property Type ' }*
           <select name="propertyType" placeholder="Select" defaultValue={PropertyType} onChange={(e) => { setPropertyType(e.target.value); }} style={{ width: "100%", background: "#e5eff2" }}>
             <option key="0" value="select">{language?.result?.cm_mob_select ? language?.result?.cm_mob_select.label:'Select' }</option>
             <option key="1" value="new">{language?.result?.cm_new ? language?.result?.cm_new.label:'New' }</option>

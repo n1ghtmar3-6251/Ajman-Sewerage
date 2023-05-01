@@ -75,7 +75,9 @@ const FooterMobile = () => {
                   : fontSize === 4 ? '16px'
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
-          >ASPCL Careers </p>
+          >
+              {language?.result?.cm_aspcl_careers ? language?.result?.cm_aspcl_careers.label:'ASPCL Careers ' }
+            </p>
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -83,7 +85,7 @@ const FooterMobile = () => {
                   : fontSize === 4 ? '16px'
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
-          >Request Visit for School </p>
+          >{language?.result?.cm_request_visit_for_school ? language?.result?.cm_request_visit_for_school.label:'Request Visit for School  ' } </p>
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -91,7 +93,7 @@ const FooterMobile = () => {
                   : fontSize === 4 ? '16px'
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
-          >Trip </p>
+          >{language?.result?.cm_trip ? language?.result?.cm_trip.label:'Trip  ' } </p>
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -99,7 +101,9 @@ const FooterMobile = () => {
                   : fontSize === 4 ? '16px'
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
-          >Request Visit for Bird </p>
+          >
+            {language?.result?.cm_request_visit_for_bird ? language?.result?.cm_request_visit_for_bird.label:'Request Visit for Bird ' } 
+             </p>
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -107,7 +111,7 @@ const FooterMobile = () => {
                   : fontSize === 4 ? '16px'
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
-          >Watching </p>
+          >{language?.result?.cm_watching ? language?.result?.cm_watching.label:'Watching ' }  </p>
         </div>
         <div className="footer-social ">
           <p className="mb-2"
@@ -117,7 +121,9 @@ const FooterMobile = () => {
              : fontSize === 4 ? '22px'
              : fontSize === 5 ? '24px'
              : '20px'}` }}
-          >Follow Us On</p>
+          >
+             {language?.result?.cm_follow_us_on ? language?.result?.cm_follow_us_on.label:'Follow Us On' }
+            </p>
           <div className="d-flex">
             <div className=" mx-1 footer-social-icon d-flex justify-content-center align-items-center">
               <img src={FaceBookIcon} alt="" />
@@ -139,7 +145,9 @@ const FooterMobile = () => {
         : fontSize === 4 ? '22px'
         : fontSize === 5 ? '24px'
         : '20px'}` }}
-        >Our Mobile App</span>
+        >
+          {language?.result?.cm_our_mobile_app ? language?.result?.cm_our_mobile_app.label:'Our Mobile App  ' } 
+          </span>
       </div>
       <div className="d-flex justify-content-center my-3">
         <div className="">
@@ -155,7 +163,9 @@ const FooterMobile = () => {
         : fontSize === 4 ? '14px'
         : fontSize === 5 ? '16px'
         : '12px'}` }}
-        >© 2022 Ajman Sewerage. All rights reserved.</span>
+        >
+       © {new Date().getFullYear()}   {language?.result?.cm_all_rights_reserved ? language?.result?.cm_all_rights_reserved.label.slice(6,60): `© ${new Date().getFullYear()} Ajman Sewerage. All rights reserved.` } 
+          </span>
       </div>
     </div>
   );

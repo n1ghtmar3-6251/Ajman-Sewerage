@@ -84,7 +84,8 @@ const Navbar: FC<Props> = ({ isLoggedIn }: Props): ReactElement => {
     const username = Memory.getItem('fullName')
 
     return (
-      <Box ref={anchorRef}>
+     <div>
+       <Box ref={anchorRef}>
         <Stack direction='row' spacing={2}>
           <Box
             id='composition-button'
@@ -168,6 +169,7 @@ const Navbar: FC<Props> = ({ isLoggedIn }: Props): ReactElement => {
           </Popper>
         </Stack>
       </Box>
+     </div>
     )
   }
 
@@ -195,7 +197,6 @@ const Navbar: FC<Props> = ({ isLoggedIn }: Props): ReactElement => {
         >
 
 {/* logout */}
-
           {!shouldRenderSubMenu && (
             <Link
               component={NavLink}
