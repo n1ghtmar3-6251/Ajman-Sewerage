@@ -240,8 +240,9 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
         </div>
         <MainCardsContainer
           style={{
+            display: isLargeScreen? 'flex' : 'block',
             flexDirection: "row",
-            width: "87%",
+            width: isLargeScreen? "87%" : '100%',
             margin: "auto",
             alignItems: "flex-start",
           }}
@@ -264,7 +265,7 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
               : fontSize == 5 ? '1.4rem'
               : '1.2rem'}`
             }}
-              >{language?.result?.cm_info_needed ? language?.result?.cm_info_needed.label:'Info Needed' } </h3>
+              > {language?.result?.cm_info_needed ? language?.result?.cm_info_needed.label:'Info Needed' } </h3>
               <span
                 style={{ cursor: "pointer" ,
                 fontSize:  
@@ -414,7 +415,8 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   : fontSize === 4 ? '14px'
                   : fontSize === 5 ? '16px'
                   : '12px'}` }}
-                    >{language?.result?.cm_rq_id ? language?.result?.cm_rq_id.label:'Request ID' }</Th>
+                    >
+                       {language?.result?.cm_rq_id ? language?.result?.cm_rq_id.label:'Request ID' }</Th>
                     <Th
                     style={{ fontSize: `${fontSize === 1 ? '8px' 
                   : fontSize === 2 ? '10px'
@@ -523,7 +525,8 @@ const WWPRNocTab = ({ data, infoList, onViewAll, pendingPayment, dueCompletion }
                   : fontSize === 4 ? '14px'
                   : fontSize === 5 ? '16px'
                   : '12px'}` }}
-                    >{language?.result?.cm_rq_id ? language?.result?.cm_rq_id.label:'Request ID' }</Th>
+                    >
+                       {language?.result?.cm_rq_id ? language?.result?.cm_rq_id.label:'Request ID' }</Th>
                     <Th
                     style={{ fontSize: `${fontSize === 1 ? '8px' 
                   : fontSize === 2 ? '10px'

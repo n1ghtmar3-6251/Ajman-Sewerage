@@ -49,8 +49,8 @@ const Login = () => {
 
 
   const uaepassRedirection = (redirect_type: string) => {
-    window.open('https://stg-id.uaepass.ae/idshub/authorize?redirect_uri=http://213.42.234.23:8904/CustomerPortal/Home/redirect&client_id=sandbox_stage&response_type=code&state=_login_redirection_&scope=urn:uae:digitalid:profile:general&acr_values=urn:safelayer:tws:policies:authentication:level:low&ui_locales=en')
-    // navigate(Constants.uaePassLoginLink+ '_self')
+    window.open(Constants.uaePassLoginLink, '_self')
+    // navigate(Constants.uaePassLoginLink)
   }
 
   const handleSubmit = async () => {
@@ -110,15 +110,110 @@ const Login = () => {
     setError(response.data.error);
   }
 
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth > 991);
+    }
+    window.addEventListener("resize", handleResize);
+    handleResize();
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  const [language, setLanguage] =  useState<any>()
+
+  const [fontSize, setFontSize] = useState<number>(14);
+
+  const [isPaymentExemptlocal, setIsPaymentExemptlocal] = useState<boolean>(false);
+
+  const [colorNumber, setColorNumber] = useState<number>(14);
+
+  useEffect(()=>{
+    const reciveLanguage:any = localStorage.getItem('LanguageChange');
+    const reciveLanguage1:any = JSON.parse(reciveLanguage)
+    setLanguage(reciveLanguage1)
+
+    const storedFontSize = localStorage.getItem("fontSizeLocal");
+    if (storedFontSize) {
+      setFontSize(Number(storedFontSize));
+    }
+
+    const colorNumb = localStorage.getItem("colorNum");
+    if (colorNumb) {
+      setColorNumber(Number(colorNumb));
+    }
+
+    const isPaymentExemptlocal1 = localStorage.getItem("isPaymentExempt");
+    if (isPaymentExemptlocal1=='true') {
+      setIsPaymentExemptlocal(true);
+    }
+    else if(isPaymentExemptlocal1=='false'){
+      setIsPaymentExemptlocal(false);
+    }
+
+    // setIsPaymentExemptlocal(isPaymentExemptlocal1);
+
+  })
 
   return (
     <Container>
       <LoginCard>
-        <h1 style={{ alignSelf: 'center', fontWeight: '500', fontSize: '2.5rem' }}>Consultant Login</h1>
+        <h1 style={{ alignSelf: 'center', fontWeight: '500',  fontSize: `${
+                  fontSize === 1
+                    ? "2.3rem"
+                    : fontSize === 2
+                    ? "2.4rem"
+                    : fontSize === 3
+                    ? "2.5rem"
+                    : fontSize === 4
+                    ? "2.6rem"
+                    : fontSize === 5
+                    ? "2.7rem"
+                    : "2.5rem"
+                }` }}>
+        {language?.result?.cm_consultant_login
+                ? language?.result?.cm_consultant_login.label
+                : "Consultant Login"}
+          
+          </h1>
 
-        <p style={{ marginTop: 10, marginBottom: 10 }}>Login To manage your Ajman Sewerage account</p>
-        <label style={{ paddingBottom: '.4rem' }}>
-          <b>Username</b>
+        <p style={{ marginTop: 10, marginBottom: 10,  fontSize: `${
+                  fontSize === 1
+                    ? "12px"
+                    : fontSize === 2
+                    ? "14px"
+                    : fontSize === 3
+                    ? "16px"
+                    : fontSize === 4
+                    ? "18px"
+                    : fontSize === 5
+                    ? "20px"
+                    : "16px"
+                }` }}>
+        {language?.result?.cm_login_to_manage_your_ajman_sewerage_account
+                ? language?.result?.cm_login_to_manage_your_ajman_sewerage_account.label
+                : "Login To manage your Ajman Sewerage account"}
+          
+          </p>
+        <label style={{ paddingBottom: '.4rem',  fontSize: `${
+                  fontSize === 1
+                    ? "12px"
+                    : fontSize === 2
+                    ? "14px"
+                    : fontSize === 3
+                    ? "16px"
+                    : fontSize === 4
+                    ? "18px"
+                    : fontSize === 5
+                    ? "20px"
+                    : "16px"
+                }` }}>
+          <b>
+          {language?.result?.cm_username
+                ? language?.result?.cm_username.label
+                : "Username"}            
+            </b>
         </label>
         <LoginInput
           name='username'
@@ -127,7 +222,7 @@ const Login = () => {
             setUserName(e.target.value)
           }}
         />
-        <p
+        {/* <p
           style={{
             alignSelf: 'flex-end',
             cursor: 'pointer',
@@ -135,9 +230,25 @@ const Login = () => {
           }}
         >
           Forgot Username?
-        </p>
-        <label style={{ paddingBottom: '.4rem' }}>
-          <b>Password</b>
+        </p> */}
+        <label className='mt-3' style={{ paddingBottom: '.4rem',  fontSize: `${
+                  fontSize === 1
+                    ? "12px"
+                    : fontSize === 2
+                    ? "14px"
+                    : fontSize === 3
+                    ? "16px"
+                    : fontSize === 4
+                    ? "18px"
+                    : fontSize === 5
+                    ? "20px"
+                    : "16px"
+                }` }}>
+          <b>
+          {language?.result?.cm_ws_pword
+                ? language?.result?.cm_ws_pword.label
+                : "Password"}
+            </b>
         </label>
         <LoginInput
           type='password'
@@ -151,31 +262,99 @@ const Login = () => {
           style={{
             alignSelf: 'flex-end',
             cursor: 'pointer',
-            fontSize: '0.8rem',
+            // fontSize: '0.8rem',
             marginTop: 10,
             textDecoration: 'none',
+            fontSize: `${
+              fontSize === 1
+                ? "0.6rem"
+                : fontSize === 2
+                ? "0.7rem"
+                : fontSize === 3
+                ? "0.8rem"
+                : fontSize === 4
+                ? "0.9rem"
+                : fontSize === 5
+                ? "1rem"
+                : "0.8rem"
+            }`
           }}
-          href='/forgot-password'
+          href='/CustomerPortal/forgot-password'
         >
-          Forgot Password?
+          {language?.result?.cm_forgot_username
+                ? language?.result?.cm_forgot_username.label
+                : "Forgot Password"}
+          ?
         </a>
         {loading ? (
-         <Spinner />
+          <Spinner />
         ) : (
           <ButtonContainer>
             <ButtonPrimary
-              label='LOGIN'
-              styles={{ height: '3rem', width: '100%', justifyContent: 'center', marginTop: '2rem' }}
+              label={language?.result?.cm_login
+                ? language?.result?.cm_login.label
+                : 'LOGIN'}
+              styles={{ height: '3rem', width: '100%', justifyContent: 'center', marginTop: '2rem', backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E',
+              fontSize: `${
+                fontSize === 1
+                  ? "12px"
+                  : fontSize === 2
+                  ? "14px"
+                  : fontSize === 3
+                  ? "16px"
+                  : fontSize === 4
+                  ? "18px"
+                  : fontSize === 5
+                  ? "20px"
+                  : "16px"
+              }`
+            }}
               onClick={handleSubmit}
             />
             {error && <div style={{ color: 'red' }}><i>{error}</i></div>}
-            <p>OR</p>
+            <p className='my-2' style={{
+               fontSize: `${
+                fontSize === 1
+                  ? "12px"
+                  : fontSize === 2
+                  ? "14px"
+                  : fontSize === 3
+                  ? "16px"
+                  : fontSize === 4
+                  ? "18px"
+                  : fontSize === 5
+                  ? "20px"
+                  : "16px"
+              }`
+            }}>
+            {language?.result?.cm_or
+                ? language?.result?.cm_or.label
+                : "OR"}
+              </p>
             <ButtonSecondary
+            style={{
+              fontSize: `${
+                fontSize === 1
+                  ? "12px"
+                  : fontSize === 2
+                  ? "14px"
+                  : fontSize === 3
+                  ? "16px"
+                  : fontSize === 4
+                  ? "18px"
+                  : fontSize === 5
+                  ? "20px"
+                  : "16px"
+              }`
+            }}
               onClick={() => uaepassRedirection('login_redirection')}
               children={
                 <>
                   <img src={finger} alt='' />
-                  Sign in with UAE PASS
+                  {language?.result?.cm_signin_with_uae
+                ? language?.result?.cm_signin_with_uae.label
+                : "Sign in with UAE PASS"}
+                  
                 </>
               }
             />
@@ -184,17 +363,55 @@ const Login = () => {
         {/* <p style={{ marginTop: 10, marginBottom: 10 }}>
           Do you want to apply for NOC outside network? <span style={{ textDecoration: 'underline' }}>Click here.</span>
         </p> */}
+       <div style={{display:"flex", alignItems:"center"}}>
+       <span style={{color:"#007bff", fontWeight:"800",
+       fontSize: `${
+        fontSize === 1
+          ? "12px"
+          : fontSize === 2
+          ? "14px"
+          : fontSize === 3
+          ? "16px"
+          : fontSize === 4
+          ? "18px"
+          : fontSize === 5
+          ? "20px"
+          : "16px"
+      }`
+      }}>
+       {language?.result?.cm_new_user
+                ? language?.result?.cm_new_user.label
+                : "New User?"} 
+       </span>
         <a
           style={{
             fontWeight: '900',
             cursor: 'pointer',
             marginTop: 10,
             marginBottom: 10,
+            paddingLeft:"5px",
+            fontSize: `${
+              fontSize === 1
+                ? "12px"
+                : fontSize === 2
+                ? "14px"
+                : fontSize === 3
+                ? "16px"
+                : fontSize === 4
+                ? "18px"
+                : fontSize === 5
+                ? "20px"
+                : "16px"
+            }`
           }}
-          href='/register'
+          href='/CustomerPortal/register'
         >
-          New User? Create New Account here
+          {language?.result?.cm_create_new_account
+                ? language?.result?.cm_create_new_account.label
+                : "Create New Account here"}
+          
         </a>
+       </div>
       </LoginCard>
     </Container >
   )

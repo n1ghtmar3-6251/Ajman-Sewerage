@@ -8,6 +8,7 @@ import { Memory } from "../../core/Memory";
 import { format } from "date-fns";
 import { Backdrop, CircularProgress } from "@mui/material";
 import PopupMessage from "../../components/PopupMessage/popupMessage";
+import ExperienceFeedback from "../../components/experienceFeedback/experienceFeedback.component";
 
 
 
@@ -19,13 +20,23 @@ const PaymentSuccess = () => {
 
   const [openPopupMessage, setOpenPopupMessage] = useState<boolean>(false);
   const [Backloading, setBackLoading] = useState<boolean>(false);
+  const [experincePayment, setExperincePayment] = useState<boolean>(false);
+  const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [alert, setAlert] = useState({ type: '', title: '', text: '', show: false });
 
   const handleMessageClose = () => {
     setOpenPopupMessage(false);
     setBackLoading(false);
-    navigate("/consultation");
+    setExperincePayment(true)
+    // navigate("/consultation");
   };
+
+  useEffect(()=>{
+if(!modalOpen){
+  setExperincePayment(false)
+  navigate("/consultation")
+}
+  },[experincePayment, modalOpen])
 
 
   useEffect(() => {
@@ -54,6 +65,8 @@ const PaymentSuccess = () => {
     const response = await engine.postItem(Constants.EXCAVATION_NOC_AFTER_THREE_DS, sendData);
     if (response && response.status === 200) {
 
+     
+
       Memory.setItem('Tab', 2);
       setAlert({
         type: 'success',
@@ -74,6 +87,7 @@ const PaymentSuccess = () => {
       <Backdrop open={openPopupMessage}>
         {Backloading ? (<CircularProgress color="inherit" />) : (<PopupMessage onClose={handleMessageClose} title={alert.title} type={alert.type} message={alert.text} onSubmit={handleMessageClose}></PopupMessage>)}
       </Backdrop>
+      { experincePayment? <ExperienceFeedback modalOpen={modalOpen} setModalOpen={setModalOpen}/> : null}
     </Container>
   );
 };

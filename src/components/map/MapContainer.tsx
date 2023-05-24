@@ -32,24 +32,37 @@ const MapContainer = (props) => {
     return function cleanup() {};
   }, []);
 
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth > 991);
+    }
+    window.addEventListener("resize", handleResize);
+    handleResize(); 
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+
   return (
     <div>
       <div>
-        <ComplaintContainer style={{ width: 220, margin: 0, padding: 0 }}>
+        <ComplaintContainer style={{  width: 220, margin: 0, padding: 0 }}>
           <ButtonSecondary
             onClick={() => {
               canDraw = true;
             }}
             style={{
               background: "#fff",
-              width: "100px",
+              width: isLargeScreen? "100px" :"100%",
               placeSelf: "start",
               position: "relative",
               border: "1px solid #101e8e",
               height: 42,
               top: 60,
-              left: 11,
+              left: isLargeScreen?  11: 0,
               color: "#101e8e",
+              marginBottom: isLargeScreen? "":"10px",
             }}
           >
             DRAW
@@ -65,7 +78,8 @@ const MapContainer = (props) => {
             }}
             style={{
               background: "#fff",
-              width: "100px",
+              width: isLargeScreen? "100px" :"100%",
+              
               placeSelf: "start",
               position: "relative",
               border: "1px solid #101e8e",

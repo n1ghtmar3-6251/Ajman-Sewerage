@@ -85,6 +85,8 @@ const Navbar: FC<Props> = ({ isLoggedIn }: Props): ReactElement => {
 
     return (
      <div>
+{/* customer dropdown  */}
+
        <Box ref={anchorRef}>
         <Stack direction='row' spacing={2}>
           <Box
@@ -154,6 +156,9 @@ const Navbar: FC<Props> = ({ isLoggedIn }: Props): ReactElement => {
                     >
                       {childrenRoutes.map((child: any, index: number) => {
                         const { path, title, icon } = child
+
+console.log("path", path)
+
                         return (
                           <MenuLink href={path}>
                             {/* <img src={icon} alt='Down Arrow' /> */}
@@ -188,7 +193,8 @@ const Navbar: FC<Props> = ({ isLoggedIn }: Props): ReactElement => {
             justifyContent: 'flex-end',
             display: 'flex',
             textAlign: 'center',
-            backgroundColor: page.backgroundColor || 'none',
+            // backgroundColor: page.backgroundColor  || 'none',
+            backgroundColor: page.backgroundColor  === '#101E8E' ? page.backgroundColor  : null || 'none',
           }}
           onMouseOver={() => {
             page.key === 'wheelchair-route' && setList(true)
@@ -212,11 +218,14 @@ const Navbar: FC<Props> = ({ isLoggedIn }: Props): ReactElement => {
                 color: page.textColor || 'none',
               }}
             >
-              {page.icon && <img src={page.icon} alt='' />}
-              {page.title && page.title}
-              <img src={downArrow} alt='Down Arrow' />
+              {page.icon && <img  src={page.icon} alt='' />}
+              {/* {page.title && page.title} */}
+              {/* <img style={{marginLeft:"10px"}} src={downArrow} alt='Down Arrow' /> */}
             </Link>
           )}
+
+{/* Change Password and Profile  */}
+
           {shouldRenderSubMenu && renderSubMenu(page)}
         </div>
       )
@@ -238,6 +247,7 @@ const Navbar: FC<Props> = ({ isLoggedIn }: Props): ReactElement => {
       }}
     >
       <Container maxWidth={false} sx={{ margin: '0', padding: '0 !important' }}>
+        
         <Toolbar disableGutters variant='dense'>
           <Typography
             variant='h6'

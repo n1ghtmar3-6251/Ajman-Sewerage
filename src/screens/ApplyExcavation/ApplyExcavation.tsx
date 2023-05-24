@@ -15,7 +15,7 @@ import { Memory } from "../../core/Memory";
 import { Document } from "../../components/documentUpload/documentUpload.styled";
 import { format } from "date-fns";
 import Constants from "../../core/Constants";
-import { Spinner } from "../../components/spinner.component";
+import { Spinner, SpinnerRaw } from "../../components/spinner.component";
 import Checkbox from "@mui/material/Checkbox";
 import { Backdrop, CircularProgress } from "@mui/material";
 import PopupMessage from "../../components/PopupMessage/popupMessage";
@@ -27,6 +27,7 @@ const ApplyExcavation = () => {
 
   const [valid, setValid] = useState(true);
   const [agreementChecked, setAgreementChecked] = useState("false");
+  const [loader, setLoader] = useState<number>(0);
   const [alert, setAlert] = useState({
     type: "",
     title: "",
@@ -253,6 +254,59 @@ const ApplyExcavation = () => {
     navigate("/consultation");
   };
 
+
+const submitBtn = async(token: string)=>{
+
+  let engine = new RequestEngine();
+  let currentDateTime = format(new Date(), "MM/dd/yyyy, h:mm:ss a");
+  var userid:any = Memory.getItem("userId");
+
+  var data = new FormData();
+
+  data.append("UserId", userid);
+    data.append("ContactPersonName", ContactPersonName);
+    data.append("ContactPersonPhoneNumber", ContactPersonPhoneNumber);
+    data.append("Type", LocationDetails);
+    data.append("isPaymentExempt", "true");
+    if (Comments) data.append("Comments", Comments);
+    if (LocationDetails === "1" && ParcelId) data.append("ParcelId", ParcelId);
+    if (LocationDetails === "4") {
+      data.append("Latitude", Latitude);
+      data.append("Longitude", Longitude);
+    }
+    data.append("WorkTypeIDs", TypeOfWorkIds.toString());
+    data.append("Token", "tok_qgp5sjyvjkvejbwak5hhby7ani");
+    data.append("PaymentDateTime", currentDateTime);
+    data.append("SuccessUrl", Constants.SUCCESS_PAYMENT_URL);
+    data.append("FailureUrl", Constants.FAILURE_PAYMENT_URL);
+    if (OwnerIdProof != null) {
+      data.append("DocumentType", OwnerIdProof);
+      data.append("EmiratesIDOrTradeLicenseId", EmiratesIdOrTradeLicense);
+    }
+    data.append("Platform", "Web");
+    if (AttachmentsFile !== undefined)
+      data.append("Attachments", AttachmentsFile!, AttachmentsFile!.name);
+    if (SitePlanFile !== undefined)
+      data.append("SitePlan", SitePlanFile!, SitePlanFile!.name); 
+    if (ConstructionDetailsFile !== undefined)
+      data.append(
+        "ConstructionDetails",
+        ConstructionDetailsFile!,
+        ConstructionDetailsFile!.name
+      );
+      
+    // @ts-ignore
+    const response = await engine.saveItemData(
+      "api/noc/applyExcavationNoc",
+      data
+      
+    );
+
+    console.log("response====>", response)
+
+}
+
+
   const submit = async (token: string) => {
     let engine = new RequestEngine();
     let currentDateTime = format(new Date(), "MM/dd/yyyy, h:mm:ss a");
@@ -265,6 +319,7 @@ const ApplyExcavation = () => {
     data.append("ContactPersonName", ContactPersonName);
     data.append("ContactPersonPhoneNumber", ContactPersonPhoneNumber);
     data.append("Type", LocationDetails);
+    data.append("isPaymentExempt", "true");
     if (Comments) data.append("Comments", Comments);
     if (LocationDetails === "1" && ParcelId) data.append("ParcelId", ParcelId);
     if (LocationDetails === "4") {
@@ -292,18 +347,34 @@ const ApplyExcavation = () => {
         ConstructionDetailsFile!.name
       );
 
+console.log('datttaaa=====>1',userid)  
+console.log('datttaaa=====>2',ContactPersonName)  
+console.log(userid)  
+    console.log("datttaaa=====>", data)
+    for (const entry of data.entries()) {
+      console.log("datttaaa=====>ind",entry);
+    }
+      // return;
+      
+
+
     // @ts-ignore
     const response = await engine.saveItemData(
       "api/noc/applyExcavationNoc",
       data
+      
     );
+
+
     if (response && response.status === 200) {
+      console.log("ressss", response)
       Memory.setItem("referenceId", response.data.result.referenceId);
 
       let referenceId = response.data.result.referenceId;
       let rings = Memory.getItemInfo("Rings");
 
       try {
+       
         if (LocationDetails === "2") {
           let mapData = [
             {
@@ -338,12 +409,22 @@ const ApplyExcavation = () => {
           if (response && response.status === 200) {
             //TODOSD: Nothing to add only a comment to handle it properly later Polygon has been saved
             console.log("HAAAAAAALELOUYYYYA");
+            console.log("hellooooooo")
+
           }
         }
-      } catch (e) {}
+        
+      } catch (e) {
+        // setLoader(0)
+        console.log("ressss1catch", response)
+      }
+// console.log("response.data.result.redirectUrl", response.data.result.redirectUrl)
+Memory.setItem('isPaymentExempt', true);
 
       window.open(response.data.result.redirectUrl, "_self");
     } else {
+      
+      console.log("ressss1", response)
       setAlert({
         type: "error",
         title: "Warning",
@@ -389,11 +470,11 @@ const ApplyExcavation = () => {
     }
 
     const isPaymentExemptlocal1 = localStorage.getItem("isPaymentExempt");
-    if (isPaymentExemptlocal1) {
-      setIsPaymentExemptlocal(false);
-    }
-    else{
+    if (isPaymentExemptlocal1=='true') {
       setIsPaymentExemptlocal(true);
+    }
+    else if(isPaymentExemptlocal1=='false'){
+      setIsPaymentExemptlocal(false);
     }
 
     // setIsPaymentExemptlocal(isPaymentExemptlocal1);
@@ -412,7 +493,6 @@ const ApplyExcavation = () => {
   }
 `;
 
-// console.log("isPaymentExemptlocal", isPaymentExemptlocal)
 
   return (
     <div className="font-segoe " style={{ background: "#eee",
@@ -609,6 +689,9 @@ const ApplyExcavation = () => {
 
       {showPayment ? (
         <ComplaintContainer>
+
+
+
           <Frames
             config={{
               debug: true,
@@ -650,6 +733,7 @@ const ApplyExcavation = () => {
               submit(e.token);
             }}
           >
+            
             <Table
               style={{ width: "50%", gridColumn: "1 / span 2", border: "none" }}
             >
@@ -700,6 +784,7 @@ const ApplyExcavation = () => {
                       <ButtonSecondary
                         onClick={() => {
                           Frames.submitCard();
+                          setLoader(1)
                         }}
                         style={{
                           background: "#101e8e",
@@ -709,7 +794,9 @@ const ApplyExcavation = () => {
                         }}
                       >
                         
-                         {language?.result?.cm_paynow ? language?.result?.cm_paynow.label:'PAY NOW' }
+                     {
+                      loader ===0 ? `${language?.result?.cm_paynow ? language?.result?.cm_paynow.label:'PAY NOW' }`: <SpinnerRaw />
+                     }    
                         
                       </ButtonSecondary>
                     )}
@@ -1115,7 +1202,7 @@ const ApplyExcavation = () => {
           )}
 
           { 
-         isPaymentExemptlocal == false?
+         !isPaymentExemptlocal ?
           <Table style={{ width: "100%", gridColumn: "1 / span 2" }}>
             <thead>
               <tr>
@@ -1177,6 +1264,7 @@ const ApplyExcavation = () => {
           </Table> 
           : ''}
 
+
           <div
             className="check-box-button"
             style={{
@@ -1187,12 +1275,14 @@ const ApplyExcavation = () => {
               marginTop: "2px",
             }}
           >
+            <div className="d-flex justify-content-center align-items-center">
             <Checkbox
-            
+            style={{width:"0%"}}
               checked={agreementChecked === "true" ? true : false}
               onClick={onCheckboxClick}
              className="pr-3"
             />
+            </div>
             <div>
               <Label style={{ width: "100%", paddingTop: "10px" }}>
 
@@ -1203,7 +1293,11 @@ const ApplyExcavation = () => {
             </div>
           </div>
 
+
+{
+   !isPaymentExemptlocal ?
           <ButtonSecondary
+
             disabled={agreementChecked === "false" ? true : false}
             onClick={() => {
               validate();
@@ -1213,7 +1307,8 @@ const ApplyExcavation = () => {
               backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E',
               color: "#fff",
               gridColumn: "1 /span 2",
-              width: "25%",
+              padding:"10px 15px",
+              width: "45%",
               placeSelf: "start",
               opacity: agreementChecked === "true" ? "1" : "0.5",
               fontSize: `${fontSize === 1 ? '10px' 
@@ -1227,6 +1322,33 @@ const ApplyExcavation = () => {
             {language?.result?.cm_proceed_to_pay ? language?.result?.cm_proceed_to_pay.label:'PROCEED TO PAY' }
             
           </ButtonSecondary>
+
+:  <ButtonSecondary
+disabled={agreementChecked === "false" ? true : false}
+onClick={() => {
+  validate();
+  // !valid && setShowPayment(false);
+  submitBtn('token')
+}}
+style={{
+  backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E',
+  color: "#fff",
+  gridColumn: "1 /span 2",
+  width: "25%",
+  placeSelf: "start",
+  opacity: agreementChecked === "true" ? "1" : "0.5",
+  fontSize: `${fontSize === 1 ? '10px' 
+      : fontSize === 2 ? '12px'
+      : fontSize === 3 ? '14px' 
+      : fontSize === 4 ? '16px'
+      : fontSize === 5 ? '18px'
+      : '14px'}`
+}}
+>
+{/* {language?.result?.cm_proceed_to_pay ? language?.result?.cm_proceed_to_pay.label:'PROCEED TO PAY' } */}
+Submit
+</ButtonSecondary>
+}
 
           {valid ? (
             <h3

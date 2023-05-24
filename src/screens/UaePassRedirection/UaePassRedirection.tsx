@@ -8,7 +8,6 @@ import {Spinner} from "../../components/spinner.component"
 import ConsultationTabs from "../consultation/ConsultationTabs";
 
 
-
 const UaePassRedirection = () => {
 
   const navigate = useNavigate();
@@ -18,11 +17,14 @@ const UaePassRedirection = () => {
   useEffect(() => {
     // alert("code");
     prepareData();
+    // alert(" hello ")
   }, []);
 
   const prepareData = async () => {
 
-    console.log(location.pathname);
+    console.log("prepareData1")
+
+    console.log("location.pathname", location.pathname);
 
     let engine = new RequestEngine();
 
@@ -40,18 +42,21 @@ const UaePassRedirection = () => {
     if (error && state === '_login_redirection_') {
       console.log("loginnn");
       navigate('/login');
+      console.log("prepareDat2")
     }
     else {
-      
+      console.log("prepareData3")
       console.log("/");
 
       if (state === '_login_redirection_') 
       {
-        
+        console.log("prepareData4")
         let response = await engine.getItem('api/appUser/UAEPassRedirect/' + code + '/' + state);
 
-        if (response && response.status === 200) {
+        if (response && response.status === 200) { 
+          console.log("prepareData5")
           if (response.data.result.userType !== 'SOP1') {
+            console.log("prepareData6")
             Memory.setItem('invalidUAEPassUser', 'false');
             Memory.setItemInfo("uaePassDetails", response.data.result);
 
@@ -60,11 +65,13 @@ const UaePassRedirection = () => {
 
           }
           else {
+            console.log("prepareData7")
             Memory.setItem('invalidUAEPassUser', 'true');
             Memory.clearItem('uaePassDetails');
             window.open(Constants.uaePassLogoutLink, '_self');
           }
         } else {
+          console.log("prepareData8")
           console.log(response.status);
           console.log(response.statusText);
         }

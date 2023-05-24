@@ -7,24 +7,29 @@ import {
   CardSpacer,
   PopupCenterSection,
   TableContainer,
-} from "./popup.styled";
-import { Props } from "./popup.interface";
+} from "../Popup/popup.styled";
+import { Props } from "../Popup/popup.interface";
 import { Label } from "../extras/styled";
 import { Table } from "../../screens/ApplyWWPR/Apply.styled";
 import { DocumentDownload } from "../../components/documentDownload/documentDownload.styled";
 import Constants from "../../core/Constants";
 import RequestEngine from "../../core/RequestEngine";
 import { ButtonSecondary } from "../consultationTabs.tsx/consultation.styled";
+import { useLocation } from "react-router-dom";
 
-const Popup: FC<Props> = ({
+const Popup = ({
   nocType,
   application,
   onClose,
-}: Props): ReactElement => {
+}) => {
   const [Comments, setComments] = useState("");
-  const [Attachment, setAttachment] = useState<File>();
-
-  const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+  const [Attachment, setAttachment] = useState();
+  const location = useLocation()
+  console.log("location.state", location.state)
+  nocType = location.state.nocType
+  application = location.state.application
+  onclose = location.state.onclose
+  const handleFileChange = (e) => {
     if (e.target.files) {
       if (e.target.name === "attachment") setAttachment(e.target.files[0]);
     }
@@ -32,39 +37,33 @@ const Popup: FC<Props> = ({
 
   const submit = async () => {
     if (application.status === "InfoNeeded") {
-      let latestInfoNeeded = application.infoNeeded.filter(
-        (x: { fromCustomer: null }) => x.fromCustomer === null
-      );
-
-      console.log("latestInfoNeeded: " + latestInfoNeeded);
-
-      let engine = new RequestEngine();
-      var formData = new FormData();
-
-      formData.append("Comments", Comments);
-      formData.append("Id", latestInfoNeeded[0].id);
-      //TODOSD: Add array of attachments
-      if (Attachment) {
-        formData.append("Attachment", Attachment!, Attachment!.name);
-      }
-
-      const response = await engine.saveItemData(
-        Constants.INFO_NEEDED,
-        formData
-      );
-      if (response && response.status === 200) {
-        //TODOSD: Display success and get application
-
-        let response = await engine.getItem(
-          "api/noc/nocdetails/" + application.requestId + "?lang=en-US"
-        );
+        let latestInfoNeeded = application.infoNeeded.filter(({ fromCustomer }) => fromCustomer === null);
+      
+        console.log("latestInfoNeeded: " + latestInfoNeeded);
+      
+        let engine = new RequestEngine();
+        var formData = new FormData();
+      
+        formData.append("Comments", Comments);
+        formData.append("Id", latestInfoNeeded[0].id);
+        //TODOSD: Add array of attachments
+        if (Attachment) {
+          formData.append("Attachment", Attachment, Attachment.name);
+        }
+      
+        const response = await engine.saveItemData(Constants.INFO_NEEDED, formData);
         if (response && response.status === 200) {
-          console.log(JSON.stringify(response.data.result.data));
-
-          application = response.data.result.data; //TODOSD: check this
+          //TODOSD: Display success and get application
+      
+          let response = await engine.getItem("api/noc/nocdetails/" + application.requestId + "?lang=en-US");
+          if (response && response.status === 200) {
+            console.log(JSON.stringify(response.data.result.data));
+      
+            application = response.data.result.data; //TODOSD: check this
+          }
         }
       }
-    }
+      
   };
 
   const [isLargeScreen, setIsLargeScreen] = useState(false);
@@ -78,16 +77,16 @@ const Popup: FC<Props> = ({
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const [language, setLanguage] = useState<any>();
+  const [language, setLanguage] = useState();
 
-  const [fontSize, setFontSize] = useState<number>(14);
-  const [username, setUserName] = useState<string>('');
+  const [fontSize, setFontSize] = useState(14);
+  const [username, setUserName] = useState('');
 
-  const [colorNumber, setColorNumber] = useState<number>(14);
+  const [colorNumber, setColorNumber] = useState(14);
 
   useEffect(() => {
-    const reciveLanguage: any = localStorage.getItem("LanguageChange");
-    const reciveLanguage1: any = JSON.parse(reciveLanguage);
+    const reciveLanguage= localStorage.getItem("LanguageChange");
+    const reciveLanguage1 = JSON.parse(reciveLanguage);
     setLanguage(reciveLanguage1);
 
     const storedFontSize = localStorage.getItem("fontSizeLocal");
@@ -111,7 +110,7 @@ const Popup: FC<Props> = ({
 
 
   return (
-    <Card style={{ color: "#101E8E" }}>
+    <Card style={{ color: "#101E8E" , width:"100%" }}>
       <CardHeader
         style={{
           justifyContent: "space-between",
@@ -127,13 +126,13 @@ const Popup: FC<Props> = ({
               : "#101E8E",
         }}
       >
-        <h1 style={{ color: "#fff", justifySelf: "flex-start" }}>
-          {language?.result?.cm_request_id
+        <h1 className="" style={{ color: "#fff", justifySelf: "flex-start" }}>
+         {language?.result?.cm_request_id
             ? language?.result?.cm_request_id.label
             : " Request ID"}
           : {application?.requestId}
         </h1>
-        <img src={CloseIcon} alt="Close" onClick={onClose} />
+        {/* <img src={CloseIcon} alt="Close" onClick={onClose} /> */}
       </CardHeader>
 
       {nocType === 1 && (
@@ -165,7 +164,7 @@ const Popup: FC<Props> = ({
               fontSize: 20,
             }}
           >
-            {application?.status!.replace(/([A-Z])/g, " $1").trim()}
+            {application?.status.replace(/([A-Z])/g, " $1").trim()}
           </p>
 
           {isLargeScreen ? (
@@ -176,7 +175,7 @@ const Popup: FC<Props> = ({
                     ? language?.result?.cm_ascreate_label_parcelid.label
                     : "Parcel ID"}
                 </span>
-                {application?.parcelId}
+               {application?.parcelId}
               </div>
               <div style={{ alignSelf: "center" }}>
                 <span>
@@ -473,7 +472,7 @@ const Popup: FC<Props> = ({
                   />
                 </Label>
               )}
-                       {application && application.costEstimationReport.costEstimationReport && (
+                       {/* {application && application.costEstimationReport.costEstimationReport && (
                 <Label style={{ marginBottom: "10px" }}>
                   <DocumentDownload
                     exists={true}
@@ -496,7 +495,7 @@ const Popup: FC<Props> = ({
                     }
                   />
                 </Label>
-              )}
+              )} */}
             </div>
 
 
@@ -1026,7 +1025,7 @@ const Popup: FC<Props> = ({
 
             <div
               style={{
-                display: "grid",
+                display: isLargeScreen? "grid" : 'block',
                 gridTemplateColumns: "1fr 1fr",
                 width: "100%",
                 margin: "auto",
@@ -1074,6 +1073,43 @@ const Popup: FC<Props> = ({
                           </td>
                         </tr>
                       </tbody>
+                    </Table>
+                  </TableContainer>
+                )}
+
+{application &&
+                application.costEstimationReport &&
+                application.status !== "Rejected" &&
+                application.status !== "PendingApproval" &&
+                application.status !== "InfoNeeded" && (
+                  <TableContainer>
+                    <p>NOC Documents</p>
+                    <Table>
+                    {application && application.costEstimationReport.costEstimationReport && (
+                <Label style={{ marginBottom: "10px" }}>
+                  <DocumentDownload
+                    exists={true}
+                    mainText={
+                      language?.result?.cm_costEstimationReport
+                        ? language?.result?.cm_costEstimationReport.label
+                        : "Cost Estimation Report"
+                    }
+                    subText={
+                      application && application.costEstimationReport.costEstimationReport
+                        ?application?.costEstimationReport.costEstimationReport.substring(
+                          application?.costEstimationReport.costEstimationReport.lastIndexOf("/") + 1
+                          )
+                        : ""
+                    }
+                    inputName={
+                      application && application.costEstimationReport.costEstimationReport
+                        ? application.costEstimationReport.costEstimationReport
+                        : ""
+                    }
+                  />
+                </Label>
+              )}
+                     
                     </Table>
                   </TableContainer>
                 )}
@@ -1179,7 +1215,7 @@ const Popup: FC<Props> = ({
             {/*****************************************************************************************/}
           </div>
         </CardContent>
-      )}
+       )} 
 
       {nocType === 2 && (
         <CardContent
@@ -1200,7 +1236,7 @@ const Popup: FC<Props> = ({
               fontSize: 20,
             }}
           >
-            {application?.status!.replace(/([A-Z])/g, " $1").trim()}
+            {application?.status.replace(/([A-Z])/g, " $1").trim()}
           </p>
 
           {isLargeScreen ? (

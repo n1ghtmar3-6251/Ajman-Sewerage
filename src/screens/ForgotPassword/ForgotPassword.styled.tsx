@@ -26,8 +26,10 @@ export const RegistrationCard = styled.section`
   > form {
     width: 100%;
   }
-  @media (min-width: 600px) {
-    padding: 40px 52px;
+  @media (min-width:0px) and (max-width:991px)  {
+    padding: 40px 20px;
+    width: 90%;
+    min-height: 45vh;
   }
 `
 

@@ -32,6 +32,8 @@ const ConsultationTabs = () => {
   const [NocType, setNocType] = useState(1);
   const [StatusId, setStatusId] = useState(0);
 
+  const [clickTab, setClickTab] = useState(0);
+
 
   useEffect(() => {
 
@@ -205,6 +207,9 @@ const ConsultationTabs = () => {
             // allowScrollButtonsMobile
           >
             <Tab
+            onClick={()=>{
+              setClickTab(0)
+            }}
               label={
                 <TabWithCount justifyContent="center"  
                 
@@ -228,9 +233,14 @@ const ConsultationTabs = () => {
                 margin: "0.2rem",
                 marginBottom: "0",
                 width: "18%",
+                // borderTop:  clickTab===1? (colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E') :""
+
               }}
             />
             <Tab
+               onClick={()=>{
+                setClickTab(1)
+              }}
             className='mr-2'
               label={
                 <TabWithCount justifyContent="center" flexDirection="column" >
@@ -247,6 +257,7 @@ const ConsultationTabs = () => {
                 margin: "0.2rem",
                 marginBottom: "0",
                 width: "18%",
+                // borderTop:  clickTab===0? (colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E') :""
               }}
             />
           </Tabs>

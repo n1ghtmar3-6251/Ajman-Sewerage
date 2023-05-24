@@ -27,4 +27,10 @@ export const RegistrationContainer = styled.div`
       }
     }
   }
+
+  @media (max-width: 991px) {
+    display: block !important;
+   
+ }
+
 `;

@@ -19,6 +19,11 @@ export const LoginCard = styled.div`
   flex-direction: column;
   align-items: flex-start;
   padding: 2rem 3rem;
+
+  @media (max-width: 991px) {
+    padding: 2rem 1rem;
+ }
+
 `;
 
 export const ButtonSecondary = styled.button`

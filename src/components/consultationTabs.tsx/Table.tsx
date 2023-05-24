@@ -9,10 +9,12 @@ import { useState, useEffect } from "react";
 import Backdrop from "@mui/material/Backdrop";
 import CircularProgress from "@mui/material/CircularProgress";
 import Popup from "../Popup/Popup";
+import Approved from '../../components/Approved/Approved'
 import { ButtonSecondary } from "./consultation.styled";
 import RequestEngine from "../../core/RequestEngine";
 import { Memory } from "../../core/Memory";
 import { stat } from "fs";
+import { Navigate, useNavigate } from "react-router-dom";
 
 // @ts-ignore
 const ConsultantTable = ({ StatusId, NocType }) => {
@@ -27,6 +29,8 @@ const ConsultantTable = ({ StatusId, NocType }) => {
   const [Backloading, setBackLoading] = useState<boolean>(false);
   const [rows, setRows] = useState<[]>([]);
   const [statusList, setStatusList] = useState<[]>([]);
+
+  const navigate = useNavigate()
 
   useEffect(() => {}, [status, searchCriteria, sorting]);
 
@@ -64,7 +68,17 @@ const ConsultantTable = ({ StatusId, NocType }) => {
       setApplication(response.data.result.data);
       setBackLoading(false);
       setOpen(true);
+      // if(response.data.result.data.status=="Approved") 
+      // navigate('/dummyRoute', {state: {
+      //   nocType:Number(NocType),
+      //   application:response.data.result.data,
+      // // onClose:handleClose,
+      // }})
+
     }
+
+
+
   };
 
   const getStatusList = async () => {
@@ -121,7 +135,7 @@ const ConsultantTable = ({ StatusId, NocType }) => {
       }
     }
 
-    // console.log("rows==>", columns)
+    console.log("rows==>", columns)
   };
 
   const prepareData = async () => {
@@ -202,7 +216,9 @@ const ConsultantTable = ({ StatusId, NocType }) => {
       renderCell: (params: GridRenderCellParams) => {
         return (
           <ButtonSecondary
-            onClick={() => openApplication(params.row)}
+            onClick={() => {openApplication(params.row)
+            
+            }}
             className={`${
               colorNumber === 1
                 ? "bluee"
@@ -212,7 +228,6 @@ const ConsultantTable = ({ StatusId, NocType }) => {
                 ? "greenn"
                 : "bluee"
             }`}
-            
           >
             View Order
           </ButtonSecondary>
@@ -776,11 +791,20 @@ const ConsultantTable = ({ StatusId, NocType }) => {
         {Backloading ? (
           <CircularProgress color="inherit" />
         ) : (
+         <>
+
           <Popup
-            nocType={Number(NocType)}
-            application={Application}
-            onClose={handleClose}
+             nocType={Number(NocType)}
+             application={Application}
+           onClose={handleClose}
           ></Popup>
+
+          {/* <Approved    nocType={Number(NocType)}
+             application={Application}
+           onClose={handleClose} /> */}
+
+         </>
+
         )}
       </Backdrop>
     </div>

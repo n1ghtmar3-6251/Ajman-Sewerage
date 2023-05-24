@@ -3,6 +3,8 @@ import documentSVG from "../../assets/document.svg";
 import DownloadIcon from "@mui/icons-material/Download";
 import { useRef, useState } from "react";
 import RequestEngine from "../../core/RequestEngine";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 //************************************************************
@@ -15,6 +17,10 @@ const DocumentWrapper = styled.div`
   border: 1px solid ;
   height: 65px;
   background-color: #E5EFF2;
+  
+  @media (min-width: 991px) {
+    width: 111%;
+  }
 
 `;
 
@@ -69,6 +75,14 @@ const DocumentTrailing = styled.div`
   justify-content: center;
   align-items: center;
   color: #101e8e;
+  padding: 0px;
+
+  @media (min-width: 991px) {
+    justify-content: end;
+    padding: 10px;
+  }
+
+
 `;
 
 const DocumentFileButton = styled.input.attrs({
@@ -102,7 +116,11 @@ export const DocumentDownload = ({ exists, mainText, subText, name, size, inputN
 
   const inputRef = useRef<HTMLInputElement | null>(null)
   const [documentName, setDocumentName] = useState<string | null>(null)
+  const [errorWaiting, setErrorWaiting] = useState<string>('')
   const [error, setError] = useState(null)
+
+  const [errorPDF, setErrorPDF] = useState(false);
+
 
   const handleError = (response: any) => {
     setError(response.data.error);
@@ -113,8 +131,35 @@ export const DocumentDownload = ({ exists, mainText, subText, name, size, inputN
     engine.exportPDF(subText, inputName, handleError);
   }
 
+console.log("inputName 1", inputName)
+
+const notify = () => toast("Failed to download PDF!");
+
+  const downloadPDF = async (inputName1:any) => {
+    try {
+      const response = await fetch(inputName1);
+      if (!response.ok) {
+        throw new Error('Failed to download PDF');
+      }
+
+      const blob = await response.blob();
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement('a');
+      link.href = url;
+      link.download = subText;
+      setErrorWaiting('')
+      link.click();
+    } catch (error) {
+      setErrorPDF(true);
+      setErrorWaiting('')
+      toast.error('Failed to download PDF', { autoClose: 3000 });
+    }
+  };
+
   return (
 
+    <>
     <DocumentWrapper>
       <DocumentLeading src={documentSVG} />
       <DocumentTextWrapper flex={name ? false : true}>
@@ -124,9 +169,35 @@ export const DocumentDownload = ({ exists, mainText, subText, name, size, inputN
       {name || documentName ? <DocumentName>{name || documentName}</DocumentName> : null}
       {error && <div style={{color:'red'}}><i>{error}</i></div>}
       <DocumentTrailing>
-        {exists && <div onClick={handleClick}><DownloadIcon /></div>}
+        {exists &&   <div onClick={()=>{
+          handleClick()
+         
+        }}>  
+        
+<div onClick={()=>{
+downloadPDF(inputName)
+setErrorWaiting('Please, wait.')
+}}>
+
+        <DownloadIcon />
+
+        </div>
+
+        </div>}
+        <ToastContainer />
       </DocumentTrailing>
+
+
+
     </DocumentWrapper>
+    {
+  errorPDF === true ? '' : ''
+}
+{
+  <p style={{fontWeight:"500"}}> {errorWaiting}  </p>
+}
+
+    </>
 
   )
 }

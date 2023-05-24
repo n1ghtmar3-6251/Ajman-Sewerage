@@ -13,26 +13,32 @@ import CircularProgress from "@mui/material/CircularProgress";
 import { Table } from "../../screens/ApplyWWPR/Apply.styled";
 import garbage from "../../assets/garbage.png";
 import PopupMessage from "../../components/PopupMessage/popupMessage";
-import { Spinner } from '../../components/spinner.component';
-import Modal from '@mui/material/Modal';
-import Checkbox from '@mui/material/Checkbox';
+import { Spinner } from "../../components/spinner.component";
+import Modal from "@mui/material/Modal";
+import Checkbox from "@mui/material/Checkbox";
 
 interface PropertyDetail {
-  PropertyTypeId: 0,
-  PropertyType: string
-  PropertyCount: 0,
-  AreaSquareFeet: 0
+  PropertyTypeId: 0;
+  PropertyType: string;
+  PropertyCount: 0;
+  AreaSquareFeet: 0;
 }
 
 const ApplyWWPR = () => {
-
   const navigate = useNavigate();
 
   const [valid, setValid] = useState(true);
-  const [alert, setAlert] = useState({ type: '', title: '', text: '', show: false });
+  const [alert, setAlert] = useState({
+    type: "",
+    title: "",
+    text: "",
+    show: false,
+  });
   const [loading, setLoading] = useState(false);
+  const [attachmentFile, setAttachmentFile] = useState(false);
   //const [isDisabled, setIsDisabled] = useState(true);
   const [agreementChecked, setAgreementChecked] = useState("false");
+  const [agreementCheckedCompletionPlan, setAgreementCheckedCompletionPlan] = useState("false");
 
   //Drop down list and preset data
   const [ShowTradeLicenseFlag, setShowTradeLicenseFlag] = useState(false);
@@ -58,7 +64,11 @@ const ApplyWWPR = () => {
   const [SitePlanFile, setSitePlanFile] = useState<File>();
   const [FloorPlanFile, setFloorPlanFile] = useState<File>();
   const [LayoutPlanFile, setLayoutPlanFile] = useState<File>();
-  const [EmiratesIdOrTradeLicenseFile, setEmiratesIdOrTradeLicenseFile] = useState<File>();
+  const [AttachmentPlanFile, setAttachmentPlanFile] = useState<File>();
+  const [ContractorPlanFile, setContractorPlanFile] = useState<File>();
+  const [errorMessage, setErrorMessage] = useState(0);
+  const [EmiratesIdOrTradeLicenseFile, setEmiratesIdOrTradeLicenseFile] =
+    useState<File>();
   const [PropertyDetails, setPropertyDetails] = useState<PropertyDetail[]>([]);
 
   // const canBeSubmitted = () => {
@@ -66,21 +76,23 @@ const ApplyWWPR = () => {
   // };
 
   const onCheckboxClick = () => {
-
-    if (agreementChecked === "true")
-      setAgreementChecked("false");
-    else
-      setAgreementChecked("true");
+    if (agreementChecked === "true") setAgreementChecked("false");
+    else setAgreementChecked("true");
+    
     //return canBeSubmitted();
   };
-
+  const onCheckboxClickCompletionPlan = () => {
+    if (agreementCheckedCompletionPlan === "true") setAgreementCheckedCompletionPlan("false");
+    else setAgreementCheckedCompletionPlan("true");
+    
+    //return canBeSubmitted();
+  };
   useEffect(() => {
     Memory.setItemInfo("WWPRPropertyTypes", []);
     prepareData();
   }, [agreementChecked]);
 
   const prepareData = async () => {
-
     let engine = new RequestEngine();
 
     // @ts-ignore
@@ -89,57 +101,66 @@ const ApplyWWPR = () => {
     if (response && response.status === 200) {
       setBuildingTypeList(response.data.result);
     }
-
   };
 
   const getPropertyTypes = async (buildTypeId: string) => {
     let engine = new RequestEngine();
 
     // @ts-ignore
-    let response = await engine.getItem("api/noc/propertytypes?buildingTypeId=" + buildTypeId + "&lang=en-US");
+    let response = await engine.getItem(
+      "api/noc/propertytypes?buildingTypeId=" + buildTypeId + "&lang=en-US"
+    );
     //debugger
     if (response && response.status === 200) {
       setPropertyTypeList(response.data.result);
     }
-
   };
 
   const showExtraField = async (ownerId: string) => {
-
-    if (ownerId === '0') {
+    if (ownerId === "0") {
       setShowTradeLicenseFlag(false);
       setShowEmiratesFlag(true);
-    }
-    else if (ownerId === '1') {
+    } else if (ownerId === "1") {
       setShowEmiratesFlag(false);
       setShowTradeLicenseFlag(true);
-    }
-    else {
+    } else {
       setShowEmiratesFlag(false);
       setShowTradeLicenseFlag(false);
     }
   };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-
     if (e.target.files) {
-      if (e.target.name === 'demolishLetterFile') setDemolishLetterFile(e.target.files[0]);
-      if (e.target.name === 'sitePlanFile') setSitePlanFile(e.target.files[0]);
-      if (e.target.name === 'floorPlanFile') setFloorPlanFile(e.target.files[0]);
-      if (e.target.name === 'layoutPlanFile') setLayoutPlanFile(e.target.files[0]);
-      if (e.target.name === 'emiratesIDFile' || e.target.name === 'tradeLicenseFile') { setEmiratesIdOrTradeLicenseFile(e.target.files[0]); }
+      if (e.target.name === "demolishLetterFile")
+        setDemolishLetterFile(e.target.files[0]);
+      if (e.target.name === "sitePlanFile") setSitePlanFile(e.target.files[0]);
+      if (e.target.name === "floorPlanFile")
+        setFloorPlanFile(e.target.files[0]);
+      if (e.target.name === "layoutPlanFile")
+        setLayoutPlanFile(e.target.files[0]);
+      if (e.target.name === "attachmentPlanFile")
+        setAttachmentPlanFile(e.target.files[0]);
+      if (e.target.name === "contractorPlanFile")
+        setContractorPlanFile(e.target.files[0]);
+      if (
+        e.target.name === "emiratesIDFile" ||
+        e.target.name === "tradeLicenseFile"
+      ) {
+        setEmiratesIdOrTradeLicenseFile(e.target.files[0]);
+      }
     }
   };
 
   const validateProperty = async () => {
-
     let engine = new RequestEngine();
 
-    await engine.validateProperty(Constants.CONNECTION_NOC_VALIDATE + '?parcelId=' + ParcelNumber)
+    await engine
+      .validateProperty(
+        Constants.CONNECTION_NOC_VALIDATE + "?parcelId=" + ParcelNumber
+      )
       .then((response) => {
         console.log("RESPONSE: " + JSON.stringify(response));
         if (response && response.status === 200) {
-
           console.log("Valid: " + response.data.result.valid);
           console.log("Message: " + response.data.result.message);
 
@@ -167,92 +188,185 @@ const ApplyWWPR = () => {
           //this.errorService.checkError(error);
         }
       });
-
-
-
-  }
+  };
 
   const submit = async () => {
-
-    setValid(true)
+    setValid(true);
 
     let engine = new RequestEngine();
     var userid = Memory.getItem("userId");
     var data = new FormData();
 
-    if (!ParcelNumber || !PropertyType || !BuildingTypeId || !EmiratesIdOrTradeLicense) {
-      console.log("Error")
-      setValid(false)
+    if (
+      DemolishLetterFile != undefined &&
+      DemolishLetterFile?.size > 10 * 1024 * 1024
+    ) {
+      console.log("greater");
+      setValid(false);
+      setErrorMessage(1);
+      return;
+    } else if (
+      SitePlanFile != undefined &&
+      SitePlanFile?.size > 10 * 1024 * 1024
+    ) {
+      console.log("greater2");
+      setValid(false);
+      setErrorMessage(2);
+      return;
+    } else if (
+      FloorPlanFile != undefined &&
+      FloorPlanFile?.size > 10 * 1024 * 1024
+    ) {
+      console.log("greater3");
+      setValid(false);
+      setErrorMessage(3);
+      return;
+    } else if (
+      LayoutPlanFile !== undefined &&
+      LayoutPlanFile?.size > 10 * 1024 * 1024
+    ) {
+      console.log("greater4");
+      setValid(false);
+      setErrorMessage(4);
+      return;
+    } else if (
+      AttachmentPlanFile !== undefined &&
+      AttachmentPlanFile?.size > 10 * 1024 * 1024
+    ) {
+      console.log("greate5");
+      setErrorMessage(5);
+      setValid(false);
+      return;
+    } 
+    else if (
+      ContractorPlanFile !== undefined &&
+      ContractorPlanFile?.size > 10 * 1024 * 1024
+    ) {
+      console.log("greate6");
+      setErrorMessage(6);
+      setValid(false);
       return;
     }
+    else if (
+      !ParcelNumber ||
+      !PropertyType ||
+      !BuildingTypeId ||
+      !EmiratesIdOrTradeLicense
+    ) {
+      console.log("Error");
+      setValid(false);
+      return;
+    } else {
+      setValid(true);
+    }
+
+    // if (
+    //   !ParcelNumber ||
+    //   !PropertyType ||
+    //   !BuildingTypeId ||
+    //   !EmiratesIdOrTradeLicense
+    // ) {
+    //   console.log("Error");
+    //   setValid(false);
+    //   return;
+    // }
 
     // @ts-ignore
-    data.append('UserId', userid);
-    data.append('ParcelId', ParcelNumber);
-    data.append('PropertyType', PropertyType);
-    data.append('BuildingTypeId', BuildingTypeId);
+    data.append("UserId", userid);
+    data.append("ParcelId", ParcelNumber);
+    data.append("PropertyType", PropertyType);
+    data.append("BuildingTypeId", BuildingTypeId);
     //data.append('DocumentType', '1');
-    data.append('Comments', Comments);
-    data.append('EmiratesIDOrTradeLicenseId', EmiratesIdOrTradeLicense);
+    data.append("Comments", Comments);
+    data.append("EmiratesIDOrTradeLicenseId", EmiratesIdOrTradeLicense);
 
     if (EmiratesIdOrTradeLicenseFile !== undefined)
-      data.append('EmiratesIdOrTradeLicense', EmiratesIdOrTradeLicenseFile!, EmiratesIdOrTradeLicenseFile!.name);
+      data.append(
+        "EmiratesIdOrTradeLicense",
+        EmiratesIdOrTradeLicenseFile!,
+        EmiratesIdOrTradeLicenseFile!.name
+      );
     if (DemolishLetterFile !== undefined)
-      data.append('DemolishLetter', DemolishLetterFile!, DemolishLetterFile!.name);
+      data.append(
+        "DemolishLetter",
+        DemolishLetterFile!,
+        DemolishLetterFile!.name
+      );
     if (SitePlanFile !== undefined)
-      data.append('SitePlan', SitePlanFile!, SitePlanFile!.name);
+      data.append("SitePlan", SitePlanFile!, SitePlanFile!.name);
     if (FloorPlanFile !== undefined)
-      data.append('FloorPlan', FloorPlanFile!, FloorPlanFile!.name);
+      data.append("FloorPlan", FloorPlanFile!, FloorPlanFile!.name);
     if (LayoutPlanFile !== undefined)
-      data.append('LayoutPlan', LayoutPlanFile!, LayoutPlanFile!.name);
+      data.append("LayoutPlan", LayoutPlanFile!, LayoutPlanFile!.name);
+    if (AttachmentPlanFile !== undefined)
+      data.append("Contractor", AttachmentPlanFile!, AttachmentPlanFile!.name);
+    if (ContractorPlanFile !== undefined)
+      data.append(
+        "CompletionPlan",
+        ContractorPlanFile!,
+        ContractorPlanFile!.name
+      );
 
-    let areaSqMeter = ""
+    let areaSqMeter = "";
     if (PropertyDetails && PropertyDetails.length > 0) {
       for (let i = 0; i < PropertyDetails.length; i++) {
-        let propertyType = 'PropertyDetails' + '[' + i + ']' + '.' + 'PropertyType';
-        data.append(propertyType, (PropertyDetails[i].PropertyType));
-        let propertyId = 'PropertyDetails' + '[' + i + ']' + '.' + 'PropertyTypeId';
-        data.append(propertyId, (PropertyDetails[i].PropertyTypeId.toString()));
-        let propertyCount = 'PropertyDetails' + '[' + i + ']' + '.' + 'PropertyCount';
-        data.append(propertyCount, (PropertyDetails[i].PropertyCount.toString()));
+        let propertyType =
+          "PropertyDetails" + "[" + i + "]" + "." + "PropertyType";
+        data.append(propertyType, PropertyDetails[i].PropertyType);
+        let propertyId =
+          "PropertyDetails" + "[" + i + "]" + "." + "PropertyTypeId";
+        data.append(propertyId, PropertyDetails[i].PropertyTypeId.toString());
+        let propertyCount =
+          "PropertyDetails" + "[" + i + "]" + "." + "PropertyCount";
+        data.append(propertyCount, PropertyDetails[i].PropertyCount.toString());
         if (PropertyDetails[i].AreaSquareFeet) {
-          areaSqMeter = 'PropertyDetails' + '[' + i + ']' + '.' + 'AreaSqMeter';
-          data.append(areaSqMeter, (PropertyDetails[i].AreaSquareFeet.toString()));
+          areaSqMeter = "PropertyDetails" + "[" + i + "]" + "." + "AreaSqMeter";
+          data.append(
+            areaSqMeter,
+            PropertyDetails[i].AreaSquareFeet.toString()
+          );
         } else {
-          areaSqMeter = 'PropertyDetails' + '[' + i + ']' + '.' + 'AreaSqMeter';
-          data.append(areaSqMeter, ("1"));
+          areaSqMeter = "PropertyDetails" + "[" + i + "]" + "." + "AreaSqMeter";
+          data.append(areaSqMeter, "1");
         }
       }
     }
 
-    setLoading(true)
-    // @ts-ignore
-    const response = await engine.saveItemData("api/noc/applyconnectionnoc", data);
-    if (response && response.status === 200) {
+    // console.log("Payload Data", data)
 
+    // return
+
+    setLoading(true);
+    // @ts-ignore
+    const response = await engine.saveItemData(
+      "api/noc/applyconnectionnoc",
+      data
+    );
+    if (response && response.status === 200) {
       console.log(response);
 
       setAlert({
-        type: 'success',
-        title: 'Info',
-        text: "Thank you for submitting WWPR request. Please note your reference id: " + response.data.result.referenceId + ". You will be notified on taking action on the request."/*response.data.result.message*/,
-        show: true
+        type: "success",
+        title: "Info",
+        text:
+          "Thank you for submitting WWPR request. Please note your reference id: " +
+          response.data.result.referenceId +
+          ". You will be notified on taking action on the request." /*response.data.result.message*/,
+        show: true,
       });
       setOpenPopupMessage(true);
-    }
-    else {
+    } else {
       setAlert({
-        type: 'error',
-        title: 'Warning',
+        type: "error",
+        title: "Warning",
         text: "Something wen wrong!",
-        show: true
+        show: true,
       });
       setOpenPopupMessage(true);
     }
 
-    setLoading(false)
-
-  }
+    setLoading(false);
+  };
 
   const handleClose = () => {
     setOpenPopup(false);
@@ -260,15 +374,12 @@ const ApplyWWPR = () => {
   };
 
   const addPropertyType = () => {
-
     setOpenPopup(false);
 
     setPropertyDetails(Memory.getItemInfo("WWPRPropertyTypes"));
-
   };
 
   const removeProperty = async (index: number) => {
-
     let props = Memory.getItemInfo("WWPRPropertyTypes");
 
     console.log("Index:" + index);
@@ -282,7 +393,6 @@ const ApplyWWPR = () => {
     Memory.setItemInfo("WWPRPropertyTypes", props);
 
     setPropertyDetails(props);
-
   };
 
   const handleMessageClose = () => {
@@ -291,17 +401,16 @@ const ApplyWWPR = () => {
     navigate("/consultation");
   };
 
-  const [language, setLanguage] =  useState<any>()
+  const [language, setLanguage] = useState<any>();
 
   const [colorNumber, setColorNumber] = useState<number>(14);
 
   const [fontSize, setFontSize] = useState<number>(14);
 
-
-  useEffect(()=>{
-    const reciveLanguage:any = localStorage.getItem('LanguageChange');
-    const reciveLanguage1:any = JSON.parse(reciveLanguage)
-    setLanguage(reciveLanguage1)
+  useEffect(() => {
+    const reciveLanguage: any = localStorage.getItem("LanguageChange");
+    const reciveLanguage1: any = JSON.parse(reciveLanguage);
+    setLanguage(reciveLanguage1);
 
     const colorNumb = localStorage.getItem("colorNum");
     if (colorNumb) {
@@ -312,8 +421,7 @@ const ApplyWWPR = () => {
     if (storedFontSize) {
       setFontSize(Number(storedFontSize));
     }
-
-  })
+  });
 
   const [isLargeScreen, setIsLargeScreen] = useState(false);
 
@@ -328,7 +436,7 @@ const ApplyWWPR = () => {
 
   return (
     <div style={{ background: "#eee" }}>
-  {isLargeScreen ? (
+      {isLargeScreen ? (
         // <MoveInHeader
         //   style={{
         //     backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#62AA51',
@@ -351,9 +459,9 @@ const ApplyWWPR = () => {
         //           minHeight: "1.875rem",
         //           fontWeight: "bold",
         //           border: "1px solid #fff",
-        //           fontSize: `${fontSize === 1 ? '1.675rem' 
+        //           fontSize: `${fontSize === 1 ? '1.675rem'
         //           : fontSize === 2 ? '1.775rem'
-        //           : fontSize === 3 ? '1.875rem' 
+        //           : fontSize === 3 ? '1.875rem'
         //           : fontSize === 4 ? '1.975rem'
         //           : fontSize === 5 ? '2.075rem'
         //           : '1.875rem'}`
@@ -373,9 +481,9 @@ const ApplyWWPR = () => {
         //           minHeight: "1.875rem",
         //           fontWeight: "bold",
         //           border: "1px solid #fff",
-        //           fontSize: `${fontSize === 1 ? '1.675rem' 
+        //           fontSize: `${fontSize === 1 ? '1.675rem'
         //       : fontSize === 2 ? '1.775rem'
-        //       : fontSize === 3 ? '1.875rem' 
+        //       : fontSize === 3 ? '1.875rem'
         //       : fontSize === 4 ? '1.975rem'
         //       : fontSize === 5 ? '2.075rem'
         //       : '1.875rem'}`
@@ -385,9 +493,9 @@ const ApplyWWPR = () => {
         //       </ButtonSecondary>
         //     </MiniNav>
 
-        //     <div style={{ fontSize: `${fontSize === 1 ? '2.925rem' 
+        //     <div style={{ fontSize: `${fontSize === 1 ? '2.925rem'
         //       : fontSize === 2 ? '3.025rem'
-        //       : fontSize === 3 ? '3.125rem' 
+        //       : fontSize === 3 ? '3.125rem'
         //       : fontSize === 4 ? '3.225rem'
         //       : fontSize === 5 ? '3.325rem'
         //       : '3.125rem'}`, marginTop: 10 }}>
@@ -397,7 +505,17 @@ const ApplyWWPR = () => {
         // </MoveInHeader>
         <div
           className="pb-4"
-          style={{ backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#62AA51', paddingLeft: "10%" }}
+          style={{
+            backgroundColor:
+              colorNumber === 1
+                ? "#101E8E"
+                : colorNumber === 2
+                ? "#1D1D1B"
+                : colorNumber === 3
+                ? "#62AA51"
+                : "#62AA51",
+            paddingLeft: "10%",
+          }}
         >
           <div className="d-flex pt-3 pb-4">
             <div
@@ -406,14 +524,25 @@ const ApplyWWPR = () => {
                 navigate("/");
               }}
               className=" mr-2 top-back-form-btn d-flex justify-content-center align-items-center"
-              style={{ fontSize: `${fontSize === 1 ? '10px' 
-              : fontSize === 2 ? '12px'
-              : fontSize === 3 ? '14px' 
-              : fontSize === 4 ? '16px'
-              : fontSize === 5 ? '18px'
-              : '14px'}` }}
-           >
-              {language?.result?.cm_back ? language?.result?.cm_back.label:'BACK' }
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "10px"
+                    : fontSize === 2
+                    ? "12px"
+                    : fontSize === 3
+                    ? "14px"
+                    : fontSize === 4
+                    ? "16px"
+                    : fontSize === 5
+                    ? "18px"
+                    : "14px"
+                }`,
+              }}
+            >
+              {language?.result?.cm_back
+                ? language?.result?.cm_back.label
+                : "BACK"}
             </div>
             <div
               onClick={() => {
@@ -421,33 +550,66 @@ const ApplyWWPR = () => {
                 navigate("/");
               }}
               className=" ml-2 top-dashboard-form-btn d-flex justify-content-center align-items-center"
-              style={{ fontSize: `${fontSize === 1 ? '10px' 
-                  : fontSize === 2 ? '12px'
-                  : fontSize === 3 ? '14px' 
-                  : fontSize === 4 ? '16px'
-                  : fontSize === 5 ? '18px'
-                  : '14px'}` }}
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "10px"
+                    : fontSize === 2
+                    ? "12px"
+                    : fontSize === 3
+                    ? "14px"
+                    : fontSize === 4
+                    ? "16px"
+                    : fontSize === 5
+                    ? "18px"
+                    : "14px"
+                }`,
+              }}
             >
-                {language?.result?.cm_dashboard ? language?.result?.cm_dashboard.label:'DASHBOARD ' }
+              {language?.result?.cm_dashboard
+                ? language?.result?.cm_dashboard.label
+                : "DASHBOARD "}
             </div>
           </div>
           <div>
-            <span className="top-back-form-text "
-            style={{ fontSize: `${fontSize === 1 ? '46px' 
-            : fontSize === 2 ? '48px'
-            : fontSize === 3 ? '50px' 
-            : fontSize === 4 ? '52px'
-            : fontSize === 5 ? '54px'
-            : '50px'}` }}
+            <span
+              className="top-back-form-text "
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "46px"
+                    : fontSize === 2
+                    ? "48px"
+                    : fontSize === 3
+                    ? "50px"
+                    : fontSize === 4
+                    ? "52px"
+                    : fontSize === 5
+                    ? "54px"
+                    : "50px"
+                }`,
+              }}
             >
-                {language?.result?.cm_apply_for_wwpr ? language?.result?.cm_apply_for_wwpr.label:'Apply for WWPR ' }
+              {language?.result?.cm_apply_for_wwpr
+                ? language?.result?.cm_apply_for_wwpr.label
+                : "Apply for WWPR "}
             </span>
           </div>
         </div>
       ) : (
         <div
           className="pb-4"
-          style={{ backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#62AA51', paddingLeft: "19px" }}
+          style={{
+            backgroundColor:
+              colorNumber === 1
+                ? "#101E8E"
+                : colorNumber === 2
+                ? "#1D1D1B"
+                : colorNumber === 3
+                ? "#62AA51"
+                : "#62AA51",
+            paddingLeft: "19px",
+          }}
         >
           <div className="d-flex pt-3 pb-4">
             <div
@@ -456,14 +618,25 @@ const ApplyWWPR = () => {
                 navigate("/");
               }}
               className=" mr-2 top-back-form-btn d-flex justify-content-center align-items-center"
-              style={{ fontSize: `${fontSize === 1 ? '10px' 
-              : fontSize === 2 ? '12px'
-              : fontSize === 3 ? '14px' 
-              : fontSize === 4 ? '16px'
-              : fontSize === 5 ? '18px'
-              : '14px'}` }}
-           >
-              {language?.result?.cm_back ? language?.result?.cm_back.label:'BACK' }
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "10px"
+                    : fontSize === 2
+                    ? "12px"
+                    : fontSize === 3
+                    ? "14px"
+                    : fontSize === 4
+                    ? "16px"
+                    : fontSize === 5
+                    ? "18px"
+                    : "14px"
+                }`,
+              }}
+            >
+              {language?.result?.cm_back
+                ? language?.result?.cm_back.label
+                : "BACK"}
             </div>
             <div
               onClick={() => {
@@ -471,26 +644,49 @@ const ApplyWWPR = () => {
                 navigate("/");
               }}
               className=" ml-2 top-dashboard-form-btn d-flex justify-content-center align-items-center"
-              style={{ fontSize: `${fontSize === 1 ? '10px' 
-                  : fontSize === 2 ? '12px'
-                  : fontSize === 3 ? '14px' 
-                  : fontSize === 4 ? '16px'
-                  : fontSize === 5 ? '18px'
-                  : '14px'}` }}
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "10px"
+                    : fontSize === 2
+                    ? "12px"
+                    : fontSize === 3
+                    ? "14px"
+                    : fontSize === 4
+                    ? "16px"
+                    : fontSize === 5
+                    ? "18px"
+                    : "14px"
+                }`,
+              }}
             >
-              {language?.result?.cm_dashboard ? language?.result?.cm_dashboard.label:'DASHBOARD ' }
+              {language?.result?.cm_dashboard
+                ? language?.result?.cm_dashboard.label
+                : "DASHBOARD "}
             </div>
           </div>
           <div>
-            <span className="top-back-form-text "
-            style={{ fontSize: `${fontSize === 1 ? '32px' 
-            : fontSize === 2 ? '34px'
-            : fontSize === 3 ? '36px' 
-            : fontSize === 4 ? '38px'
-            : fontSize === 5 ? '40px'
-            : '36px'}` }}
+            <span
+              className="top-back-form-text "
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "32px"
+                    : fontSize === 2
+                    ? "34px"
+                    : fontSize === 3
+                    ? "36px"
+                    : fontSize === 4
+                    ? "38px"
+                    : fontSize === 5
+                    ? "40px"
+                    : "36px"
+                }`,
+              }}
             >
-               {language?.result?.cm_apply_for_wwpr ? language?.result?.cm_apply_for_wwpr.label:'Apply for WWPR ' }
+              {language?.result?.cm_apply_for_wwpr
+                ? language?.result?.cm_apply_for_wwpr.label
+                : "Apply for WWPR "}
             </span>
           </div>
         </div>
@@ -504,204 +700,545 @@ const ApplyWWPR = () => {
       } */}
 
       <ComplaintContainer>
-        <Label style={{ width: '100%', fontWeight:"400" }}  >
-          
-          {language?.result?.cm_mob_prclid ? language?.result?.cm_mob_prclid.label:'Parcel ID' }
+        <Label style={{ width: "100%", fontWeight: "400" }}>
+          {language?.result?.cm_mob_prclid
+            ? language?.result?.cm_mob_prclid.label
+            : "Parcel ID"}
           *
-          <input type="text" placeholder={language?.result?.cm_mob_select ? language?.result?.cm_mob_select.label:'Select' } onChange={(e) => { setParcelNumber(e.target.value); }} style={{ width: "100%" }} />
+          <input
+            type="text"
+            placeholder={
+              language?.result?.cm_mob_select
+                ? language?.result?.cm_mob_select.label
+                : "Select"
+            }
+            onChange={(e) => {
+              setParcelNumber(e.target.value);
+            }}
+            style={{ width: "100%" }}
+          />
         </Label>
-        <Label style={{ width: '100%' , fontWeight:"400"}}>
-        {language?.result?.cm_nocpropertytype ? language?.result?.cm_nocpropertytype.label:'Property Type ' }*
-          <select name="propertyType" placeholder="Select" defaultValue={PropertyType} onChange={(e) => { setPropertyType(e.target.value); }} style={{ width: "100%", background: "#e5eff2" }}>
-            <option key="0" value="select">{language?.result?.cm_mob_select ? language?.result?.cm_mob_select.label:'Select' }</option>
-            <option key="1" value="new">{language?.result?.cm_new ? language?.result?.cm_new.label:'New' }</option>
-            <option key="2" value="demolished"> {language?.result?.cm_demolished ? language?.result?.cm_demolished.label:'Demolished' }</option>
-            <option key="3" value="existing"> {language?.result?.cm_existing ? language?.result?.cm_existing.label:'Existing' }</option>
+        <Label style={{ width: "100%", fontWeight: "400" }}>
+          {language?.result?.cm_nocpropertytype
+            ? language?.result?.cm_nocpropertytype.label
+            : "Property Type "}
+          *
+          <select
+            name="propertyType"
+            placeholder="Select"
+            defaultValue={PropertyType}
+            onChange={(e) => {
+              setPropertyType(e.target.value);
+            }}
+            style={{ width: "100%", background: "#e5eff2" }}
+          >
+            <option
+              key="0"
+              value="select"
+              title={
+                language?.result?.cm_mob_select
+                  ? language?.result?.cm_mob_select.toolTip
+                  : "Select"
+              }
+            >
+              {language?.result?.cm_mob_select
+                ? language?.result?.cm_mob_select.label
+                : "Select"}
+            </option>
+
+            <option
+              key="1"
+              value="new"
+              title={
+                language?.result?.cm_new
+                  ? language?.result?.cm_new.toolTip
+                  : "New"
+              }
+            >
+              {language?.result?.cm_new
+                ? language?.result?.cm_new.label
+                : "New"}
+            </option>
+            <option
+              key="2"
+              value="demolished"
+              title={
+                language?.result?.cm_demolished
+                  ? language?.result?.cm_demolished.toolTip
+                  : "Demolished"
+              }
+            >
+              {" "}
+              {language?.result?.cm_demolished
+                ? language?.result?.cm_demolished.label
+                : "Demolished"}
+            </option>
+            <option
+              key="3"
+              value="existing"
+              title={
+                language?.result?.cm_existing
+                  ? language?.result?.cm_existing.toolTip
+                  : "Existing"
+              }
+            >
+              {" "}
+              {language?.result?.cm_existing
+                ? language?.result?.cm_existing.label
+                : "Existing"}
+            </option>
           </select>
         </Label>
 
         {PropertyType === "new" && (
           <>
-            <ButtonSecondary onClick={() => validateProperty()} style={{ background: "#101e8e", color: "#fff", gridColumn: "1 /span 2", width: "25%", placeSelf: "end" }}>
+            <ButtonSecondary
+              onClick={() => validateProperty()}
+              style={{
+                background: "#101e8e",
+                color: "#fff",
+                gridColumn: "1 /span 2",
+                width: "25%",
+                placeSelf: "end",
+              }}
+            >
               VALIDATE
             </ButtonSecondary>
           </>
         )}
 
-        {PropertyType !== "" && PropertyType !== "select" && (PropertyType !== "new" || PropertyValid) && (
-
-          <>
-
-            <Label style={{ width: '100%' }}>
-              Building Type *
-              <select name="buildingType" defaultValue="{BuildingTypeId}" onChange={(e) => { setBuildingTypeId(e.target.value); getPropertyTypes(e.target.value); }} style={{ width: "100%", background: "#e5eff2" }}>
-                <option value="">Select</option>
-                {BuildingTypeList.map((item: any) => { return <option key={item.id} value={item.id}>{item.buildingType}</option>; })}
-              </select>
-            </Label>
-            <Label></Label>
-            <p
-              style={{
-                gridColumn: "1 / span 2",
-                fontWeight: "700",
-                placeSelf: "start",
-              }}
-            >
-              Required Documents *
-            </p>
-            {PropertyType === "demolished" && (<Document exists={false} mainText={'Demolishing Letter *'} subText={'Mandatory Document'} onChange={handleFileChange} inputName={"demolishLetterFile"} />)}
-
-            <Document exists={false} mainText={'Site Plan *'} subText={'Mandatory Document'} onChange={handleFileChange} inputName={"sitePlanFile"} />
-            <Document exists={false} mainText={'Floor Plan *'} subText={'Mandatory Document'} onChange={handleFileChange} inputName={"floorPlanFile"} />
-            <Document exists={false} mainText={'Layout Plan *'} subText={'Mandatory Document'} onChange={handleFileChange} inputName={"layoutPlanFile"} />
-
-            <p style={{ gridColumn: "1 / span 2", fontWeight: "700", placeSelf: "start", marginTop: 10, marginBottom: 10 }}>Add Property *</p>
-
-            <ButtonSecondary
-              disabled={BuildingTypeId !== "" && BuildingTypeId !== "Select" ? false : true}
-              className="conventional-button"
-              style={{ background: "#101e8e", color: "#fff", gridColumn: "1 /span 2", width: "25%", placeSelf: "start", opacity: BuildingTypeId !== "" && BuildingTypeId !== "Select" ? "1" : "0.5" }}
-              onClick={() => setOpenPopup(true)}>
-              ADD PROPERTY
-            </ButtonSecondary>
-
-            {
-              PropertyDetails.length > 0 &&
-              <Table style={{ gridColumn: "1 / span 2" }}>
-                <thead>
-                  <tr>
-                    <th>Property Category</th>
-                    <th>Property Count</th>
-                    <th>Area Square Feet</th>
-                    <th></th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {PropertyDetails.map((item: any, index) => {
-                    return <tr key={item.PropertyTypeId}>
-                      <td>{item.PropertyType}</td>
-                      <td>{item.PropertyCount}</td>
-                      <td>{item.AreaSqMeter}</td>
-                      <td><button style={{ border: "none", cursor: "pointer", background: 'none' }} onClick={(e) => { removeProperty(index) }} ><img style={{ width: "25px" }} src={garbage} alt="Delete"></img></button></td>
-                    </tr>;
+        {PropertyType !== "" &&
+          PropertyType !== "select" &&
+          (PropertyType !== "new" || PropertyValid) && (
+            <>
+              <Label style={{ width: "100%" }}>
+                Building Type *
+                <select
+                  name="buildingType"
+                  defaultValue="{BuildingTypeId}"
+                  onChange={(e) => {
+                    setBuildingTypeId(e.target.value);
+                    getPropertyTypes(e.target.value);
+                  }}
+                  style={{ width: "100%", background: "#e5eff2" }}
+                >
+                  <option value="">Select</option>
+                  {BuildingTypeList.map((item: any) => {
+                    return (
+                      <option key={item.id} value={item.id}>
+                        {item.buildingType}
+                      </option>
+                    );
                   })}
-                  <tr style={{ display: "none" }}></tr>
-                </tbody>
-              </Table>
-            }
+                </select>
+              </Label>
+              <Label>
+                <div className="d-flex">
+                  <div
+                    className="  pt-2 pt-lg-4 d-flex  align-items-center"
+                    style={{ minWidth: "71px" }}
+                  >
+                    <Checkbox
+                      style={{ width: "20px" }}
+                      checked={agreementCheckedCompletionPlan === "true" ? true : false}
+                      onClick={() => {
+                        onCheckboxClickCompletionPlan();
+                        setAttachmentFile(!attachmentFile);
+                      }}
+                      className=""
+                    />
 
-            <hr
-              style={{
-                width: "95%",
-                gridColumn: "1 / span 2",
-                borderStyle: "none none dotted",
-                color: "#eee",
-                background: "#eee",
-              }}
-            />
-            <Label style={{ gridColumn: "1 / span 2", width: "100%" }}>
-              Comments
-              <textarea name="" id="" cols={30} rows={10}
-                onChange={(e) => { setComments(e.target.value); }}
-                style={{ width: "100%", background: "#e5eff2", resize: "none", border: "1px solid #b6bfdc", marginTop: 7 }}
-                placeholder="Select"
-              ></textarea>
-            </Label>
-            <Label style={{ width: '100%' }}>
-              Owner's ID Proof *
-              <select defaultValue={OwnerIdProof}
-                onChange={(e) => { setOwnerIdProof(e.target.value); showExtraField(e.target.value) }}
-                style={{ width: "100%", background: "#e5eff2", marginTop: 7 }}>
-                <option value="select">Select</option>
-                <option value="0">Emirates ID</option>
-                <option value="1">Trade License</option>
-              </select>
-            </Label>
-
-
-            {ShowEmiratesFlag &&
-              (
-                <>
-                  <Label style={{ width: '100%' }}>
-                    Emirates ID*
-                    <input type="text" placeholder="Select" onChange={(e) => { setEmiratesIdOrTradeLicense(e.target.value); }} style={{ width: "100%" }} />
-                  </Label>
-                  <Label style={{ width: '100%' }}>
-                    Attach Emirates ID*
-                    <input name="emiratesIDFile" type="file" accept="application/pdf" placeholder="Select" onChange={(e) => { handleFileChange(e); }} style={{ width: "100%" }} />
-                  </Label>
-                </>
-
-              )
-            }
-
-            {ShowTradeLicenseFlag &&
-              (
-                <>
-                  <Label style={{ width: '100%' }}>
-                    Trade License*
-                    <input type="text" placeholder="Select" onChange={(e) => { setEmiratesIdOrTradeLicense(e.target.value); }} style={{ width: "100%" }} />
-                  </Label>
-                  <Label style={{ width: '100%' }}>
-                    Attach Trade License*
-                    <input name="tradeLicenseFile" type="file" accept="application/pdf" placeholder="Select" onChange={(e) => { handleFileChange(e); }} style={{ width: "100%" }} />
-                  </Label>
-                </>
-              )
-            }
-
-            <hr style={{ width: "95%", gridColumn: "1 / span 2", color: "#eee", background: "#eee", }} />
-
-            <div style={{ display: 'flex', flex: 1, width: '100%', gridColumn: "1 / span 2", marginTop: "2px" }}>
-              <Checkbox checked={agreementChecked === "true" ? true : false} onClick={onCheckboxClick} />
-              <div>
-                <Label style={{ width: '100%', paddingTop: '10px' }}>For each WWPR form submission, a declaration text will be displayed with checkbox, which the customer has to check to submit the application and is mandatory.</Label>
-              </div>
-            </div>
-
-
-
-            {loading ? (
-              <Modal
-                open={loading}
-                aria-labelledby="parent-modal-title"
-                aria-describedby="parent-modal-description"
-              >
-                <div style={{ width: '100%', height: '100%', display: 'flex', margin: 'auto', justifyContent: 'center', alignItems: 'center' }}>
-                  <Spinner />
+                    <div className="pl-0- pl-lg-2" style={{ width: "150px" }}>
+                      Completion Plan
+                    </div>
+                  </div>
                 </div>
-              </Modal>
-            ) : (
-              <ButtonSecondary
-                disabled={agreementChecked === "false" ? true : false}
-                onClick={() => submit()}
-                className="conventional-button"
-                style={{ background: "#101e8e", color: "#fff", gridColumn: "1 /span 2", width: "25%", placeSelf: "start", opacity: agreementChecked === 'true' ? "1" : "0.5" }}
+              </Label>
+              <p
+                style={{
+                  gridColumn: "1 / span 2",
+                  fontWeight: "700",
+                  placeSelf: "start",
+                }}
               >
-                SUBMIT
+                Required Documents *
+              </p>
+              {PropertyType === "demolished" && (
+                <Document
+                  exists={false}
+                  mainText={"Demolishing Letter *"}
+                  subText={"Mandatory Document"}
+                  onChange={handleFileChange}
+                  inputName={"demolishLetterFile"}
+                />
+              )}
+
+              <Document
+                exists={false}
+                mainText={"Site Plan *"}
+                subText={"Mandatory Document"}
+                onChange={handleFileChange}
+                inputName={"sitePlanFile"}
+              />
+              <Document
+                exists={false}
+                mainText={"Floor Plan *"}
+                subText={"Mandatory Document"}
+                onChange={handleFileChange}
+                inputName={"floorPlanFile"}
+              />
+              <Document
+                exists={false}
+                mainText={"Layout Plan *"}
+                subText={"Mandatory Document"}
+                onChange={handleFileChange}
+                inputName={"layoutPlanFile"}
+              />
+              <Document
+                exists={false}
+                mainText={"Contractor Plan "}
+                subText={"Contractor Document"}
+                onChange={handleFileChange}
+                inputName={"contractorPlanFile"}
+              />
+              {attachmentFile ? (
+                <Document
+                  exists={false}
+                  mainText={"Completion Plan *"}
+                  subText={"Completion Document"}
+                  onChange={handleFileChange}
+                  inputName={"attachmentPlanFile"}
+                />
+              ) : null}
+
+{errorMessage === 1 ? (
+                <div className="text-danger w-100">
+                  Demolishing Letter file greater than 10 MB
+                </div>
+              ) : null}
+
+              {errorMessage === 2 ? (
+                <div className="text-danger w-100">
+                  Site Plan file greater than 10 MB
+                </div>
+              ) : null}
+
+              {errorMessage === 3 ? (
+                <div className="text-danger w-100">
+                  Floor Plan file greater than 10 MB
+                </div>
+              ) : null}
+
+              {errorMessage === 4 ? (
+                <div className="text-danger w-100">
+                  Layout Plan file greater than 10 MB
+                </div>
+              ) : null}
+              {errorMessage === 5 ? (
+                <div className="text-danger w-100">
+                  Completion Plan file greater than 10 MB
+                </div>
+              ) : null}
+
+{errorMessage === 6 ? (
+                <div className="text-danger w-100">
+                  Contractor Plan file greater than 10 MB
+                </div>
+              ) : null}
+
+              <p
+                style={{
+                  gridColumn: "1 / span 2",
+                  fontWeight: "700",
+                  placeSelf: "start",
+                  marginTop: 10,
+                  marginBottom: 10,
+                }}
+              >
+                Add Property *
+              </p>
+
+              <ButtonSecondary
+                disabled={
+                  BuildingTypeId !== "" && BuildingTypeId !== "Select"
+                    ? false
+                    : true
+                }
+                className="conventional-button"
+                style={{
+                  background: "#101e8e",
+                  color: "#fff",
+                  gridColumn: "1 /span 2",
+                  width: "25%",
+                  placeSelf: "start",
+                  opacity:
+                    BuildingTypeId !== "" && BuildingTypeId !== "Select"
+                      ? "1"
+                      : "0.5",
+                }}
+                onClick={() => setOpenPopup(true)}
+              >
+                ADD PROPERTY
               </ButtonSecondary>
-            )}
 
-          </>
-        )}
+              {PropertyDetails.length > 0 && (
+                <Table style={{ gridColumn: "1 / span 2" }}>
+                  <thead>
+                    <tr>
+                      <th>Property Category</th>
+                      <th>Property Count</th>
+                      <th>Area Square Feet</th>
+                      <th></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {PropertyDetails.map((item: any, index) => {
+                      return (
+                        <tr key={item.PropertyTypeId}>
+                          <td>{item.PropertyType}</td>
+                          <td>{item.PropertyCount}</td>
+                          <td>{item.AreaSqMeter}</td>
+                          <td>
+                            <button
+                              style={{
+                                border: "none",
+                                cursor: "pointer",
+                                background: "none",
+                              }}
+                              onClick={(e) => {
+                                removeProperty(index);
+                              }}
+                            >
+                              <img
+                                style={{ width: "25px" }}
+                                src={garbage}
+                                alt="Delete"
+                              ></img>
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                    <tr style={{ display: "none" }}></tr>
+                  </tbody>
+                </Table>
+              )}
 
-        {!valid
-          ? <h3 style={{ color: 'red', width: '100%', margin: 'auto', paddingTop: 15, backgroundColor: '#fff' }}>
+              <hr
+                style={{
+                  width: "95%",
+                  gridColumn: "1 / span 2",
+                  borderStyle: "none none dotted",
+                  color: "#eee",
+                  background: "#eee",
+                }}
+              />
+              <Label style={{ gridColumn: "1 / span 2", width: "100%" }}>
+                Comments
+                <textarea
+                  name=""
+                  id=""
+                  cols={30}
+                  rows={10}
+                  onChange={(e) => {
+                    setComments(e.target.value);
+                  }}
+                  style={{
+                    width: "100%",
+                    background: "#e5eff2",
+                    resize: "none",
+                    border: "1px solid #b6bfdc",
+                    marginTop: 7,
+                  }}
+                  placeholder="Select"
+                ></textarea>
+              </Label>
+              <Label style={{ width: "100%" }}>
+                Owner's ID Proof *
+                <select
+                  defaultValue={OwnerIdProof}
+                  onChange={(e) => {
+                    setOwnerIdProof(e.target.value);
+                    showExtraField(e.target.value);
+                  }}
+                  style={{ width: "100%", background: "#e5eff2", marginTop: 7 }}
+                >
+                  <option value="select">Select</option>
+                  <option value="0">Emirates ID</option>
+                  <option value="1">Trade License</option>
+                </select>
+              </Label>
+
+              {ShowEmiratesFlag && (
+                <>
+                  <Label style={{ width: "100%" }}>
+                    Emirates ID*
+                    <input
+                      type="text"
+                      placeholder="Select"
+                      onChange={(e) => {
+                        setEmiratesIdOrTradeLicense(e.target.value);
+                      }}
+                      style={{ width: "100%" }}
+                    />
+                  </Label>
+                  <Label style={{ width: "100%" }}>
+                    Attach Emirates ID*
+                    <input
+                      name="emiratesIDFile"
+                      type="file"
+                      accept="application/pdf"
+                      placeholder="Select"
+                      onChange={(e) => {
+                        handleFileChange(e);
+                      }}
+                      style={{ width: "100%" }}
+                    />
+                  </Label>
+                </>
+              )}
+
+              {ShowTradeLicenseFlag && (
+                <>
+                  <Label style={{ width: "100%" }}>
+                    Trade License*
+                    <input
+                      type="text"
+                      placeholder="Select"
+                      onChange={(e) => {
+                        setEmiratesIdOrTradeLicense(e.target.value);
+                      }}
+                      style={{ width: "100%" }}
+                    />
+                  </Label>
+                  <Label style={{ width: "100%" }}>
+                    Attach Trade License*
+                    <input
+                      name="tradeLicenseFile"
+                      type="file"
+                      accept="application/pdf"
+                      placeholder="Select"
+                      onChange={(e) => {
+                        handleFileChange(e);
+                      }}
+                      style={{ width: "100%" }}
+                    />
+                  </Label>
+                </>
+              )}
+
+              <hr
+                style={{
+                  width: "95%",
+                  gridColumn: "1 / span 2",
+                  color: "#eee",
+                  background: "#eee",
+                }}
+              />
+
+              <div
+                style={{
+                  display: "flex",
+                  flex: 1,
+                  width: "100%",
+                  gridColumn: "1 / span 2",
+                  marginTop: "2px",
+                }}
+              >
+                <Checkbox
+                  checked={agreementChecked === "true" ? true : false}
+                  onClick={onCheckboxClick}
+                />
+                <div>
+                  <Label style={{ width: "100%", paddingTop: "10px" }}>
+                    For each WWPR form submission, a declaration text will be
+                    displayed with checkbox, which the customer has to check to
+                    submit the application and is mandatory.
+                  </Label>
+                </div>
+              </div>
+
+              {loading ? (
+                <Modal
+                  open={loading}
+                  aria-labelledby="parent-modal-title"
+                  aria-describedby="parent-modal-description"
+                >
+                  <div
+                    style={{
+                      width: "100%",
+                      height: "100%",
+                      display: "flex",
+                      margin: "auto",
+                      justifyContent: "center",
+                      alignItems: "center",
+                    }}
+                  >
+                    <Spinner />
+                  </div>
+                </Modal>
+              ) : (
+                <ButtonSecondary
+                  disabled={agreementChecked === "false" ? true : false}
+                  onClick={() => submit()}
+                  className="conventional-button"
+                  style={{
+                    background: "#101e8e",
+                    color: "#fff",
+                    gridColumn: "1 /span 2",
+                    width: "25%",
+                    placeSelf: "start",
+                    opacity: agreementChecked === "true" ? "1" : "0.5",
+                  }}
+                >
+                  SUBMIT
+                </ButtonSecondary>
+              )}
+            </>
+          )}
+
+        {!valid ? (
+          <h3
+            style={{
+              color: "red",
+              width: "100%",
+              margin: "auto",
+              paddingTop: 15,
+              backgroundColor: "#fff",
+            }}
+          >
             Please fill in all required fields (*)
           </h3>
-          : <h3></h3>
-        }
-
+        ) : (
+          <h3></h3>
+        )}
       </ComplaintContainer>
       <Backdrop open={openPopup}>
-        {Backloading ? (<CircularProgress color="inherit" />) : (<Popup onClose={handleClose} propertyTypeList={PropertyTypeList} onSubmit={addPropertyType}></Popup>)}
+        {Backloading ? (
+          <CircularProgress color="inherit" />
+        ) : (
+          <Popup
+            onClose={handleClose}
+            propertyTypeList={PropertyTypeList}
+            onSubmit={addPropertyType}
+          ></Popup>
+        )}
       </Backdrop>
       <Backdrop open={openPopupMessage}>
-        {Backloading ? (<CircularProgress color="inherit" />) : (<PopupMessage onClose={handleMessageClose} title={alert.title} type={alert.type} message={alert.text} onSubmit={handleMessageClose}></PopupMessage>)}
+        {Backloading ? (
+          <CircularProgress color="inherit" />
+        ) : (
+          <PopupMessage
+            onClose={handleMessageClose}
+            title={alert.title}
+            type={alert.type}
+            message={alert.text}
+            onSubmit={handleMessageClose}
+          ></PopupMessage>
+        )}
       </Backdrop>
-    </div >
+    </div>
   );
-
 };
 
 export default ApplyWWPR;

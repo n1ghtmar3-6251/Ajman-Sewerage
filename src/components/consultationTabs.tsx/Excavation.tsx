@@ -377,13 +377,14 @@ const Excavation = ({ data, viewAll, infoList, dueCompletion }) => {
         </div>
         <MainCardsContainer
           style={{
+            display: isLargeScreen? "flex": "block" ,
             flexDirection: "row",
-            width: "87%",
+            width: isLargeScreen? "87%" : '100%',
             margin: "auto",
             alignItems: "flex-start",
           }}
         >
-          <BaseCard style={{ width: "45%" }}>
+          <BaseCard style={{ width:  isLargeScreen? "45%" : '100%' }}>
             <div className="title">
               <h3
               style={{ fontSize: isLargeScreen ?
@@ -477,7 +478,7 @@ const Excavation = ({ data, viewAll, infoList, dueCompletion }) => {
               </tbody>
             </Table>
           </BaseCard>
-          <BaseCard style={{ width: "45%" }}>
+          <BaseCard style={{ width:  isLargeScreen? "45%" : '100%' }}>
             <div className="title">
               <h3
               style={{ fontSize: isLargeScreen ?

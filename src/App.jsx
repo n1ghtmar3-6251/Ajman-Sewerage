@@ -12,6 +12,7 @@ import { createTheme } from "@mui/material/styles";
 import Navbar from "./components/navbar/navbar.component";
 import Footer from "./components/footer/footer.component";
 import ApplyWWPR from "./screens/ApplyWWPR/ApplyWWPR";
+import Approved from './components/Approved/Approved'
 import ApplyExcavation from "./screens/ApplyExcavation/ApplyExcavation";
 import { HappyButton } from "./components/extras/styled";
 import MapContainer from "./components/map/MapContainer";
@@ -112,9 +113,10 @@ function App() {
  {/* <Route path="/consultation" element={<TextToSpeech />} /> */}
               
               <Route path="/apply-wwpr" element={<ApplyWWPR />} />
+              <Route path="/dummyRoute" element={<Approved />} />
               <Route path="/apply-excavation" element={<ApplyExcavation />} />
               <Route path="/mini-map" element={<MapContainer />} />
-              <Route path="/" element={<Login />} />
+              <Route path="/" element={<Login />}/>
               <Route path="/Home/Redirect" element={<UAERedirect />} />
               <Route path="/login" element={<Login />} />
               <Route path="/logout" element={<Logout />} />
@@ -149,7 +151,7 @@ function App() {
         aria-describedby="modal-description"
       >
 
-        <ExperienceFeedback />
+        <ExperienceFeedback modalOpen={modalOpen} setModalOpen={setModalOpen} />
         
       </Modal>
     </ThemeProvider>

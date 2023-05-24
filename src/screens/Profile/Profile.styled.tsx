@@ -27,4 +27,9 @@ export const InfoContainer = styled.div`
       }
     }
   }
+
+  @media (max-width: 991px) {
+    display: block;
+ }
+
 `;

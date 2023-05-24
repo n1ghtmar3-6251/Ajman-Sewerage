@@ -56,7 +56,7 @@ code {
   border-bottom: none;
 }
 .MuiTab-root {
-  border-top: 7px solid #101e8e !important;
+  /* border-top: 7px solid #101e8e !important; */
 }
 .MuiTabs-indicator {
   background-color: #e7e9f8 !important;

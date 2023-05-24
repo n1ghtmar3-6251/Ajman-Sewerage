@@ -53,9 +53,10 @@ export const ButtonSecondary = styled.button`
     border: none;
   }
 
-  @media screen and (min-width: 991px) {
+  @media (min-width: 991px) {
     padding: 0px;
     width: 80%;
+    padding: 10px 15px;
   }
 
 
@@ -172,7 +173,8 @@ export const BaseCard = styled.div`
     
   }
   .viewall{
-    font-family: "Noto Sans";
+    // font-family: "Noto Sans";
+    font-family: "Segoe UI";
     font-style: normal;
     font-weight: 700;
     font-size: 1rem;
@@ -184,7 +186,8 @@ export const BaseCard = styled.div`
     color: #101E8E;
   }
   h3 {
-    font-family: "Noto Sans";
+    // font-family: "Noto Sans";
+  font-family: "Segoe UI";
     font-style: normal;
     font-weight: 700;
     font-size: 1.8rem;

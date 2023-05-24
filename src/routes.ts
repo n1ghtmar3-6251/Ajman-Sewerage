@@ -9,6 +9,8 @@ import Logout from './screens/logout/logout'
 import Profile from './screens/Profile/Profile'
 import ChangePassword from './screens/ChangePassword/ChangePassword'
 
+import UaePassRedirection from "./screens/UaePassRedirection/UaePassRedirection";
+
 // import MapContainer from "./components/map/MapContainer";
 
 interface Route {
@@ -59,6 +61,7 @@ export const loggedInRoutes: Array<Route> = [
   //   component: ConsultationTabs,
   //   textColor: '#FFFFFF',
   // },
+  {    key: "UaePassRedirection",    title: "UAE Pass Redirection",    path: "/Home/Redirect",    enabled: true,    component: UaePassRedirection,    width: "20%",    backgroundColor: "#62AA51",  },
   {
     key: 'ConsultationTabs-route-05',
     title: 'Consultation',
@@ -96,6 +99,11 @@ export const loggedInRoutes: Array<Route> = [
       // },
     ],
   },
+
+
+
+
+
   {
     key: 'logout-route',
     icon: shutdown,

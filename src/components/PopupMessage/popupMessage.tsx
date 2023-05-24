@@ -10,7 +10,7 @@ const Popup: FC<Props> = ({ title, type, message, onClose, onSubmit }: Props): R
   return (
 
 
-    <Card style={{ color: '#101E8E', width: "30%" }}>
+    <Card style={{ color: '#101E8E', width: "50%" }}>
       <CardHeader style={{ justifyContent: "space-between", paddingLeft: "1rem", paddingRight: "1rem", }}>
         <h1 style={{ color: "#fff", justifySelf: "flex-start" }}> {title}</h1>
         <img src={CloseIcon} alt="Close" onClick={onClose} />
@@ -24,16 +24,21 @@ const Popup: FC<Props> = ({ title, type, message, onClose, onSubmit }: Props): R
 
         <div
           style={{
-            width: "95%",
-            display: "grid",
+            width: "100%",
+            height:"60px",
+            display: "flex",
+            justifyContent:"center",
+            alignItems:"center",
             placeItems: "end",
             gridTemplateColumns: "1fr",
-            margin: "10px auto"
+            marginTop:"12px"
+            // margin: "10px auto"
+            // margin:"auto"
           }}
         >
-          <p style={{ fontWeight: "700", gridColumn: "1 / span 1", placeSelf: "center", marginRight: "10px" }}>
-            <ButtonSecondary onClick={(e) => { onSubmit(e) }} style={{ width: "100%" }}>OK</ButtonSecondary>
-          </p>
+          {/* <p style={{ fontWeight: "700", gridColumn: "1 / span 1", placeSelf: "center", marginRight: "10px", width:"40%" }}> */}
+            <ButtonSecondary onClick={(e) => { onSubmit(e) }} >OK</ButtonSecondary>
+          {/* </p> */}
 
         </div>
   

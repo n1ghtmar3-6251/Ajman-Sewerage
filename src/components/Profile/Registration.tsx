@@ -1,9 +1,10 @@
 import { ButtonSecondary } from "../../screens/login.screen/login.styled";
 import { Container } from "@mui/material";
-import { ChangeEvent, useRef, useState } from "react";
+import { ChangeEvent, useRef, useState, useEffect } from "react";
 import { ButtonsContainer, RegistrationContainer } from "../../screens/Registration/Registration.styled";
 import { Label } from "../extras/styled";
 import { encrypt } from "../../core/crypt";
+// import { useState, useEffect } from "react";
 
 
 interface Props {
@@ -289,6 +290,17 @@ const Registration = ({ Submit }: Props) => {
     }
   };
 
+  const [isLargeScreen, setIsLargeScreen] = useState(false);
+
+  useEffect(() => {
+    function handleResize() {
+      setIsLargeScreen(window.innerWidth > 991);
+    }
+    window.addEventListener("resize", handleResize);
+    handleResize(); 
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
   const handleSubmit = () => {
 
     const fullName = fullNameValue.current?.value;
@@ -335,38 +347,167 @@ const Registration = ({ Submit }: Props) => {
     }
   }
 
+
+
+  const [language, setLanguage] =  useState<any>()
+
+  const [fontSize, setFontSize] = useState<number>(14);
+
+  const [isPaymentExemptlocal, setIsPaymentExemptlocal] = useState<boolean>(false);
+
+  const [colorNumber, setColorNumber] = useState<number>(14);
+
+  useEffect(()=>{
+    const reciveLanguage:any = localStorage.getItem('LanguageChange');
+    const reciveLanguage1:any = JSON.parse(reciveLanguage)
+    setLanguage(reciveLanguage1)
+
+    const storedFontSize = localStorage.getItem("fontSizeLocal");
+    if (storedFontSize) {
+      setFontSize(Number(storedFontSize));
+    }
+
+    const colorNumb = localStorage.getItem("colorNum");
+    if (colorNumb) {
+      setColorNumber(Number(colorNumb));
+    }
+
+    const isPaymentExemptlocal1 = localStorage.getItem("isPaymentExempt");
+    if (isPaymentExemptlocal1=='true') {
+      setIsPaymentExemptlocal(true);
+    }
+    else if(isPaymentExemptlocal1=='false'){
+      setIsPaymentExemptlocal(false);
+    }
+
+    // setIsPaymentExemptlocal(isPaymentExemptlocal1);
+
+  })
+
+
   return (
-    <div style={{ backgroundColor: '#fff', width: '90%', margin: 'auto', padding: "3.125rem 9rem" }}>
+    <div style={{ backgroundColor: '#fff', width: isLargeScreen? '90%' : '100%', margin: 'auto', padding: isLargeScreen? "3.125rem 9rem" : '3.125rem 2rem' }}>
       <Container>
 
         <RegistrationContainer>
 
-          <Label>
-            Full Name / Company Name*
-            <input type="text" placeholder="Full Name / Company Name" style={{ background: "#e5eff2" }} ref={fullNameValue} />
+          <Label style={{ 
+            fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }`
+                }}>
+          {language?.result?.cm_full_name_company_name
+                ? language?.result?.cm_full_name_company_name.label
+                : "Full Name / Company Name"} *
+           
+            <input type="text" placeholder={language?.result?.cm_full_name_company_name
+                ? language?.result?.cm_full_name_company_name.label
+                : "Full Name / Company Name"}
+            
+            style={{ background: "#e5eff2" }} ref={fullNameValue} />
           </Label>
 
-          <Label>
-            Email Address*{" "}
+          <Label style={{ 
+            fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }`
+                }} >
+          {language?.result?.cm_nocemailaddress
+                ? language?.result?.cm_nocemailaddress.label
+                : "Email Address"} *
+            
+            
+            {" "}
             <input type="text" style={{ background: "#e5eff2" }} placeholder="Email" ref={emailValue} />
           </Label>
 
-          <Label>
-            Date Of Birth*{" "}
+          <Label style={{ 
+            fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }`
+                }} >
+          {language?.result?.cm_dob
+                ? language?.result?.cm_dob.label
+                : "Date Of Birth"} *
+            {" "}
             <input type="text" style={{ background: "#e5eff2" }} placeholder="YYYY-MM-DD" ref={dateOfBirthValue} />
           </Label>
 
-          <Label style={{ width: '100%' }}>
-            Gender*
+          <Label style={{ width: '100%',   fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }` }}>
+          {language?.result?.cm_gender
+                ? language?.result?.cm_gender.label
+                : "Gender"} *
+            
             <select ref={genderValue}
               style={{ width: "100%", background: "#e5eff2", marginTop: 7 }}>
-              <option value="0">Male</option>
-              <option value="1">Female</option>
+              <option value="0">{language?.result?.cm_male
+                ? language?.result?.cm_male.label
+                : "Male"}</option>
+              <option value="1">{language?.result?.cm_female
+                ? language?.result?.cm_female.label
+                : "Female"} </option>
             </select>
           </Label>
 
-          <Label style={{ width: '100%' }}>
-            Nationality*
+          <Label style={{ width: '100%',   fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }` }}>
+          {language?.result?.cm_nationality
+                ? language?.result?.cm_nationality.label
+                : "Nationality"} *
+            
             <select ref={nationalityValue}
               style={{ width: "100%", background: "#e5eff2", marginTop: 7 }}>
               {nationality.map((item: any, index) => {
@@ -375,66 +516,220 @@ const Registration = ({ Submit }: Props) => {
             </select>
           </Label>
 
-          <Label>
-            TRN Number
+          <Label style={{ 
+            fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }`
+                }} >
+          {language?.result?.cm_trnnum
+                ? language?.result?.cm_trnnum.label
+                : "TRN Number"} 
+            
             <input type="text" ref={trnNumberValue} style={{ background: "#e5eff2" }} />
           </Label>
 
-          <Label>
-            Address*
+          <Label style={{ 
+            fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }`
+                }}>
+          {language?.result?.cm_ws_address
+                ? language?.result?.cm_ws_address.label
+                : "Address"} *
+            
             <textarea
               ref={addressValue}
               style={{ width: "100%", background: "#e5eff2", resize: "none", border: "1px solid #b6bfdc", marginTop: 7 }}
             />
           </Label>
 
-          <Label>
-            P.O.BOX NO*
+          <Label style={{ 
+            fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }`
+                }}>
+          {language?.result?.cm_pobox_no
+                ? language?.result?.cm_pobox_no.label
+                : "P.O.BOX NO"} *
+            
             <input type="text"
               ref={poboxValue}
               style={{ background: "#e5eff2" }} />
           </Label>
 
-          <Label>
-            Password*
+          <Label style={{ 
+            fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }`
+                }}>
+          {language?.result?.cm_password
+                ? language?.result?.cm_password.label
+                : "Password"} *
+            
             <input type="password" ref={passwordValue} style={{ background: "#e5eff2" }} />
           </Label>
 
-          <Label>
-            Confirm Password*
+          <Label style={{ 
+            fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }`
+                }}>
+          {language?.result?.cm_cpassword
+                ? language?.result?.cm_cpassword.label
+                : "Confirm Password"} *
+            
             <input type="password" ref={confirmPasswordValue} style={{ background: "#e5eff2" }} />
           </Label>
 
-          <Label style={{ width: '100%' }}>
-            Mobile Number*
+          <Label style={{ width: '100%' ,   fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }` }}>
+          {language?.result?.cm_dmobile
+                ? language?.result?.cm_dmobile.label
+                : "Mobile Number"}*
             <div style={{ width: '100%', gridColumn: '1 / span 2' }}>
-              <input style={{ width: '65px', background: "#e5eff2", marginRight: '2%' }} type='text' placeholder='+971' disabled />
-              <input style={{ width: '83%', background: "#e5eff2" }} type='text' placeholder='0000000000' ref={mobileNumberValue} />
+              <input style={{ width: isLargeScreen? '65px' : '23%', background: "#e5eff2", marginRight: '2%' }} type='text' placeholder='+971' disabled />
+              <input style={{ width: isLargeScreen? '83%' : '75%', background: "#e5eff2" }} type='text' placeholder='0000000000' ref={mobileNumberValue} />
             </div>
           </Label>
 
-          <Label style={{ width: '100%' }}>
-            Alternate Mobile Number
+          <Label style={{ width: '100%',   fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }` }}>
+          {language?.result?.cm_alt_mobno
+                ? language?.result?.cm_alt_mobno.label
+                : "Alternate Mobile Number"}
+            
             <div style={{ width: '100%', gridColumn: '1 / span 2' }}>
-              <input style={{ width: '65px', marginRight: '2%', background: "#e5eff2" }} type='text' placeholder='+971' disabled />
-              <input style={{ width: '83%', background: "#e5eff2" }} type='text' placeholder='0000000000' ref={altMobileNumberValue} />
+              <input style={{ width: isLargeScreen? '65px' : '23%', marginRight: '2%', background: "#e5eff2" }} type='text' placeholder='+971' disabled />
+              <input style={{ width: isLargeScreen? '83%' : '75%', background: "#e5eff2" }} type='text' placeholder='0000000000' ref={altMobileNumberValue} />
             </div>
           </Label>
 
-          <Label>
-            Fax
+          <Label style={{ 
+            fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }`
+                }}>
+          {language?.result?.cm_mob_fax
+                ? language?.result?.cm_mob_fax.label
+                : "Fax"}
+            
             <input type="text" style={{ background: "#e5eff2" }} ref={faxValue} />
           </Label>
 
 
-          <Label style={{ width: '100%' }}>
-            User's ID Proof
+          <Label style={{ width: '100%',   fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }` }}>
+          {language?.result?.cm_users_ID_proof
+                ? language?.result?.cm_users_ID_proof.label
+                : "User's ID Proof"}
+          
             <select
               ref={documentTypeValue}
               onChange={(e) => { setOwnerId(e.target.value) }}
               style={{ width: "100%", background: "#e5eff2", marginTop: 7 }}>
-              <option value="0">Emirates ID</option>
-              <option value="1">Trade License</option>
+              <option value="0">
+              {language?.result?.cm_uni
+                ? language?.result?.cm_uni.label
+                : "Emirates ID"}
+                </option>
+              <option value="1">
+              {language?.result?.cm_tdlic
+                ? language?.result?.cm_tdlic.label
+                : "Trade License"}
+                </option>
             </select>
           </Label>
 
@@ -442,12 +737,41 @@ const Registration = ({ Submit }: Props) => {
           {ownerId === "0" &&
             (
               <>
-                <Label style={{ width: '100%' }}>
-                  Emirates ID*
+                <Label style={{ width: '100%',   fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }` }}>
+                {language?.result?.cm_uni
+                ? language?.result?.cm_uni.label
+                : "Emirates ID"}*
                   <input type="text" placeholder="Select" onChange={(e) => { setEmiratesIdOrTradeLicense(e.target.value); }} style={{ width: "100%", background: "#e5eff2" }} />
                 </Label>
-                <Label style={{ width: '100%' }}>
-                  Attach Emirates ID*
+                <Label style={{ width: '100%' ,   fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }` }}>
+                {language?.result?.cm_atch_uni
+                ? language?.result?.cm_atch_uni.label
+                : "Attach Emirates ID"}*
+                  
                   <input name="emiratesIDFile" type="file" accept="application/pdf" placeholder="Select" onChange={(e) => { handleFileChange(e); }} style={{ width: "100%", background: "#e5eff2" }} />
                 </Label>
               </>
@@ -458,12 +782,41 @@ const Registration = ({ Submit }: Props) => {
           {ownerId === "1" &&
             (
               <>
-                <Label style={{ width: '100%' }}>
-                  Trade License*
+                <Label style={{ width: '100%' ,   fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }` }}>
+                {language?.result?.cm_tdlic
+                ? language?.result?.cm_tdlic.label
+                : "Trade License"}*
                   <input type="text" placeholder="Select" onChange={(e) => { setEmiratesIdOrTradeLicense(e.target.value); }} style={{ width: "100%" }} />
                 </Label>
-                <Label style={{ width: '100%' }}>
-                  Attach Trade License*
+                <Label style={{ width: '100%' ,   fontSize: `${
+                  fontSize === 1
+                    ? "10.4px"
+                    : fontSize === 2
+                    ? "12.4px"
+                    : fontSize === 3
+                    ? "14.4px"
+                    : fontSize === 4
+                    ? "16.4px"
+                    : fontSize === 5
+                    ? "18.4px"
+                    : "14.4px"
+                }`}}>
+                {language?.result?.cm_attach_trade_license
+                ? language?.result?.cm_attach_trade_license.label
+                : "Attach Trade License"}*
+                  
                   <input name="tradeLicenseFile" type="file" accept="application/pdf" placeholder="Select" onChange={(e) => { handleFileChange(e); }} style={{ width: "100%" }} />
                 </Label>
               </>
@@ -473,15 +826,36 @@ const Registration = ({ Submit }: Props) => {
 
         </RegistrationContainer>
 
+      { isLargeScreen? 
+      <>
+      <br />
         <br />
-        <br />
-        <hr style={{ width: "100%" }} />
-        <ButtonsContainer style={{ width: "25%", gap: "1rem", marginTop: '3.75rem' }}>
+      </>
+      : null }
+        <hr className="" style={{ width: "100%" }} />
+        <ButtonsContainer style={{ width: "25%", gap: "1rem", marginTop:isLargeScreen? '3.75rem' : '' }}>
           <ButtonSecondary
             onClick={handleSubmit}
-            style={{ background: "#101e8e", color: "#fff", padding: "10px 0", fontSize: "1rem", fontWeight: 'bold' }}
+            style={{ backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101e8e', color: "#fff", padding: isLargeScreen? "10px 0" : '10px 67px',  fontWeight: 'bold', 
+            fontSize: `${
+              fontSize === 1
+                ? "0.8rem"
+                : fontSize === 2
+                ? "0.9rem"
+                : fontSize === 3
+                ? "1rem"
+                : fontSize === 4
+                ? "1.1rem"
+                : fontSize === 5
+                ? "1.2rem"
+                : "1rem"
+            }`
+          }}
           >
-            REGISTER
+            {language?.result?.cm_register
+                ? language?.result?.cm_register.label
+                : "REGISTER"}
+            
           </ButtonSecondary>
         </ButtonsContainer>
       </Container>

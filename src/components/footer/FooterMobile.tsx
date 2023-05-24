@@ -6,6 +6,7 @@ import InstaIcon from "../../assets/Home/InstaIcon.svg";
 import TwiterIcon from "../../assets/Home/TwiterIcon.svg";
 import GooglePlay from "../../assets/tryingGoogle.svg";
 import AppStore from "../../assets/tryApple.svg";
+import { Link } from "react-router-dom";
 import ConsultationTabsMobile from "../../screens/consultation/ConsultationTabsMobile";
 
 const FooterMobile = () => {
@@ -38,6 +39,10 @@ const FooterMobile = () => {
 
       <div className="d-flex justify-content-between mx-0 px-4 pt-3">
         <div className="footer-text1">
+        <Link
+                to="/disclaimer"
+                style={{ textDecoration: "none", color: "#fff" }}
+              >
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -45,7 +50,10 @@ const FooterMobile = () => {
                   : fontSize === 4 ? '16px'
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
-          >  {language?.result?.cm_disclaimer ? language?.result?.cm_disclaimer.label:'Disclaimer' }</p>
+          >  {language?.result?.cm_disclaimer ? language?.result?.cm_disclaimer.label:'Disclaimer' }
+          </p>
+        </Link>
+      
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -58,6 +66,7 @@ const FooterMobile = () => {
             {/* <ConsultationTabsMobile>Website Policy </ConsultationTabsMobile> */}
           
           </p>
+         
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -68,6 +77,10 @@ const FooterMobile = () => {
           > 
           {/* <ConsultationTabsMobile>{language?.result?.cm_customercharterfooter ? language?.result?.cm_customercharterfooter.label:'Happiness Charter' }</ConsultationTabsMobile> */}
             </p>
+            <Link
+                to="/careers"
+                style={{ textDecoration: "none", color: "#fff" }}
+              >
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -78,6 +91,11 @@ const FooterMobile = () => {
           >
               {language?.result?.cm_aspcl_careers ? language?.result?.cm_aspcl_careers.label:'ASPCL Careers ' }
             </p>
+            </Link>
+            <Link
+                to="/school-trip"
+                style={{ textDecoration: "none", color: "#fff" }}
+              >
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -86,6 +104,11 @@ const FooterMobile = () => {
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
           >{language?.result?.cm_request_visit_for_school ? language?.result?.cm_request_visit_for_school.label:'Request Visit for School  ' } </p>
+         </Link>
+         <Link
+                to="/school-trip"
+                style={{ textDecoration: "none", color: "#fff" }}
+              >
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -94,6 +117,11 @@ const FooterMobile = () => {
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
           >{language?.result?.cm_trip ? language?.result?.cm_trip.label:'Trip  ' } </p>
+         </Link>
+         <Link
+                to="/bird-watching"
+                style={{ textDecoration: "none", color: "#fff" }}
+              >
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -104,6 +132,11 @@ const FooterMobile = () => {
           >
             {language?.result?.cm_request_visit_for_bird ? language?.result?.cm_request_visit_for_bird.label:'Request Visit for Bird ' } 
              </p>
+             </Link>
+             <Link
+                to="/bird-watching"
+                style={{ textDecoration: "none", color: "#fff" }}
+              >
           <p className="mb-0 pb-0"
           style={{ fontSize: `${fontSize === 1 ? '10px' 
                   : fontSize === 2 ? '12px'
@@ -112,6 +145,7 @@ const FooterMobile = () => {
                   : fontSize === 5 ? '18px'
                   : '14px'}` }}
           >{language?.result?.cm_watching ? language?.result?.cm_watching.label:'Watching ' }  </p>
+         </Link>
         </div>
         <div className="footer-social ">
           <p className="mb-2"
