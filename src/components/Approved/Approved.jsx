@@ -1,6 +1,7 @@
 import { ChangeEvent, FC, ReactElement, useEffect, useState } from "react";
 import CardContent from "@mui/material/CardContent";
 import CloseIcon from "../../assets/CloseIcon.svg";
+import axios from "axios";
 import {
   Card,
   CardHeader,
@@ -15,20 +16,26 @@ import { DocumentDownload } from "../../components/documentDownload/documentDown
 import Constants from "../../core/Constants";
 import RequestEngine from "../../core/RequestEngine";
 import { ButtonSecondary } from "../consultationTabs.tsx/consultation.styled";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { Memory } from "../../core/Memory";
 
-const Popup = ({
-  nocType,
-  application,
-  onClose,
-}) => {
+const Popup = (
+  {
+    // nocType,
+    // application,
+    // onClose,
+  }
+) => {
   const [Comments, setComments] = useState("");
   const [Attachment, setAttachment] = useState();
-  const location = useLocation()
-  console.log("location.state", location.state)
-  nocType = location.state.nocType
-  application = location.state.application
-  onclose = location.state.onclose
+  const [application, setApplication] = useState();
+  const location = useLocation();
+  const navigate = useNavigate();
+  // console.log("location.state", location.state)
+  // nocType = location.state.nocType
+  var nocType = 1;
+  // application = location.state.application
+  // onclose = location.state.onclose
   const handleFileChange = (e) => {
     if (e.target.files) {
       if (e.target.name === "attachment") setAttachment(e.target.files[0]);
@@ -37,33 +44,39 @@ const Popup = ({
 
   const submit = async () => {
     if (application.status === "InfoNeeded") {
-        let latestInfoNeeded = application.infoNeeded.filter(({ fromCustomer }) => fromCustomer === null);
-      
-        console.log("latestInfoNeeded: " + latestInfoNeeded);
-      
-        let engine = new RequestEngine();
-        var formData = new FormData();
-      
-        formData.append("Comments", Comments);
-        formData.append("Id", latestInfoNeeded[0].id);
-        //TODOSD: Add array of attachments
-        if (Attachment) {
-          formData.append("Attachment", Attachment, Attachment.name);
-        }
-      
-        const response = await engine.saveItemData(Constants.INFO_NEEDED, formData);
+      let latestInfoNeeded = application.infoNeeded.filter(
+        ({ fromCustomer }) => fromCustomer === null
+      );
+
+      // console.log("latestInfoNeeded: " + latestInfoNeeded);
+
+      let engine = new RequestEngine();
+      var formData = new FormData();
+
+      formData.append("Comments", Comments);
+      formData.append("Id", latestInfoNeeded[0].id);
+      //TODOSD: Add array of attachments
+      if (Attachment) {
+        formData.append("Attachment", Attachment, Attachment.name);
+      }
+
+      const response = await engine.saveItemData(
+        Constants.INFO_NEEDED,
+        formData
+      );
+      if (response && response.status === 200) {
+        //TODOSD: Display success and get application
+
+        let response = await engine.getItem(
+          "api/noc/nocdetails/" + application.requestId + "?lang=en-US"
+        );
         if (response && response.status === 200) {
-          //TODOSD: Display success and get application
-      
-          let response = await engine.getItem("api/noc/nocdetails/" + application.requestId + "?lang=en-US");
-          if (response && response.status === 200) {
-            console.log(JSON.stringify(response.data.result.data));
-      
-            application = response.data.result.data; //TODOSD: check this
-          }
+          // console.log(JSON.stringify(response.data.result.data));
+
+          application = response.data.result.data; //TODOSD: check this
         }
       }
-      
+    }
   };
 
   const [isLargeScreen, setIsLargeScreen] = useState(false);
@@ -80,12 +93,12 @@ const Popup = ({
   const [language, setLanguage] = useState();
 
   const [fontSize, setFontSize] = useState(14);
-  const [username, setUserName] = useState('');
+  const [username, setUserName] = useState("");
 
   const [colorNumber, setColorNumber] = useState(14);
 
   useEffect(() => {
-    const reciveLanguage= localStorage.getItem("LanguageChange");
+    const reciveLanguage = localStorage.getItem("LanguageChange");
     const reciveLanguage1 = JSON.parse(reciveLanguage);
     setLanguage(reciveLanguage1);
 
@@ -105,12 +118,30 @@ const Popup = ({
     }
   });
 
-  console.log("application=>", application);
+  // console.log("application=>", application);
 
+  useEffect(() => {
+    openApplication();
+  }, []);
 
+  let token = Memory.getItem("token");
+  const openApplication = async () => {
+    try {
+      let engine = new RequestEngine();
+      let response = await engine.getItem(
+        "api/noc/nocdetails/" + "5733" + "?lang=en-US"
+      );
+
+      // console.log("applicationaaaaaa", response);
+      setApplication(response.data.result.data);
+    } catch (error) {
+      navigate("/login");
+      console.error("Error fetching data:", error);
+    }
+  };
 
   return (
-    <Card style={{ color: "#101E8E" , width:"100%" }}>
+    <Card style={{ color: "#101E8E", width: "100%" }}>
       <CardHeader
         style={{
           justifyContent: "space-between",
@@ -127,7 +158,7 @@ const Popup = ({
         }}
       >
         <h1 className="" style={{ color: "#fff", justifySelf: "flex-start" }}>
-         {language?.result?.cm_request_id
+          {language?.result?.cm_request_id
             ? language?.result?.cm_request_id.label
             : " Request ID"}
           : {application?.requestId}
@@ -164,7 +195,7 @@ const Popup = ({
               fontSize: 20,
             }}
           >
-            {application?.status.replace(/([A-Z])/g, " $1").trim()}
+            {application?.status?.replace(/([A-Z])/g, " $1").trim()}
           </p>
 
           {isLargeScreen ? (
@@ -175,7 +206,7 @@ const Popup = ({
                     ? language?.result?.cm_ascreate_label_parcelid.label
                     : "Parcel ID"}
                 </span>
-               {application?.parcelId}
+                {application?.parcelId}
               </div>
               <div style={{ alignSelf: "center" }}>
                 <span>
@@ -205,7 +236,10 @@ const Popup = ({
             </CardSpacer>
           ) : (
             <>
-              <div className="d-flex justify-content-between pb-3" style={{backgroundColor:"rgb(237, 244, 246)"}}>
+              <div
+                className="d-flex justify-content-between pb-3"
+                style={{ backgroundColor: "rgb(237, 244, 246)" }}
+              >
                 <div className="px-4">
                   <div className="pt-3 pb-4 ">
                     <div>
@@ -237,53 +271,58 @@ const Popup = ({
                     </div>
                   </div>
 
-                  <div className='mt-3'>
+                  <div className="mt-3">
                     <div>
-                      <span className="form-heading-top"     style={{
-                    fontSize: `${
-                      fontSize === 1
-                        ? "12px"
-                        : fontSize === 2
-                        ? "14px"
-                        : fontSize === 3
-                        ? "16px"
-                        : fontSize === 4
-                        ? "18px"
-                        : fontSize === 5
-                        ? "20px"
-                        : "16px"
-                    }`,
-                  }}>
-                      {language?.result?.cm_consultant
+                      <span
+                        className="form-heading-top"
+                        style={{
+                          fontSize: `${
+                            fontSize === 1
+                              ? "12px"
+                              : fontSize === 2
+                              ? "14px"
+                              : fontSize === 3
+                              ? "16px"
+                              : fontSize === 4
+                              ? "18px"
+                              : fontSize === 5
+                              ? "20px"
+                              : "16px"
+                          }`,
+                        }}
+                      >
+                        {language?.result?.cm_consultant
                           ? language?.result?.cm_consultant.label
-                          : "Consultant"} {' '}
-                          {language?.result?.cm_email
+                          : "Consultant"}{" "}
+                        {language?.result?.cm_email
                           ? language?.result?.cm_email.label
                           : "Email"}
                       </span>
                     </div>
                     <div>
-                      <span className="form-heading-text"   style={{
-                    fontWeight: "400",
-                    fontSize: `${
-                      fontSize === 1
-                        ? "12px"
-                        : fontSize === 2
-                        ? "14px"
-                        : fontSize === 3
-                        ? "16px"
-                        : fontSize === 4
-                        ? "18px"
-                        : fontSize === 5
-                        ? "20px"
-                        : "16px"
-                    }`,
-                  }}>
+                      <span
+                        className="form-heading-text"
+                        style={{
+                          fontWeight: "400",
+                          fontSize: `${
+                            fontSize === 1
+                              ? "12px"
+                              : fontSize === 2
+                              ? "14px"
+                              : fontSize === 3
+                              ? "16px"
+                              : fontSize === 4
+                              ? "18px"
+                              : fontSize === 5
+                              ? "20px"
+                              : "16px"
+                          }`,
+                        }}
+                      >
                         {username}
                       </span>
                     </div>
                   </div>
-
                 </div>
 
                 <div>
@@ -360,13 +399,18 @@ const Popup = ({
                   placeSelf: "start",
                 }}
               >
-             {language?.result?.cm_application_documents
-                    ? language?.result?.cm_application_documents.label
-                    : "Application Documents"}
+                {language?.result?.cm_application_documents
+                  ? language?.result?.cm_application_documents.label
+                  : "Application Documents"}
               </p>
 
               {application && application.demolishLetter && (
-                <Label style={{ marginBottom: "10px", width: isLargeScreen? "90%": '100%' }}>
+                <Label
+                  style={{
+                    marginBottom: "10px",
+                    width: isLargeScreen ? "90%" : "100%",
+                  }}
+                >
                   <DocumentDownload
                     exists={true}
                     mainText={"Demolition Letter"}
@@ -386,7 +430,12 @@ const Popup = ({
                 </Label>
               )}
               {application && application.sitePlan && (
-                <Label style={{ marginBottom: "10px", width: isLargeScreen? "90%": '100%' }}>
+                <Label
+                  style={{
+                    marginBottom: "10px",
+                    width: isLargeScreen ? "90%" : "100%",
+                  }}
+                >
                   <DocumentDownload
                     exists={true}
                     mainText={"Site Plan"}
@@ -406,7 +455,12 @@ const Popup = ({
                 </Label>
               )}
               {application && application.floorPlan && (
-                <Label style={{ marginBottom: "10px", width: isLargeScreen? "90%": '100%' }}>
+                <Label
+                  style={{
+                    marginBottom: "10px",
+                    width: isLargeScreen ? "90%" : "100%",
+                  }}
+                >
                   <DocumentDownload
                     exists={true}
                     mainText={
@@ -430,7 +484,12 @@ const Popup = ({
                 </Label>
               )}
               {application && application.layoutPlan && (
-                <Label style={{ marginBottom: "10px", width: isLargeScreen? "90%": '100%' }}>
+                <Label
+                  style={{
+                    marginBottom: "10px",
+                    width: isLargeScreen ? "90%" : "100%",
+                  }}
+                >
                   <DocumentDownload
                     exists={true}
                     mainText={"Layout Plan"}
@@ -449,9 +508,14 @@ const Popup = ({
                   />
                 </Label>
               )}
-              
+
               {application && application.emiratesIdOrTradeLicense && (
-                <Label style={{ marginBottom: "10px", width: isLargeScreen? "90%": '100%' }}>
+                <Label
+                  style={{
+                    marginBottom: "10px",
+                    width: isLargeScreen ? "90%" : "100%",
+                  }}
+                >
                   <DocumentDownload
                     exists={true}
                     mainText={"Owner’s Emirates ID"}
@@ -472,7 +536,7 @@ const Popup = ({
                   />
                 </Label>
               )}
-                       {/* {application && application.costEstimationReport.costEstimationReport && (
+              {/* {application && application.costEstimationReport.costEstimationReport && (
                 <Label style={{ marginBottom: "10px" }}>
                   <DocumentDownload
                     exists={true}
@@ -498,36 +562,38 @@ const Popup = ({
               )} */}
             </div>
 
-
-
             <div className=" w-100 ">
               <p className="my-3" style={{ fontWeight: "400" }}>
                 Detail:
               </p>
 
-
               {application?.completionNocDetails ? (
-              <div className='p-3 w-100 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
-                <p>Completion Noc Details:{' '}{application?.completionNocDetails}</p>
-</div>
+                <div
+                  className="p-3 w-100 my-3"
+                  style={{ backgroundColor: "rgb(237, 244, 246)" }}
+                >
+                  <p>
+                    Completion Noc Details: {application?.completionNocDetails}
+                  </p>
+                </div>
               ) : null}
-
 
               {application?.reasonForRejection ? (
-<div className='p-3 w-100 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
-                <p>Reason For Rejection: {' '}{application?.reasonForRejection}</p>
-</div>
+                <div
+                  className="p-3 w-100 my-3"
+                  style={{ backgroundColor: "rgb(237, 244, 246)" }}
+                >
+                  <p>Reason For Rejection: {application?.reasonForRejection}</p>
+                </div>
               ) : null}
-
-              
 
               {application?.renewalNocDetails ? (
                 <>
                   {
-                    <div className='p-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
-
-
-
+                    <div
+                      className="p-3"
+                      style={{ backgroundColor: "rgb(237, 244, 246)" }}
+                    >
                       <p
                         className="mb-0 "
                         style={{ fontWeight: "600", fontSize: "15px" }}
@@ -535,112 +601,92 @@ const Popup = ({
                         Renewal Noc Details
                       </p>
 
-
-
-
-
-                      {application?.renewalNocDetails.map((items: any) => (
+                      {application?.renewalNocDetails.map((items) => (
                         <div className="">
-                        <div className="d-flex mt-2">
-                          <div className="mb-0 " style={{width:"50%"}}>
-                            Additional Info: {' '}
-                            {items?.additionalInfo}
-                          </div>
-
-                          <div className="mb-0 " style={{width:"50%"}}>
-                            Additional Info Comments: {' '}
-                            {items?.additionalInfoComments}
-                          </div>
-                          </div>
-
-
                           <div className="d-flex mt-2">
-                          <div className="mb-0 w-50" >
-                          Comments: {' '}
-                            {items?.comments}
-                          </div>
+                            <div className="mb-0 " style={{ width: "50%" }}>
+                              Additional Info: {items?.additionalInfo}
+                            </div>
 
-                          <div className="mb-0 w-50" >
-                          Excavation Noc: {' '}
-                            {items?.excavationNoc}
-                          </div>
+                            <div className="mb-0 " style={{ width: "50%" }}>
+                              Additional Info Comments:{" "}
+                              {items?.additionalInfoComments}
+                            </div>
                           </div>
 
                           <div className="d-flex mt-2">
-                          <div className="mb-0 w-50">
-                          isPaymentExempted: {' '}
-                            {items?.isPaymentExempted}
-                          </div>
+                            <div className="mb-0 w-50">
+                              Comments: {items?.comments}
+                            </div>
 
-                          <div className="mb-0 w-50">
-                          Payment Status: {' '}
-                            {items?.paymentStatus}
-                          </div>
+                            <div className="mb-0 w-50">
+                              Excavation Noc: {items?.excavationNoc}
+                            </div>
                           </div>
 
                           <div className="d-flex mt-2">
-                          <div className="mb-0 w-50">
-                          Renewal Fees: {' '}
-                            {items?.renewalFees}
+                            <div className="mb-0 w-50">
+                              isPaymentExempted: {items?.isPaymentExempted}
+                            </div>
+
+                            <div className="mb-0 w-50">
+                              Payment Status: {items?.paymentStatus}
+                            </div>
                           </div>
 
-                          <div className="mb-0 w-50">
-                          Vat: {' '}
-                            {items?.vat}
-                          </div>
+                          <div className="d-flex mt-2">
+                            <div className="mb-0 w-50">
+                              Renewal Fees: {items?.renewalFees}
+                            </div>
 
-                          {/* <p className="mb-0 ">
+                            <div className="mb-0 w-50">Vat: {items?.vat}</div>
+
+                            {/* <p className="mb-0 ">
                           Renewal Plan: {' '}
                             {items?.renewalPlan}
                           </p> */}
-
-              </div>
-
-              <div className="d-flex mt-2">
-                          <div className="mb-0 w-50">
-                          status: {' '}
-                            {items?.status}
                           </div>
-
-                          <div className="mb-0 w-50">
-                          Total: {' '}
-                            {items?.total}
-                          </div>
-                          </div>
-
 
                           <div className="d-flex mt-2">
+                            <div className="mb-0 w-50">
+                              status: {items?.status}
+                            </div>
 
-
-                          
-                          <div className='mb-0 w-50'>
-                          {application && application.sitePlan && (
-                <Label style={{ marginBottom: "10px" }}>
-                  <DocumentDownload
-                    exists={true}
-                    mainText={
-                      language?.result?.cm_renewalPlan
-                        ? language?.result?.cm_renewalPlan.label
-                        : "Renewal Plan"
-                    }
-                    subText={
-                      items && items.renewalPlan
-                        ?items?.renewalPlan.substring(
-                          items?.renewalPlan.lastIndexOf("/") + 1
-                          )
-                        : ""
-                    }
-                    inputName={
-                      items && items.renewalPlan
-                        ? items.renewalPlan
-                        : ""
-                    }
-                  />
-                </Label>
-              )}
-              </div>
+                            <div className="mb-0 w-50">
+                              Total: {items?.total}
+                            </div>
                           </div>
 
+                          <div className="d-flex mt-2">
+                            <div className="mb-0 w-50">
+                              {application && application.sitePlan && (
+                                <Label style={{ marginBottom: "10px" }}>
+                                  <DocumentDownload
+                                    exists={true}
+                                    mainText={
+                                      language?.result?.cm_renewalPlan
+                                        ? language?.result?.cm_renewalPlan.label
+                                        : "Renewal Plan"
+                                    }
+                                    subText={
+                                      items && items.renewalPlan
+                                        ? items?.renewalPlan.substring(
+                                            items?.renewalPlan.lastIndexOf(
+                                              "/"
+                                            ) + 1
+                                          )
+                                        : ""
+                                    }
+                                    inputName={
+                                      items && items.renewalPlan
+                                        ? items.renewalPlan
+                                        : ""
+                                    }
+                                  />
+                                </Label>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -648,23 +694,22 @@ const Popup = ({
                 </>
               ) : null}
 
-
-{/* <div>
+              {/* <div>
       {Object.entries(application.costEstimationReport).map(([key, value]) => (
         <p key={key}>{key}: {value}</p>
       ))}
     </div> */}
-    
-    {/* {console.log("appppp", application )} */}
 
-{/* { application &&  Object.entries(application?.costEstimationReport).map(([key, val]:any, i) => 
+              {/* {console.log("appppp", application )} */}
+
+              {/* { application &&  Object.entries(application?.costEstimationReport).map(([key, val]:any, i) => 
 
     <>
     asdf
     </>
 )} */}
 
-{/* {application?.costEstimationReport ? (
+              {/* {application?.costEstimationReport ? (
                 <>
                   {
                     <div className='p-3 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
@@ -776,11 +821,7 @@ const Popup = ({
                   }
                 </>
               ) : null} */}
-
-
             </div>
-
-
 
             <br />
             {application &&
@@ -821,7 +862,7 @@ const Popup = ({
                       </tr>
                     </thead>
                     <tbody>
-                      {application.propertyDetails.map((item: any) => {
+                      {application.propertyDetails.map((item) => {
                         return (
                           <tr key={item.propertyTypeId}>
                             <td>{item.propertyType}</td>
@@ -883,7 +924,7 @@ const Popup = ({
                             .label
                         : "Application Related Communication"}
                     </p>
-                    {application.infoNeeded.map((item: any) => {
+                    {application.infoNeeded.map((item) => {
                       return (
                         <>
                           <PopupCenterSection>
@@ -1025,7 +1066,7 @@ const Popup = ({
 
             <div
               style={{
-                display: isLargeScreen? "grid" : 'block',
+                display: isLargeScreen ? "grid" : "block",
                 gridTemplateColumns: "1fr 1fr",
                 width: "100%",
                 margin: "auto",
@@ -1077,7 +1118,7 @@ const Popup = ({
                   </TableContainer>
                 )}
 
-{application &&
+              {application &&
                 application.costEstimationReport &&
                 application.status !== "Rejected" &&
                 application.status !== "PendingApproval" &&
@@ -1085,31 +1126,40 @@ const Popup = ({
                   <TableContainer>
                     <p>NOC Documents</p>
                     <Table>
-                    {application && application.costEstimationReport.costEstimationReport && (
-                <Label style={{ marginBottom: "10px" }}>
-                  <DocumentDownload
-                    exists={true}
-                    mainText={
-                      language?.result?.cm_costEstimationReport
-                        ? language?.result?.cm_costEstimationReport.label
-                        : "Cost Estimation Report"
-                    }
-                    subText={
-                      application && application.costEstimationReport.costEstimationReport
-                        ?application?.costEstimationReport.costEstimationReport.substring(
-                          application?.costEstimationReport.costEstimationReport.lastIndexOf("/") + 1
-                          )
-                        : ""
-                    }
-                    inputName={
-                      application && application.costEstimationReport.costEstimationReport
-                        ? application.costEstimationReport.costEstimationReport
-                        : ""
-                    }
-                  />
-                </Label>
-              )}
-                     
+                      {application &&
+                        application.costEstimationReport
+                          .costEstimationReport && (
+                          <Label style={{ marginBottom: "10px" }}>
+                            <DocumentDownload
+                              exists={true}
+                              mainText={
+                                language?.result?.cm_costEstimationReport
+                                  ? language?.result?.cm_costEstimationReport
+                                      .label
+                                  : "Cost Estimation Report"
+                              }
+                              subText={
+                                application &&
+                                application.costEstimationReport
+                                  .costEstimationReport
+                                  ? application?.costEstimationReport.costEstimationReport.substring(
+                                      application?.costEstimationReport.costEstimationReport.lastIndexOf(
+                                        "/"
+                                      ) + 1
+                                    )
+                                  : ""
+                              }
+                              inputName={
+                                application &&
+                                application.costEstimationReport
+                                  .costEstimationReport
+                                  ? application.costEstimationReport
+                                      .costEstimationReport
+                                  : ""
+                              }
+                            />
+                          </Label>
+                        )}
                     </Table>
                   </TableContainer>
                 )}
@@ -1215,7 +1265,7 @@ const Popup = ({
             {/*****************************************************************************************/}
           </div>
         </CardContent>
-       )} 
+      )}
 
       {nocType === 2 && (
         <CardContent
@@ -1455,7 +1505,6 @@ const Popup = ({
                 </span>
               </div>
 
-
               <div style={{ alignSelf: "center" }}>
                 <span
                   style={{
@@ -1474,12 +1523,12 @@ const Popup = ({
                     }`,
                   }}
                 >
-                   {language?.result?.cm_consultant
-                          ? language?.result?.cm_consultant.label
-                          : "Consultant"} {' '}
-                          {language?.result?.cm_email
-                          ? language?.result?.cm_email.label
-                          : "Email"}
+                  {language?.result?.cm_consultant
+                    ? language?.result?.cm_consultant.label
+                    : "Consultant"}{" "}
+                  {language?.result?.cm_email
+                    ? language?.result?.cm_email.label
+                    : "Email"}
                 </span>
                 <span
                   style={{
@@ -1499,10 +1548,9 @@ const Popup = ({
                     }`,
                   }}
                 >
-                   {username}
+                  {username}
                 </span>
               </div>
-              
             </CardSpacer>
           ) : (
             <div style={{ background: "rgba(229, 239, 242, 0.7)" }}>
@@ -1609,7 +1657,7 @@ const Popup = ({
                     </div>
                   </div>
 
-                  <div className='mt-3'>
+                  <div className="mt-3">
                     <div>
                       <span
                         className="form-heading-top"
@@ -1630,8 +1678,8 @@ const Popup = ({
                         }}
                       >
                         {language?.result?.cm_wrktypes
-                        ? language?.result?.cm_wrktypes.label
-                        : "Work Type"}
+                          ? language?.result?.cm_wrktypes.label
+                          : "Work Type"}
                       </span>
                     </div>
                     <div>
@@ -1653,11 +1701,10 @@ const Popup = ({
                           }`,
                         }}
                       >
-                       {application?.workTypes.toString()}
+                        {application?.workTypes.toString()}
                       </span>
                     </div>
                   </div>
-
                 </div>
 
                 <div>
@@ -1729,9 +1776,6 @@ const Popup = ({
                       </span>
                     </div>
 
-
-
-
                     <div>
                       <span
                         className="form-heading-tex
@@ -1748,7 +1792,7 @@ const Popup = ({
                     </div>
                   </div>
 
-                  <div className='mt-3'>
+                  <div className="mt-3">
                     <div>
                       <span
                         className="form-heading-top"
@@ -1771,15 +1815,12 @@ const Popup = ({
                         {" "}
                         {language?.result?.cm_consultant
                           ? language?.result?.cm_consultant.label
-                          : "Consultant"} {' '}
-                          {language?.result?.cm_email
+                          : "Consultant"}{" "}
+                        {language?.result?.cm_email
                           ? language?.result?.cm_email.label
                           : "Email"}
                       </span>
                     </div>
-
-
-
 
                     <div>
                       <span
@@ -1796,19 +1837,11 @@ const Popup = ({
                       </span>
                     </div>
                   </div>
-
-                 
-                  
                 </div>
-
-
-                
               </div>
 
+              {/* work  */}
 
-{/* work  */}
-
-              
               {/* <div>
                 <div className="pl-4 pt-4 pb-3">
 
@@ -1856,9 +1889,6 @@ const Popup = ({
                 </div>
                 
               </div> */}
-
-
-
             </div>
           )}
           <br />
@@ -1964,7 +1994,7 @@ const Popup = ({
                   />
                 </Label>
               )}
-               {application && application.gisAttachment && (
+              {application && application.gisAttachment && (
                 <Label style={{ marginBottom: "10px" }}>
                   <DocumentDownload
                     exists={true}
@@ -2017,29 +2047,33 @@ const Popup = ({
                 Detail:
               </p>
 
-
               {application?.completionNocDetails ? (
-              <div className='p-3 w-100 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
-                <p>Completion Noc Details:{' '}{application?.completionNocDetails}</p>
-</div>
+                <div
+                  className="p-3 w-100 my-3"
+                  style={{ backgroundColor: "rgb(237, 244, 246)" }}
+                >
+                  <p>
+                    Completion Noc Details: {application?.completionNocDetails}
+                  </p>
+                </div>
               ) : null}
-
 
               {application?.reasonForRejection ? (
-<div className='p-3 w-100 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
-                <p>Reason For Rejection: {' '}{application?.reasonForRejection}</p>
-</div>
+                <div
+                  className="p-3 w-100 my-3"
+                  style={{ backgroundColor: "rgb(237, 244, 246)" }}
+                >
+                  <p>Reason For Rejection: {application?.reasonForRejection}</p>
+                </div>
               ) : null}
-
-              
 
               {application?.renewalNocDetails ? (
                 <>
                   {
-                    <div className='p-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
-
-
-
+                    <div
+                      className="p-3"
+                      style={{ backgroundColor: "rgb(237, 244, 246)" }}
+                    >
                       <p
                         className="mb-0 "
                         style={{ fontWeight: "600", fontSize: "15px" }}
@@ -2047,193 +2081,218 @@ const Popup = ({
                         Renewal Noc Details
                       </p>
 
-
                       {application?.costEstimationReport ? (
-                <>
-                  {
-                    <div className='p-3 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
+                        <>
+                          {
+                            <div
+                              className="p-3 my-3"
+                              style={{ backgroundColor: "rgb(237, 244, 246)" }}
+                            >
+                              <p
+                                className="mb-0 "
+                                style={{ fontWeight: "600", fontSize: "15px" }}
+                              >
+                                Cost Estimation Report
+                              </p>
 
+                              <div className="">
+                                <div className="d-flex mt-2">
+                                  <div
+                                    className="mb-0 "
+                                    style={{ width: "50%" }}
+                                  >
+                                    Connection Fees:{" "}
+                                    {
+                                      application.costEstimationReport
+                                        .connectionFees
+                                    }
+                                  </div>
 
+                                  <div
+                                    className="mb-0 "
+                                    style={{ width: "50%" }}
+                                  >
+                                    Cost Estimation Report:{" "}
+                                    {
+                                      application?.costEstimationReport
+                                        .costEstimationReport
+                                    }
+                                  </div>
+                                </div>
 
-                      <p
-                        className="mb-0 "
-                        style={{ fontWeight: "600", fontSize: "15px" }}
-                      >
-                        Cost Estimation Report
-                      </p>
+                                <div className="d-flex mt-2">
+                                  <div
+                                    className="mb-0 "
+                                    style={{ width: "50%" }}
+                                  >
+                                    Due Amount Paid:{" "}
+                                    {
+                                      application.costEstimationReport
+                                        .dueAmountPaid
+                                    }
+                                  </div>
 
+                                  <div
+                                    className="mb-0 "
+                                    style={{ width: "50%" }}
+                                  >
+                                    Payment Status:{" "}
+                                    {
+                                      application?.costEstimationReport
+                                        .paymentStatus
+                                    }
+                                  </div>
+                                </div>
 
-                      <div className="">
+                                <div className="d-flex mt-2">
+                                  <div
+                                    className="mb-0 "
+                                    style={{ width: "50%" }}
+                                  >
+                                    Registration Fees:{" "}
+                                    {
+                                      application.costEstimationReport
+                                        .registrationFees
+                                    }
+                                  </div>
 
-                        <div className="d-flex mt-2">
-                          <div className="mb-0 " style={{width:"50%"}}>
-                          Connection Fees: {' '}
-                            {application.costEstimationReport.connectionFees}
-                          </div>
+                                  <div
+                                    className="mb-0 "
+                                    style={{ width: "50%" }}
+                                  >
+                                    Total Amount:{" "}
+                                    {
+                                      application?.costEstimationReport
+                                        .totalAmount
+                                    }
+                                  </div>
+                                </div>
 
-                          <div className="mb-0 " style={{width:"50%"}}>
-                          Cost Estimation Report: {' '}
-                            {application?.costEstimationReport.costEstimationReport}
-                          </div>
-                          </div>
+                                <div className="d-flex mt-2">
+                                  <div
+                                    className="mb-0 "
+                                    style={{ width: "50%" }}
+                                  >
+                                    Total Amount With Due:{" "}
+                                    {
+                                      application.costEstimationReport
+                                        .totalAmountWithDue
+                                    }
+                                  </div>
 
-                          <div className="d-flex mt-2">
-                          <div className="mb-0 " style={{width:"50%"}}>
-                          Due Amount Paid: {' '}
-                            {application.costEstimationReport.dueAmountPaid}
-                          </div>
+                                  <div
+                                    className="mb-0 "
+                                    style={{ width: "50%" }}
+                                  >
+                                    Total Amount Without Registration Fee:{" "}
+                                    {
+                                      application?.costEstimationReport
+                                        .totalAmountWithoutRegistrationFee
+                                    }
+                                  </div>
+                                </div>
 
-                          <div className="mb-0 " style={{width:"50%"}}>
-                          Payment Status: {' '}
-                            {application?.costEstimationReport.paymentStatus}
-                          </div>
-                          </div>
+                                <div className="d-flex mt-2">
+                                  <div
+                                    className="mb-0 "
+                                    style={{ width: "50%" }}
+                                  >
+                                    Total VAT:{" "}
+                                    {application.costEstimationReport.totalVAT}
+                                  </div>
+                                </div>
+                              </div>
+                            </div>
+                          }
+                        </>
+                      ) : null}
 
-                          <div className="d-flex mt-2">
-                          <div className="mb-0 " style={{width:"50%"}}>
-                          Registration Fees: {' '}
-                            {application.costEstimationReport.registrationFees}
-                          </div>
-
-                          <div className="mb-0 " style={{width:"50%"}}>
-                          Total Amount: {' '}
-                            {application?.costEstimationReport.totalAmount}
-                          </div>
-                          </div>
-
-                          <div className="d-flex mt-2">
-                          <div className="mb-0 " style={{width:"50%"}}>
-                          Total Amount With Due: {' '}
-                            {application.costEstimationReport.totalAmountWithDue}
-                          </div>
-
-                          <div className="mb-0 " style={{width:"50%"}}>
-                          Total Amount Without Registration Fee: {' '}
-                            {application?.costEstimationReport.totalAmountWithoutRegistrationFee}
-                          </div>
-                          </div>
-
-                          <div className="d-flex mt-2">
-                          <div className="mb-0 " style={{width:"50%"}}>
-                          Total VAT: {' '}
-                            {application.costEstimationReport.totalVAT}
-                          </div>
-
-                         
-                          </div>
-
-                          </div>
-        
-
-                      
-                    </div>
-                  }
-                </>
-              ) : null}
-
-
-                      {application?.renewalNocDetails.map((items: any) => (
+                      {application?.renewalNocDetails.map((items) => (
                         <div className="">
-                        <div className="d-flex mt-2">
-                          <div className="mb-0 " style={{width:"50%"}}>
-                            Additional Info: {' '}
-                            {items?.additionalInfo}
-                          </div>
-
-                          <div className="mb-0 " style={{width:"50%"}}>
-                            Additional Info Comments: {' '}
-                            {items?.additionalInfoComments}
-                          </div>
-                          </div>
-
-
                           <div className="d-flex mt-2">
-                          <div className="mb-0 w-50" >
-                          Comments: {' '}
-                            {items?.comments}
-                          </div>
+                            <div className="mb-0 " style={{ width: "50%" }}>
+                              Additional Info: {items?.additionalInfo}
+                            </div>
 
-                          <div className="mb-0 w-50" >
-                          Excavation Noc: {' '}
-                            {items?.excavationNoc}
-                          </div>
+                            <div className="mb-0 " style={{ width: "50%" }}>
+                              Additional Info Comments:{" "}
+                              {items?.additionalInfoComments}
+                            </div>
                           </div>
 
                           <div className="d-flex mt-2">
-                          <div className="mb-0 w-50">
-                          isPaymentExempted: {' '}
-                            {items?.isPaymentExempted}
-                          </div>
+                            <div className="mb-0 w-50">
+                              Comments: {items?.comments}
+                            </div>
 
-                          <div className="mb-0 w-50">
-                          Payment Status: {' '}
-                            {items?.paymentStatus}
-                          </div>
+                            <div className="mb-0 w-50">
+                              Excavation Noc: {items?.excavationNoc}
+                            </div>
                           </div>
 
                           <div className="d-flex mt-2">
-                          <div className="mb-0 w-50">
-                          Renewal Fees: {' '}
-                            {items?.renewalFees}
+                            <div className="mb-0 w-50">
+                              isPaymentExempted: {items?.isPaymentExempted}
+                            </div>
+
+                            <div className="mb-0 w-50">
+                              Payment Status: {items?.paymentStatus}
+                            </div>
                           </div>
 
-                          <div className="mb-0 w-50">
-                          Vat: {' '}
-                            {items?.vat}
-                          </div>
+                          <div className="d-flex mt-2">
+                            <div className="mb-0 w-50">
+                              Renewal Fees: {items?.renewalFees}
+                            </div>
 
-                          {/* <p className="mb-0 ">
+                            <div className="mb-0 w-50">Vat: {items?.vat}</div>
+
+                            {/* <p className="mb-0 ">
                           Renewal Plan: {' '}
                             {items?.renewalPlan}
                           </p> */}
-
-              </div>
-
-              <div className="d-flex mt-2">
-                          <div className="mb-0 w-50">
-                          status: {' '}
-                            {items?.status}
                           </div>
-
-                          <div className="mb-0 w-50">
-                          Total: {' '}
-                            {items?.total}
-                          </div>
-                          </div>
-
 
                           <div className="d-flex mt-2">
+                            <div className="mb-0 w-50">
+                              status: {items?.status}
+                            </div>
 
-
-                          
-                          <div className='mb-0 w-50'>
-                          {application && application.sitePlan && (
-                <Label style={{ marginBottom: "10px" }}>
-                  <DocumentDownload
-                    exists={true}
-                    mainText={
-                      language?.result?.cm_renewalPlan
-                        ? language?.result?.cm_renewalPlan.label
-                        : "Renewal Plan"
-                    }
-                    subText={
-                      items && items.renewalPlan
-                        ?items?.renewalPlan.substring(
-                          items?.renewalPlan.lastIndexOf("/") + 1
-                          )
-                        : ""
-                    }
-                    inputName={
-                      items && items.renewalPlan
-                        ? items.renewalPlan
-                        : ""
-                    }
-                  />
-                </Label>
-              )}
-              </div>
+                            <div className="mb-0 w-50">
+                              Total: {items?.total}
+                            </div>
                           </div>
 
+                          <div className="d-flex mt-2">
+                            <div className="mb-0 w-50">
+                              {application && application.sitePlan && (
+                                <Label style={{ marginBottom: "10px" }}>
+                                  <DocumentDownload
+                                    exists={true}
+                                    mainText={
+                                      language?.result?.cm_renewalPlan
+                                        ? language?.result?.cm_renewalPlan.label
+                                        : "Renewal Plan"
+                                    }
+                                    subText={
+                                      items && items.renewalPlan
+                                        ? items?.renewalPlan.substring(
+                                            items?.renewalPlan.lastIndexOf(
+                                              "/"
+                                            ) + 1
+                                          )
+                                        : ""
+                                    }
+                                    inputName={
+                                      items && items.renewalPlan
+                                        ? items.renewalPlan
+                                        : ""
+                                    }
+                                  />
+                                </Label>
+                              )}
+                            </div>
+                          </div>
                         </div>
                       ))}
                     </div>
@@ -2327,7 +2386,7 @@ const Popup = ({
                             .label
                         : "Application Related Communication"}
                     </p>
-                    {application.infoNeeded.map((item: any) => {
+                    {application.infoNeeded.map((item) => {
                       return (
                         <>
                           <PopupCenterSection>

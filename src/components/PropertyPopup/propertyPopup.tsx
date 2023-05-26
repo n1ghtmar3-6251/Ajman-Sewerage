@@ -34,6 +34,8 @@ const Popup: FC<Props> = ({ onClose, onSubmit, propertyTypeList }: Props): React
     onSubmit(e);
 
   }
+  let propertyTypes = Memory.getItemInfo("WWPRPropertyTypes");
+  console.log("AreaSqMeter", propertyTypes)
 
   return (
     <Card>

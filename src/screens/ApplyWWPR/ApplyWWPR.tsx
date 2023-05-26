@@ -22,6 +22,7 @@ interface PropertyDetail {
   PropertyType: string;
   PropertyCount: 0;
   AreaSquareFeet: 0;
+  AreaSqMeter: 0;
 }
 
 const ApplyWWPR = () => {
@@ -327,7 +328,7 @@ const ApplyWWPR = () => {
           );
         } else {
           areaSqMeter = "PropertyDetails" + "[" + i + "]" + "." + "AreaSqMeter";
-          data.append(areaSqMeter, "1");
+          data.append(areaSqMeter, PropertyDetails[i].AreaSqMeter.toString());
         }
       }
     }
@@ -590,7 +591,7 @@ const ApplyWWPR = () => {
                 }`,
               }}
             >
-              {language?.result?.cm_apply_for_wwpr
+            {language?.result?.cm_apply_for_wwpr
                 ? language?.result?.cm_apply_for_wwpr.label
                 : "Apply for WWPR "}
             </span>

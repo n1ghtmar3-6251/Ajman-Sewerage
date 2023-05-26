@@ -113,7 +113,7 @@ function App() {
  {/* <Route path="/consultation" element={<TextToSpeech />} /> */}
               
               <Route path="/apply-wwpr" element={<ApplyWWPR />} />
-              <Route path="/dummyRoute" element={<Approved />} />
+              <Route path="/quickpay" element={<Approved />} />
               <Route path="/apply-excavation" element={<ApplyExcavation />} />
               <Route path="/mini-map" element={<MapContainer />} />
               <Route path="/" element={<Login />}/>

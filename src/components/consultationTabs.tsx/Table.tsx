@@ -132,11 +132,13 @@ const ConsultantTable = ({ StatusId, NocType }) => {
         });
 
         setRows(response.data.result.data ?? []);
+      }else{
+        setRows( []);
       }
     }
 
-    console.log("rows==>", columns)
   };
+  console.log("rows==>", rows)
 
   const prepareData = async () => {
     await getStatusList();
@@ -351,6 +353,7 @@ const ConsultantTable = ({ StatusId, NocType }) => {
               {/* <option key={0} value="0">All Status</option> */}
               {statusList &&
                 statusList.map((item: any) => {
+                  console.log("statusList",item )
                   return (
                     <option
                       style={{
