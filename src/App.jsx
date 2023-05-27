@@ -32,11 +32,12 @@ import ConsultationTabsMobile from './screens/consultation/ConsultationTabsMobil
 import FooterMobile from './components/footer/FooterMobile'
 import SpeakableText from './screens/consultation/ConsultationTabsMobile'
 import TextToSpeech from './screens/consultation/ConsultationTabsMobile'
+import ReadSpeakerReader from "./lib/ReadSpeakerReader";
 
 
 function App() {
   const [modalOpen, setModalOpen] = useState(false)
-
+  const [reader, setReader] = useState(1);
   const handleModalClose = () => setModalOpen(false)
 
   const handleModalOpen = () => setModalOpen(true)
@@ -89,14 +90,14 @@ function App() {
     <div>
       <ThemeProvider theme={theme}>
         <CssBaseline />
-
+        {reader == 2 && <ReadSpeakerReader />}
         <Box display='flex' flexDirection='column' style={{ minHeight: '100vh' }}>
           {/* <Router > */}
           <Router basename="/CustomerPortal">
             {
               isLargeScreen ? <Navbar isLoggedIn={Memory.getItem("isLoggedIn") === 'true'}/>
               :
-              <NavbarMobile/>
+              <NavbarMobile setReader={setReader} reader={reader} />
             }
             
             <Routes>
