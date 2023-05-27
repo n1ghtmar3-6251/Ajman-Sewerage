@@ -138,3 +138,9 @@ textarea {
   height: 400px;
   overflow: hidden;
 }
+
+.school{
+  z-index: 1000;
+  position: absolute;
+  top: 100px;
+}
