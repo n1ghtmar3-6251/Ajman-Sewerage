@@ -9,6 +9,12 @@ import {
   PopupCenterSection,
   TableContainer,
 } from "../Popup/popup.styled";
+import {
+  ComplaintContainer,
+  MiniNav,
+  MoveInHeader,
+} from "../../screens/ApplyWWPR/Apply.styled";
+import { Frames, CardNumber, ExpiryDate, Cvv } from "frames-react";
 import { Props } from "../Popup/popup.interface";
 import { Label } from "../extras/styled";
 import { Table } from "../../screens/ApplyWWPR/Apply.styled";
@@ -19,6 +25,25 @@ import { ButtonSecondary } from "../consultationTabs.tsx/consultation.styled";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Memory } from "../../core/Memory";
 
+import Box from '@mui/material/Box';
+import Modal from '@mui/material/Modal';
+import Button from '@mui/material/Button';
+import Typography from '@mui/material/Typography';
+
+const style = {
+  position: 'absolute',
+  top: '50%',
+  left: '50%',
+  transform: 'translate(-50%, -50%)',
+  width: 400,
+  bgcolor: 'background.paper',
+  border: '2px solid #000',
+  boxShadow: 24,
+  p: 4,
+  height:'436px'
+};
+
+
 const Popup = (
   {
     // nocType,
@@ -26,9 +51,29 @@ const Popup = (
     // onClose,
   }
 ) => {
+  const [getDueAmountLoading, setGetDueAmountLoading] = useState("");
   const [Comments, setComments] = useState("");
   const [Attachment, setAttachment] = useState();
   const [application, setApplication] = useState();
+  const [open, setOpen] = useState(false);
+  const [getDueAmountData, setGetDueAmountData] = useState(false);
+  const handleOpen = () => setOpen(true);
+  const handleClose = () => setOpen(false);
+  const getDueAmount = async()=>{
+    try {
+      const response = await axios.get('http://213.42.234.23:8904/CustomerAPI/api/noc/getDueAmount', {
+        params: {
+          ParcelId: 104262745,
+          RequestId: `${getQueryParam("requestid")}`
+        }
+      });
+      setGetDueAmountData(response.data);
+      setGetDueAmountLoading('')
+      // console.log("firstgetDueAmountData", getDueAmountData)
+    } catch (error) {
+      console.log(error);
+    }
+  }
   const location = useLocation();
   const navigate = useNavigate();
   // console.log("location.state", location.state)
@@ -129,7 +174,7 @@ const Popup = (
     try {
       let engine = new RequestEngine();
       let response = await engine.getItem(
-        "api/noc/nocdetails/" + "5733" + "?lang=en-US"
+        `api/noc/nocdetails/${getQueryParam("requestid")}?lang=en-US`
       );
 
       // console.log("applicationaaaaaa", response);
@@ -139,6 +184,12 @@ const Popup = (
       console.error("Error fetching data:", error);
     }
   };
+
+  const getQueryParam = (param) => {
+    const urlSearchParams = new URLSearchParams(window.location.search);
+    return urlSearchParams.get(param);
+  };
+
 
   return (
     <Card style={{ color: "#101E8E", width: "100%" }}>
@@ -1246,7 +1297,179 @@ const Popup = (
                   </TableContainer>
                 )}
             </div>
+<div className=" w-100 mt-4 d-flex justify-content-center">
 
+{getDueAmountData? <button style={{
+  width:"190px",
+  height:"55px",
+  backgroundColor:"white",
+  borderRadius:"12px"
+}}
+className="mr-3"
+onClick={()=>{
+  handleOpen()
+}}>Pay Now</button> :  null}
+
+<button style={{
+  width:"190px",
+  height:"55px",
+  backgroundColor:"white",
+  borderRadius:"12px"
+}} onClick={()=>{
+  setGetDueAmountLoading('Please Wait...')
+  getDueAmount()
+}}>Get Due Amount</button>
+
+
+      <Modal
+        keepMounted
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="keep-mounted-modal-title"
+        aria-describedby="keep-mounted-modal-description"
+      >
+
+
+        
+        <Box sx={style}>
+
+        <ComplaintContainer style={{ width:"100%"}}>
+
+
+
+<Frames
+  config={{
+    debug: true,
+    //publicKey: 'pk_test_6e40a700-d563-43cd-89d0-f9bb17d35e73', //'pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit', //'pk_test_5fe58a54-8ef2-408b-99b3-14659cdebfcf','pk_sbox_ogynfaoply5o6ksuw3d3hcee3ez'
+    publicKey: "pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit",
+    schemeChoice: true,
+    localization: {
+      cardNumberPlaceholder: "",
+      expiryMonthPlaceholder: "MM",
+      expiryYearPlaceholder: "YY",
+      cvvPlaceholder: "",
+    },
+    style: {
+      base: {
+        fontSize: "14px",
+        background: "#e5eff2",
+        color: "#101e8e",
+        opacity: "1",
+        padding: "1rem 0 !important",
+        margin: "0",
+        outline: "none",
+        border: "1px solid #b6bfdc",
+        width: "100%",
+        height: "35px",
+      },
+      
+    },
+  }}
+  ready={() => {}}
+  frameActivated={(e) => {}}
+  frameFocus={(e) => {}}
+  frameBlur={(e) => {}}
+  frameValidationChanged={(e) => {}}
+  paymentMethodChanged={(e) => {}}
+  cardValidationChanged={(e) => {}}
+  cardSubmitted={() => {}}
+  cardTokenizationFailed={(e) => {}}
+  cardBinChanged={(e) => {}}
+  cardTokenized={(e) => {
+    // submit(e.token);
+  }}
+>
+  
+  <Table
+    style={{ width: "140%", gridColumn: "1 / span 2", border: "none" }}
+  >
+    <tbody style={{ width:"100%"}}>
+      <tr>
+        <td>
+        <label style={{ float: "left" }}>
+           
+        {language?.result?.cm_amount ? language?.result?.cm_amount.label:'Amount' }
+          </label>
+          </td>
+          <td> </td>
+        {/* <td>52.50 (AED)</td> */}
+        {/* <td>{PaymentFee && PaymentFee.total}</td> */}
+      </tr>
+      <tr>
+        <td colSpan={2} style={{ border: "none" }}>
+          <label style={{ float: "left" }}>
+            Credit/Debit Card Number
+          </label>
+          <CardNumber style={{ height: "35px", width: "100%" }} />
+        </td>
+      </tr>
+      <tr>
+        <td style={{ border: "none" }}>
+          <label style={{ float: "left" }}>
+          {language?.result?.cm_expiry_date ? language?.result?.cm_expiry_date.label:'Expiry Date' }
+            </label>
+          <ExpiryDate style={{ height: "35px" }} />
+        </td>
+        <td style={{ border: "none" }}>
+          <label style={{ float: "left" }}>
+          {language?.result?.cm_cvv_number ? language?.result?.cm_cvv_number.label:'CVV Number' }
+            </label>
+          <Cvv style={{ height: "35px" }} />
+        </td>
+      </tr>
+      <tr>
+        <td colSpan={2} style={{ border: "none" }}></td>
+      </tr>
+      <tr style={{ background: "none" }}>
+        <td
+          colSpan={2}
+          style={{
+            border: "none",
+            backgroundColor: "none !important",
+          }}
+        >
+         
+            <ButtonSecondary
+              onClick={() => {
+                // Frames.submitCard();
+                // setLoader(1)
+              }}
+              style={{
+                background: "#101e8e",
+                color: "#fff",
+                gridColumn: "1 /span 2",
+                placeSelf: "start",
+              }}
+            >
+              
+           {/* {
+            loader ===0 ? `${language?.result?.cm_paynow ? language?.result?.cm_paynow.label:'PAY NOW' }`: <SpinnerRaw />
+           }     */}
+              PAY NOW
+            </ButtonSecondary>
+          
+        </td>
+      </tr>
+    </tbody>
+  </Table>
+</Frames>
+</ComplaintContainer>
+
+         {/* <div className="d-flex justify-content-center"> <h5>Due Amount</h5></div> */}
+       
+      {/* <p className="mb-0"> NOC ID:   {getDueAmountData?.result?.nocId ? getDueAmountData?.result?.nocId : 'loading...'}</p>
+      <p className="mb-0"> Parcel ID:   {getDueAmountData?.result?.parcelId ? getDueAmountData?.result?.parcelId : 'loading...'}</p>
+      <p className="mb-0"> Service Transaction ID:   {getDueAmountData?.result?.dueServiceTransactionId? getDueAmountData?.result?.dueServiceTransactionId : 'loading...' }</p>
+      <p className="mb-0"> Due Amount:   {getDueAmountData?.result?.dueAmount? getDueAmountData?.result?.dueAmount : 'loading...'}</p> */}
+        
+        </Box>
+
+
+
+
+      </Modal>
+</div>
+<div  className=" w-100 mt-4 d-flex justify-content-center" >{getDueAmountLoading}</div>
             <br />
             <br />
             {/************************************** Rejected **************************************/}
