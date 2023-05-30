@@ -1,4 +1,12 @@
-import { ChangeEvent, FC, ReactElement, useEffect, useState } from "react";
+import {
+  ChangeEvent,
+  FC,
+  ReactElement,
+  useEffect,
+  useState,
+  useCallback,
+  useRef,
+} from "react";
 import CardContent from "@mui/material/CardContent";
 import CloseIcon from "../../assets/CloseIcon.svg";
 import axios from "axios";
@@ -25,24 +33,28 @@ import { ButtonSecondary } from "../consultationTabs.tsx/consultation.styled";
 import { useLocation, useNavigate } from "react-router-dom";
 import { Memory } from "../../core/Memory";
 
-import Box from '@mui/material/Box';
-import Modal from '@mui/material/Modal';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import Box from "@mui/material/Box";
+import Modal from "@mui/material/Modal";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
+// import Constants from "../../core/Constants";
+
+var dueAmountVar = 0;
+var dueServiceTransactionIdVar = 0;
+var totalAmountVar = 0;
 
 const style = {
-  position: 'absolute',
-  top: '50%',
-  left: '50%',
-  transform: 'translate(-50%, -50%)',
+  position: "absolute",
+  top: "50%",
+  left: "50%",
+  transform: "translate(-50%, -50%)",
   width: 400,
-  bgcolor: 'background.paper',
-  border: '2px solid #000',
+  bgcolor: "background.paper",
+  border: "2px solid #000",
   boxShadow: 24,
   p: 4,
-  height:'436px'
+  height: "436px",
 };
-
 
 const Popup = (
   {
@@ -56,24 +68,33 @@ const Popup = (
   const [Attachment, setAttachment] = useState();
   const [application, setApplication] = useState();
   const [open, setOpen] = useState(false);
-  const [getDueAmountData, setGetDueAmountData] = useState(false);
+  const [getDueAmountData, setGetDueAmountData] = useState("");
+  const getDueAmountDataRef = useRef(null);
+  const framesRef = useRef(null);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
-  const getDueAmount = async()=>{
+  const getDueAmount = async () => {
     try {
-      const response = await axios.get('http://213.42.234.23:8904/CustomerAPI/api/noc/getDueAmount', {
-        params: {
-          ParcelId: 104262745,
-          RequestId: `${getQueryParam("requestid")}`
+      const response = await axios.get(
+        "http://213.42.234.23:8904/CustomerAPI/api/noc/getDueAmount",
+        {
+          params: {
+            ParcelId: 104262745,
+            RequestId: `${getQueryParam("requestid")}`,
+          },
         }
-      });
+      );
       setGetDueAmountData(response.data);
-      setGetDueAmountLoading('')
+      getDueAmountDataRef.current = response.data;
+      setGetDueAmountLoading("");
       // console.log("firstgetDueAmountData", getDueAmountData)
     } catch (error) {
       console.log(error);
     }
-  }
+  };
+
+  
+
   const location = useLocation();
   const navigate = useNavigate();
   // console.log("location.state", location.state)
@@ -87,7 +108,9 @@ const Popup = (
     }
   };
 
-  const submit = async () => {
+  const submit = async (token) => {
+    console.log("firstfirst", token);
+    alert(token);
     if (application.status === "InfoNeeded") {
       let latestInfoNeeded = application.infoNeeded.filter(
         ({ fromCustomer }) => fromCustomer === null
@@ -169,16 +192,67 @@ const Popup = (
     openApplication();
   }, []);
 
+  // const handleSubmit = useCallback((e) => {
+  //   console.log("handle submit", e, getDueAmountData)
+  //   postData(e,getDueAmountData)
+  // }, [getDueAmountData]);
+
+  const postData = async (token) => {
+    try {
+      // const url = 'http://213.42.234.23:8904/CustomerAPI/api/payment/ConnectionNocUpdatePaymentDetails';
+      const url =
+        // "http://213.42.234.23:8904/CustomerAPI/api/payment/ConnectionNoc";
+        "http://213.42.234.23:8904/CustomerAPI/api/payment/connectionPaymentNoc";
+      const data = {
+        id: `${getQueryParam("requestid")}`,
+        platform: "Web",
+        last4: token.last4,
+        totalAmount: framesRef?.current?.costEstimationReport?.totalAmount,
+        // totalAmount: '38220',
+        token: token.token,
+        // dueAmount: getDueAmountData?.result?.dueAmount,
+        dueAmount: getDueAmountDataRef?.current?.result?.dueAmount,
+      
+        // dueAmount: '746482.5',
+        paymentDateTime: token.expires_on,
+        failureUrl: Constants.FAILURE_PAYMENT_URL,
+        successUrl: Constants.SUCCESS_PAYMENT_URL,
+        dueAmountTransactionId:
+          getDueAmountDataRef?.current?.result?.dueServiceTransactionId,
+        // dueAmountTransactionId: '820230259355'
+      };
+
+      const response = await axios.post(url, data, {
+        headers: {
+          // Authorization: "bearer " + localStorage.getItem("token"),
+          // 'Authorization':'bearer eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoiQ3VzdG9tZXIiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9lbWFpbGFkZHJlc3MiOiJzaGFzaGkxOTg3aGVtYUBnbWFpbC5jb20iLCJpZCI6IjgxIiwiZXhwIjoxNjg1MzY3NjY3LCJpc3MiOiJzcyIsImF1ZCI6IlNhbXBsZUF1ZGllbmNlIn0.3DaNhAwjaTOGKUEw0yr6YL2FJO00J2zqhTwLZEN6YnY',
+          // 'Authorization':'bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJwcmltYXJ5c2lkIjoiYWptYW4tc2V3ZXJhZ2UiLCJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9zaWQiOiIzM2NkYzRiNWEwZTk0YzZmOTA1YjU4ZTY2OTMxOTA1ZCIsIm5iZiI6MTY4NTM2OTg3MiwiZXhwIjoxNjg1MzY5OTAyLCJpYXQiOjE2ODUzNjk4NzJ9.nYi25BCm-bPgYQJzDgZHEkxcDrc52zB6fr9TCD-c36A',
+          "Content-Type": "application/json",
+          "Accept-Language": "en-US",
+        },
+      }
+      );
+     if(response.status === 200){
+      handleClose()
+     }
+      // setResponse(JSON.stringify(response.data));
+    } catch (error) {
+      console.error("error is:", error);
+    }
+  };
+
   let token = Memory.getItem("token");
   const openApplication = async () => {
     try {
       let engine = new RequestEngine();
       let response = await engine.getItem(
-        `api/noc/nocdetails/${getQueryParam("requestid")}?lang=en-US`
+        // `api/noc/nocdetails/${getQueryParam("requestid")}?lang=en-US`
+        `api/noc/nocPaymentDetails/${getQueryParam("requestid")}?lang=en-US`
       );
 
       // console.log("applicationaaaaaa", response);
       setApplication(response.data.result.data);
+      framesRef.current = response.data.result.data
     } catch (error) {
       navigate("/login");
       console.error("Error fetching data:", error);
@@ -189,7 +263,6 @@ const Popup = (
     const urlSearchParams = new URLSearchParams(window.location.search);
     return urlSearchParams.get(param);
   };
-
 
   return (
     <Card style={{ color: "#101E8E", width: "100%" }}>
@@ -614,9 +687,9 @@ const Popup = (
             </div>
 
             <div className=" w-100 ">
-              <p className="my-3" style={{ fontWeight: "400" }}>
+              {/* <p className="my-3" style={{ fontWeight: "400" }}>
                 Detail:
-              </p>
+              </p> */}
 
               {application?.completionNocDetails ? (
                 <div
@@ -638,7 +711,7 @@ const Popup = (
                 </div>
               ) : null}
 
-              {application?.renewalNocDetails ? (
+              {/* {application?.renewalNocDetails ? (
                 <>
                   {
                     <div
@@ -692,10 +765,7 @@ const Popup = (
 
                             <div className="mb-0 w-50">Vat: {items?.vat}</div>
 
-                            {/* <p className="mb-0 ">
-                          Renewal Plan: {' '}
-                            {items?.renewalPlan}
-                          </p> */}
+                          
                           </div>
 
                           <div className="d-flex mt-2">
@@ -743,7 +813,7 @@ const Popup = (
                     </div>
                   }
                 </>
-              ) : null}
+              ) : null} */}
 
               {/* <div>
       {Object.entries(application.costEstimationReport).map(([key, value]) => (
@@ -1297,179 +1367,185 @@ const Popup = (
                   </TableContainer>
                 )}
             </div>
-<div className=" w-100 mt-4 d-flex justify-content-center">
+            <div className=" w-100 mt-4 d-flex justify-content-center">
+              {getDueAmountData ? (
+                <button
+                  style={{
+                    width: "190px",
+                    height: "55px",
+                    backgroundColor: "white",
+                    borderRadius: "12px",
+                  }}
+                  className="mr-3"
+                  onClick={() => {
+                    handleOpen();
+                  }}
+                >
+                  Pay Now
+                </button>
+              ) : null}
 
-{getDueAmountData? <button style={{
-  width:"190px",
-  height:"55px",
-  backgroundColor:"white",
-  borderRadius:"12px"
-}}
-className="mr-3"
-onClick={()=>{
-  handleOpen()
-}}>Pay Now</button> :  null}
+              <button
+                style={{
+                  width: "190px",
+                  height: "55px",
+                  backgroundColor: "white",
+                  borderRadius: "12px",
+                }}
+                onClick={() => {
+                  setGetDueAmountLoading("Please Wait...");
+                  getDueAmount();
+                }}
+              >
+                Get Due Amount
+              </button>
 
-<button style={{
-  width:"190px",
-  height:"55px",
-  backgroundColor:"white",
-  borderRadius:"12px"
-}} onClick={()=>{
-  setGetDueAmountLoading('Please Wait...')
-  getDueAmount()
-}}>Get Due Amount</button>
-
-
-      <Modal
-        keepMounted
-        open={open}
-        onClose={handleClose}
-        aria-labelledby="keep-mounted-modal-title"
-        aria-describedby="keep-mounted-modal-description"
-      >
-
-
-        
-        <Box sx={style}>
-
-        <ComplaintContainer style={{ width:"100%"}}>
-
-
-
-<Frames
-  config={{
-    debug: true,
-    //publicKey: 'pk_test_6e40a700-d563-43cd-89d0-f9bb17d35e73', //'pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit', //'pk_test_5fe58a54-8ef2-408b-99b3-14659cdebfcf','pk_sbox_ogynfaoply5o6ksuw3d3hcee3ez'
-    publicKey: "pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit",
-    schemeChoice: true,
-    localization: {
-      cardNumberPlaceholder: "",
-      expiryMonthPlaceholder: "MM",
-      expiryYearPlaceholder: "YY",
-      cvvPlaceholder: "",
-    },
-    style: {
-      base: {
-        fontSize: "14px",
-        background: "#e5eff2",
-        color: "#101e8e",
-        opacity: "1",
-        padding: "1rem 0 !important",
-        margin: "0",
-        outline: "none",
-        border: "1px solid #b6bfdc",
-        width: "100%",
-        height: "35px",
-      },
-      
-    },
-  }}
-  ready={() => {}}
-  frameActivated={(e) => {}}
-  frameFocus={(e) => {}}
-  frameBlur={(e) => {}}
-  frameValidationChanged={(e) => {}}
-  paymentMethodChanged={(e) => {}}
-  cardValidationChanged={(e) => {}}
-  cardSubmitted={() => {}}
-  cardTokenizationFailed={(e) => {}}
-  cardBinChanged={(e) => {}}
-  cardTokenized={(e) => {
-    // submit(e.token);
-  }}
->
-  
-  <Table
-    style={{ width: "140%", gridColumn: "1 / span 2", border: "none" }}
-  >
-    <tbody style={{ width:"100%"}}>
-      <tr>
-        <td>
-        <label style={{ float: "left" }}>
-           
-        {language?.result?.cm_amount ? language?.result?.cm_amount.label:'Amount' }
-          </label>
-          </td>
-          <td> </td>
-        {/* <td>52.50 (AED)</td> */}
-        {/* <td>{PaymentFee && PaymentFee.total}</td> */}
-      </tr>
-      <tr>
-        <td colSpan={2} style={{ border: "none" }}>
-          <label style={{ float: "left" }}>
-            Credit/Debit Card Number
-          </label>
-          <CardNumber style={{ height: "35px", width: "100%" }} />
-        </td>
-      </tr>
-      <tr>
-        <td style={{ border: "none" }}>
-          <label style={{ float: "left" }}>
-          {language?.result?.cm_expiry_date ? language?.result?.cm_expiry_date.label:'Expiry Date' }
-            </label>
-          <ExpiryDate style={{ height: "35px" }} />
-        </td>
-        <td style={{ border: "none" }}>
-          <label style={{ float: "left" }}>
-          {language?.result?.cm_cvv_number ? language?.result?.cm_cvv_number.label:'CVV Number' }
-            </label>
-          <Cvv style={{ height: "35px" }} />
-        </td>
-      </tr>
-      <tr>
-        <td colSpan={2} style={{ border: "none" }}></td>
-      </tr>
-      <tr style={{ background: "none" }}>
-        <td
-          colSpan={2}
-          style={{
-            border: "none",
-            backgroundColor: "none !important",
-          }}
-        >
-         
-            <ButtonSecondary
-              onClick={() => {
-                // Frames.submitCard();
-                // setLoader(1)
-              }}
-              style={{
-                background: "#101e8e",
-                color: "#fff",
-                gridColumn: "1 /span 2",
-                placeSelf: "start",
-              }}
-            >
-              
-           {/* {
+              <Modal
+                keepMounted
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="keep-mounted-modal-title"
+                aria-describedby="keep-mounted-modal-description"
+              >
+                <Box sx={style}>
+                  <ComplaintContainer style={{ width: "100%" }}>
+                    <Frames
+                     
+                      config={{
+                        debug: true,
+                        //publicKey: 'pk_test_6e40a700-d563-43cd-89d0-f9bb17d35e73', //'pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit', //'pk_test_5fe58a54-8ef2-408b-99b3-14659cdebfcf','pk_sbox_ogynfaoply5o6ksuw3d3hcee3ez'
+                        publicKey: "pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit",
+                        schemeChoice: true,
+                        localization: {
+                          cardNumberPlaceholder: "",
+                          expiryMonthPlaceholder: "MM",
+                          expiryYearPlaceholder: "YY",
+                          cvvPlaceholder: "",
+                        },
+                        style: {
+                          base: {
+                            fontSize: "14px",
+                            background: "#e5eff2",
+                            color: "#101e8e",
+                            opacity: "1",
+                            padding: "1rem 0 !important",
+                            margin: "0",
+                            outline: "none",
+                            border: "1px solid #b6bfdc",
+                            width: "100%",
+                            height: "35px",
+                          },
+                        },
+                      }}
+                      ready={() => {}}
+                      frameActivated={(e) => {}}
+                      frameFocus={(e) => {}}
+                      frameBlur={(e) => {}}
+                      frameValidationChanged={(e) => {}}
+                      paymentMethodChanged={(e) => {}}
+                      cardValidationChanged={(e) => {}}
+                      cardSubmitted={() => {}}
+                      cardTokenizationFailed={(e) => {}}
+                      cardBinChanged={(e) => {}}
+                      cardTokenized={(e) => {
+                        postData(e);
+                      }}
+                    >
+                      <Table
+                        style={{
+                          width: "140%",
+                          gridColumn: "1 / span 2",
+                          border: "none",
+                        }}
+                      >
+                        <tbody style={{ width: "100%" }}>
+                          <tr>
+                            <td>
+                              <label style={{ float: "left" }}>
+                                {language?.result?.cm_amount
+                                  ? language?.result?.cm_amount.label
+                                  : "Amount"}
+                              </label>
+                            </td>
+                            <td> </td>
+                            {/* <td>52.50 (AED)</td> */}
+                            {/* <td>{PaymentFee && PaymentFee.total}</td> */}
+                          </tr>
+                          <tr>
+                            <td colSpan={2} style={{ border: "none" }}>
+                              <label style={{ float: "left" }}>
+                                Credit/Debit Card Number
+                              </label>
+                              <CardNumber
+                                style={{ height: "35px", width: "100%" }}
+                              />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td style={{ border: "none" }}>
+                              <label style={{ float: "left" }}>
+                                {language?.result?.cm_expiry_date
+                                  ? language?.result?.cm_expiry_date.label
+                                  : "Expiry Date"}
+                              </label>
+                              <ExpiryDate style={{ height: "35px" }} />
+                            </td>
+                            <td style={{ border: "none" }}>
+                              <label style={{ float: "left" }}>
+                                {language?.result?.cm_cvv_number
+                                  ? language?.result?.cm_cvv_number.label
+                                  : "CVV Number"}
+                              </label>
+                              <Cvv style={{ height: "35px" }} />
+                            </td>
+                          </tr>
+                          <tr>
+                            <td colSpan={2} style={{ border: "none" }}></td>
+                          </tr>
+                          <tr style={{ background: "none" }}>
+                            <td
+                              colSpan={2}
+                              style={{
+                                border: "none",
+                                backgroundColor: "none !important",
+                              }}
+                            >
+                              <ButtonSecondary
+                                onClick={() => {
+                                  Frames.submitCard();
+                                  // setLoader(1)
+                                }}
+                                style={{
+                                  background: "#101e8e",
+                                  color: "#fff",
+                                  gridColumn: "1 /span 2",
+                                  placeSelf: "start",
+                                }}
+                              >
+                                {/* {
             loader ===0 ? `${language?.result?.cm_paynow ? language?.result?.cm_paynow.label:'PAY NOW' }`: <SpinnerRaw />
            }     */}
-              PAY NOW
-            </ButtonSecondary>
-          
-        </td>
-      </tr>
-    </tbody>
-  </Table>
-</Frames>
-</ComplaintContainer>
+                                PAY NOW
+                              </ButtonSecondary>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </Table>
+                    </Frames>
+                  </ComplaintContainer>
 
-         {/* <div className="d-flex justify-content-center"> <h5>Due Amount</h5></div> */}
-       
-      {/* <p className="mb-0"> NOC ID:   {getDueAmountData?.result?.nocId ? getDueAmountData?.result?.nocId : 'loading...'}</p>
+                  {/* <div className="d-flex justify-content-center"> <h5>Due Amount</h5></div> */}
+
+                  {/* <p className="mb-0"> NOC ID:   {getDueAmountData?.result?.nocId ? getDueAmountData?.result?.nocId : 'loading...'}</p>
       <p className="mb-0"> Parcel ID:   {getDueAmountData?.result?.parcelId ? getDueAmountData?.result?.parcelId : 'loading...'}</p>
       <p className="mb-0"> Service Transaction ID:   {getDueAmountData?.result?.dueServiceTransactionId? getDueAmountData?.result?.dueServiceTransactionId : 'loading...' }</p>
       <p className="mb-0"> Due Amount:   {getDueAmountData?.result?.dueAmount? getDueAmountData?.result?.dueAmount : 'loading...'}</p> */}
-        
-        </Box>
-
-
-
-
-      </Modal>
-</div>
-<div  className=" w-100 mt-4 d-flex justify-content-center" >{getDueAmountLoading}</div>
+                </Box>
+              </Modal>
+            </div>
+            <div className=" w-100 mt-4 d-flex justify-content-center">
+              {getDueAmountLoading}
+            </div>
             <br />
             <br />
             {/************************************** Rejected **************************************/}

@@ -99,7 +99,7 @@ const Popup: FC<Props> = ({ onClose, onSubmit, propertyTypeList }: Props): React
               }
               else {
                 setShowAreaSqMeter(false);
-                setAreaSqMeter("N/A");
+                setAreaSqMeter('1');
               }
 
             }}
