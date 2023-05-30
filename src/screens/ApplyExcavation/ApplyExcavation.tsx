@@ -63,6 +63,10 @@ const ApplyExcavation = () => {
   const [AttachmentsFile, setAttachmentsFile] = useState<File>(); //TODOSD: Make it array of File, check medium link
   const [attachmentsFileError, setAttachmentsFileError] = useState<number>(0);
   const [SitePlanFile, setSitePlanFile] = useState<File>();
+
+
+
+  
   const [ConstructionDetailsFile, setConstructionDetailsFile] =
     useState<File>();
   const [PaymentFee, setPaymentFee] = useState<any>();
@@ -367,6 +371,12 @@ console.log(userid)
 
 
     if (response && response.status === 200) {
+
+
+
+
+
+
       console.log("ressss", response)
       Memory.setItem("referenceId", response.data.result.referenceId);
 
@@ -413,7 +423,7 @@ console.log(userid)
 
           }
         }
-        
+
       } catch (e) {
         // setLoader(0)
         console.log("ressss1catch", response)
@@ -423,7 +433,7 @@ Memory.setItem('isPaymentExempt', true);
 
       window.open(response.data.result.redirectUrl, "_self");
     } else {
-      
+
       console.log("ressss1", response)
       setAlert({
         type: "error",

@@ -38,6 +38,7 @@ import ReadSpeakerReader from "./lib/ReadSpeakerReader";
 function App() {
   const [modalOpen, setModalOpen] = useState(false)
   const [reader, setReader] = useState(1);
+  const [paymentPopupState, setPaymentPopupState] = useState('');
   const handleModalClose = () => setModalOpen(false)
 
   const handleModalOpen = () => setModalOpen(true)
@@ -109,7 +110,7 @@ function App() {
             } */}
 
 
-      <Route path="/consultation" element={<ConsultationTabs />} />
+      <Route path="/consultation" element={<ConsultationTabs setPaymentPopupState={setPaymentPopupState} paymentPopupState={paymentPopupState}/>} />
 
  {/* <Route path="/consultation" element={<TextToSpeech />} /> */}
               
@@ -125,7 +126,7 @@ function App() {
               <Route path='/view-profile' element={<Profile />} />
               <Route path='/change-password' element={<ChangePassword />} />
               <Route path='/forgot-password' element={<ForgotPassword />} />
-              <Route path='/payment/success' element={<Payment />} />
+              <Route path='/payment/success' element={<Payment setPaymentPopupState={setPaymentPopupState}/>} />
               <Route path='/payment/failure' element={<Payment />} />
             </Routes>
 

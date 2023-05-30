@@ -218,7 +218,9 @@ const ConsultantTable = ({ StatusId, NocType }) => {
       renderCell: (params: GridRenderCellParams) => {
         return (
           <ButtonSecondary
-            onClick={() => {openApplication(params.row)
+            onClick={() => {{openApplication(params.row)
+            console.log("params", params)
+            }
             
             }}
             className={`${
@@ -475,7 +477,11 @@ const ConsultantTable = ({ StatusId, NocType }) => {
             <div className="px-0">
               {rows?.map((item: any, index) => (
                 <>
-                  <div className="d-flex justify-content-between">
+                  <div className="d-flex justify-content-between"
+                  onClick={() => {openApplication(item)
+                    console.log("item", item)
+                  }}
+                  >
                     <div>
                       <div className="d-flex flex-column pb-2">
                         <span
