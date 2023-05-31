@@ -1466,6 +1466,11 @@ const Popup = (
                                   ? language?.result?.cm_amount.label
                                   : "Amount"}
                               </label>
+                              {
+                                console.log("quick pay", application?.costEstimationReport
+                                .totalAmount)
+                                      
+                                    }
                             </td>
                             <td> </td>
                             {/* <td>52.50 (AED)</td> */}
