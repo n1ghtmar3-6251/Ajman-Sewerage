@@ -50,10 +50,12 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
-  border: "2px solid #000",
+  // border: "2px solid #000",
+  borderRadius: "12px",
   boxShadow: 24,
-  p: 4,
-  height: "436px",
+  // p: 4,
+  // height: "436px",
+  outline: "0",
 };
 
 const Popup = (
@@ -79,7 +81,7 @@ const Popup = (
         "http://213.42.234.23:8904/CustomerAPI/api/noc/getDueAmount",
         {
           params: {
-            ParcelId: 104262745,
+            ParcelId: application?.parcelId,
             RequestId: `${getQueryParam("requestid")}`,
           },
         }
@@ -92,8 +94,6 @@ const Popup = (
       console.log(error);
     }
   };
-
-  
 
   const location = useLocation();
   const navigate = useNavigate();
@@ -109,7 +109,6 @@ const Popup = (
   };
 
   const submit = async (token) => {
-    console.log("firstfirst", token);
     alert(token);
     if (application.status === "InfoNeeded") {
       let latestInfoNeeded = application.infoNeeded.filter(
@@ -198,6 +197,7 @@ const Popup = (
   // }, [getDueAmountData]);
 
   const postData = async (token) => {
+    alert(token.token)
     try {
       // const url = 'http://213.42.234.23:8904/CustomerAPI/api/payment/ConnectionNocUpdatePaymentDetails';
       const url =
@@ -207,12 +207,12 @@ const Popup = (
         id: `${getQueryParam("requestid")}`,
         platform: "Web",
         last4: token.last4,
-        totalAmount: framesRef?.current?.costEstimationReport?.totalAmount,
+        totalAmount: application.costEstimationReport.totalAmount,
         // totalAmount: '38220',
         token: token.token,
         // dueAmount: getDueAmountData?.result?.dueAmount,
         dueAmount: getDueAmountDataRef?.current?.result?.dueAmount,
-      
+
         // dueAmount: '746482.5',
         paymentDateTime: token.expires_on,
         failureUrl: Constants.FAILURE_PAYMENT_URL,
@@ -221,7 +221,17 @@ const Popup = (
           getDueAmountDataRef?.current?.result?.dueServiceTransactionId,
         // dueAmountTransactionId: '820230259355'
       };
-
+      const cardItem = {
+        id: application.requestId,
+        platform: "Web",
+        dueAmount: getDueAmountDataRef?.current?.result?.dueAmount,
+        totalAmount: application.costEstimationReport.totalAmount,
+        paymentDateTime: token.expires_on,
+        token: token.token,
+        last4: token.last4,
+      }
+    
+     
       const response = await axios.post(url, data, {
         headers: {
           // Authorization: "bearer " + localStorage.getItem("token"),
@@ -230,11 +240,12 @@ const Popup = (
           "Content-Type": "application/json",
           "Accept-Language": "en-US",
         },
+      });
+      if (response.status === 200) {
+        localStorage.setItem("cardItem",JSON.stringify(cardItem))
+        window.open(response.data.result.redirectUrl , "_self")
+        handleClose();
       }
-      );
-     if(response.status === 200){
-      handleClose()
-     }
       // setResponse(JSON.stringify(response.data));
     } catch (error) {
       console.error("error is:", error);
@@ -244,16 +255,32 @@ const Popup = (
   let token = Memory.getItem("token");
   const openApplication = async () => {
     try {
-      let engine = new RequestEngine();
-      let response = await engine.getItem(
-        // `api/noc/nocdetails/${getQueryParam("requestid")}?lang=en-US`
-        `api/noc/nocPaymentDetails/${getQueryParam("requestid")}?lang=en-US`
+      const response = await axios.get(
+        `http://213.42.234.23:8904/CustomerAPI/api/noc/nocPaymentDetails/${getQueryParam(
+          "requestid"
+        )}?lang=en-US`,
+        {
+          headers: {
+            "Accept-Language": "en-US",
+          },
+        }
       );
-
-      // console.log("applicationaaaaaa", response);
-      setApplication(response.data.result.data);
-      framesRef.current = response.data.result.data
+      if (response.status === 200) {
+        setApplication(response.data.result.data);
+        framesRef.current = response.data.result.data;
+      }
     } catch (error) {
+      //  try {
+      //     let engine = new RequestEngine();
+      //     let response = await engine.getItem(
+      //       // `api/noc/nocdetails/${getQueryParam("requestid")}?lang=en-US`
+      //       `api/noc/nocPaymentDetails/${getQueryParam("requestid")}?lang=en-US`
+      //     );
+
+      //     // console.log("applicationaaaaaa", response);
+      //     setApplication(response.data.result.data);
+      //     framesRef.current = response.data.result.data;
+      //   }
       navigate("/login");
       console.error("Error fetching data:", error);
     }
@@ -685,7 +712,6 @@ const Popup = (
                 </Label>
               )} */}
             </div>
-
             <div className=" w-100 ">
               {/* <p className="my-3" style={{ fontWeight: "400" }}>
                 Detail:
@@ -943,7 +969,6 @@ const Popup = (
                 </>
               ) : null} */}
             </div>
-
             <br />
             {application &&
               application.propertyDetails &&
@@ -1007,7 +1032,6 @@ const Popup = (
               }}
             />
             <br />
-
             {application &&
               (application.comments || application.usercomments) && (
                 <div style={{ width: "100%", margin: "auto" }}>
@@ -1030,9 +1054,7 @@ const Popup = (
                   )}
                 </div>
               )}
-
             {/************************************** Info Needed **************************************/}
-
             {application &&
               application.infoNeeded &&
               application.status === "InfoNeeded" &&
@@ -1182,9 +1204,7 @@ const Popup = (
                   </ButtonSecondary>
                 </>
               )}
-
             {/*******************************************************************************************/}
-
             <div
               style={{
                 display: isLargeScreen ? "grid" : "block",
@@ -1367,14 +1387,12 @@ const Popup = (
                   </TableContainer>
                 )}
             </div>
+
             <div className=" w-100 mt-4 d-flex justify-content-center">
               {getDueAmountData ? (
-                <button
+                <ButtonSecondary
                   style={{
                     width: "190px",
-                    height: "55px",
-                    backgroundColor: "white",
-                    borderRadius: "12px",
                   }}
                   className="mr-3"
                   onClick={() => {
@@ -1382,24 +1400,24 @@ const Popup = (
                   }}
                 >
                   Pay Now
-                </button>
+                </ButtonSecondary>
               ) : null}
-
-              <button
-                style={{
-                  width: "190px",
-                  height: "55px",
-                  backgroundColor: "white",
-                  borderRadius: "12px",
-                }}
-                onClick={() => {
-                  setGetDueAmountLoading("Please Wait...");
-                  getDueAmount();
-                }}
-              >
-                Get Due Amount
-              </button>
-
+              {application &&
+                application.costEstimationReport &&
+                application.costEstimationReport.paymentStatus === null &&
+                 (
+                  <ButtonSecondary
+                    style={{
+                      width: "190px",
+                    }}
+                    onClick={() => {
+                      setGetDueAmountLoading("Please Wait...");
+                      getDueAmount();
+                    }}
+                  >
+                    Get Due Amount
+                  </ButtonSecondary>
+                )}
               <Modal
                 keepMounted
                 open={open}
@@ -1408,9 +1426,14 @@ const Popup = (
                 aria-describedby="keep-mounted-modal-description"
               >
                 <Box sx={style}>
-                  <ComplaintContainer style={{ width: "100%" }}>
+                  <ComplaintContainer
+                    style={{
+                      width: "100%",
+                      background: "transparent",
+                      padding: "0.6rem",
+                    }}
+                  >
                     <Frames
-                     
                       config={{
                         debug: true,
                         //publicKey: 'pk_test_6e40a700-d563-43cd-89d0-f9bb17d35e73', //'pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit', //'pk_test_5fe58a54-8ef2-408b-99b3-14659cdebfcf','pk_sbox_ogynfaoply5o6ksuw3d3hcee3ez'
@@ -1430,7 +1453,7 @@ const Popup = (
                             opacity: "1",
                             padding: "1rem 0 !important",
                             margin: "0",
-                            outline: "none",
+                            outline: "0",
                             border: "1px solid #b6bfdc",
                             width: "100%",
                             height: "35px",
@@ -1453,7 +1476,7 @@ const Popup = (
                     >
                       <Table
                         style={{
-                          width: "140%",
+                          width: "100%",
                           gridColumn: "1 / span 2",
                           border: "none",
                         }}
@@ -1464,10 +1487,13 @@ const Popup = (
                               <label style={{ float: "left" }}>
                                 {language?.result?.cm_amount
                                   ? language?.result?.cm_amount.label
-                                  : "Amount"}
+                                  : "Amount "}
                               </label>
                             </td>
-                            <td> </td>
+                            <td>
+                              AED{" "}
+                              {application?.costEstimationReport.totalAmount}
+                            </td>
                             {/* <td>52.50 (AED)</td> */}
                             {/* <td>{PaymentFee && PaymentFee.total}</td> */}
                           </tr>
@@ -1508,6 +1534,7 @@ const Popup = (
                               style={{
                                 border: "none",
                                 backgroundColor: "none !important",
+                                width: "100%",
                               }}
                             >
                               <ButtonSecondary

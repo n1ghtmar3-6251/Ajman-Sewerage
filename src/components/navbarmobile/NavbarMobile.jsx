@@ -35,6 +35,8 @@ const NavbarMobile = () => {
   }, []);
 
   const addLanguage = (data) => {
+    console.log("currentLanguage", data)
+    localStorage.setItem("currentLanguage", data);
     // console.log("first");
     // fetch("http://213.42.234.23:8901/api/resourcesV2", {
     fetch("http://213.42.234.23:8901/CustomerSelfServiceAPI/api/resourcesV2", {
@@ -55,6 +57,7 @@ const NavbarMobile = () => {
   localStorage.setItem("LanguageChange", JSON.stringify(posts));
   localStorage.setItem("fontSizeLocal", fontSize.toString());
   localStorage.setItem("colorNum", color.toString());
+  localStorage.setItem("currentLanguage", data);
 
   // const reciveLanguage:any = localStorage.getItem('LanguageChange');
 
@@ -73,7 +76,7 @@ const NavbarMobile = () => {
       <div className="fluid-container fluid-container-nav ">
         <div className="row ">
           <div className="col-6 d-flex align-items-center">
-            <img className="ml-2" src={ AjmanLogo} alt="" />
+            <img className="ml-2" src={AjmanLogo} alt="" />
           </div>
 
           <div className="col-6 d-flex justify-content-end align-items-center ">
@@ -96,7 +99,11 @@ const NavbarMobile = () => {
                     : "",
               }}
             >
-              <img src={menu1?  EarthIconWhite : EarthIcon } className="menu-button-right-img" alt="" />
+              <img
+                src={menu1 ? EarthIconWhite : EarthIcon}
+                className="menu-button-right-img"
+                alt=""
+              />
 
               {menu1 ? (
                 <div
@@ -146,8 +153,6 @@ const NavbarMobile = () => {
               )}
             </div>
 
-           
-
             <div
               onClick={() => {
                 setMenu2(!menu2);
@@ -167,7 +172,11 @@ const NavbarMobile = () => {
                     : "",
               }}
             >
-              <img src={menu2? ChairIconWhite: ChairIcon} className="menu-button-right-img" alt="" />
+              <img
+                src={menu2 ? ChairIconWhite : ChairIcon}
+                className="menu-button-right-img"
+                alt=""
+              />
 
               {menu2 ? (
                 <div
@@ -546,33 +555,24 @@ const NavbarMobile = () => {
                 ""
               )}
             </div>
-      
 
             <div
-         
               className="d-flex justify-content-center  py-4 px-1  position-relative"
               style={{
                 width: "70px",
-          
               }}
             >
               <img src={BellIcon} className="menu-button-right-img" alt="" />
             </div>
 
-           
-
-<div
-            
+            <div
               className="d-flex justify-content-center  py-4 px-1  position-relative"
               style={{
                 width: "70px",
-           
               }}
             >
               <img src={PersonIcon} className="menu-button-right-img" alt="" />
             </div>
-
-           
           </div>
         </div>
       </div>

@@ -81,7 +81,9 @@ FAILURE_PAYMENT_URL : 'http://213.42.234.23:8904/CustomerPortal/payment/failure'
 
   // SUCCESS_PAYMENT_URL : 'http://213.42.234.23:8903/payment/success',
   // FAILURE_PAYMENT_URL : 'http://213.42.234.23:8903/payment/failure',
+  
   EXCAVATION_NOC_AFTER_THREE_DS : 'api/noc/excavationNocAfterThreeDS',
+  CONNECTION_NOC_AFTER_THREE_DS : 'api/payment/ConnectionNocUpdatePaymentDetails',
 
 };
 
