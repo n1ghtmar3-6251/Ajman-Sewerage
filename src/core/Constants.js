@@ -71,11 +71,11 @@ uaePassLogoutLink:'https://stg-id.uaepass.ae/trustedx-authserver/digitalid-idp/l
 
 // zaher
 
-SUCCESS_PAYMENT_URL : 'http://213.42.234.23:8904/CustomerPortal/payment/success',
-FAILURE_PAYMENT_URL : 'http://213.42.234.23:8904/CustomerPortal/payment/failure',
+// SUCCESS_PAYMENT_URL : 'http://213.42.234.23:8904/CustomerPortal/payment/success',
+// FAILURE_PAYMENT_URL : 'http://213.42.234.23:8904/CustomerPortal/payment/failure',
 
-// SUCCESS_PAYMENT_URL : 'http://localhost:3000/CustomerPortal/payment/success',
-// FAILURE_PAYMENT_URL : 'http://localhost:3000/CustomerPortal/payment/failure',
+SUCCESS_PAYMENT_URL : 'http://localhost:3000/CustomerPortal/payment/success',
+FAILURE_PAYMENT_URL : 'http://localhost:3000/CustomerPortal/payment/failure',
 
 // zaher
 

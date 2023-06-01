@@ -1325,7 +1325,7 @@ const Popup: FC<Props> = ({
                           handleOpen();
                         }}
                       >
-                        Pay Now
+                        Pay Now 
                       </ButtonSecondary>
                     ) : null}
 
@@ -2251,30 +2251,7 @@ const Popup: FC<Props> = ({
                   />
                 </Label>
               )}
-              {application && application.gisAttachment && (
-                <Label style={{ marginBottom: "10px" }}>
-                  <DocumentDownload
-                    exists={true}
-                    mainText={
-                      language?.result?.cm_gis_attachment
-                        ? language?.result?.cm_gis_attachment.label
-                        : "GIS Attachment"
-                    }
-                    subText={
-                      application && application.gisAttachment
-                        ? application.gisAttachment.substring(
-                            application.gisAttachment.lastIndexOf("/") + 1
-                          )
-                        : ""
-                    }
-                    inputName={
-                      application && application.gisAttachment
-                        ? application.gisAttachment
-                        : ""
-                    }
-                  />
-                </Label>
-              )}
+              
               {application && application.emiratesIdOrTradeLicense && (
                 <Label style={{ marginBottom: "10px" }}>
                   <DocumentDownload
@@ -2954,6 +2931,65 @@ const Popup: FC<Props> = ({
                     </Table>
                   </TableContainer>
                 )}
+
+
+{application && application.gisAttachment && (
+
+<>
+
+<TableContainer>
+                    <p>
+                      <span
+                        className="view-detail-font"
+                        style={{
+                          fontSize: `${
+                            fontSize === 1
+                              ? "21px"
+                              : fontSize === 2
+                              ? "23px"
+                              : fontSize === 3
+                              ? "25px"
+                              : fontSize === 4
+                              ? "27px"
+                              : fontSize === 5
+                              ? "29px"
+                              : "25px"
+                          }`,
+                        }}
+                      >
+                        GIS Attachment
+                      </span>
+                    </p>
+                    <DocumentDownload
+                    exists={true}
+                    mainText={
+                      language?.result?.cm_gis_attachment
+                        ? language?.result?.cm_gis_attachment.label
+                        : "GIS Attachment"
+                    }
+                    subText={
+                      application && application.gisAttachment
+                        ? application.gisAttachment.substring(
+                            application.gisAttachment.lastIndexOf("/") + 1
+                          )
+                        : ""
+                    }
+                    inputName={
+                      application && application.gisAttachment
+                        ? application.gisAttachment
+                        : ""
+                    }
+                  />
+
+                    
+                  </TableContainer>
+
+                 
+
+</>
+                
+              )}
+
 
               {application &&
                 application.costEstimationReport &&

@@ -265,12 +265,15 @@ const ApplyWWPR = () => {
       !PropertyType ||
       !BuildingTypeId ||
       !EmiratesIdOrTradeLicense
+      
     ) {
       console.log("Error");
+      setErrorMessage(666);
       setValid(false);
       return;
     } else {
       setValid(true);
+      setErrorMessage(6696);
       setValidParcelId(true);
     }
 
@@ -947,40 +950,7 @@ const ApplyWWPR = () => {
                 />
               ) : null}
 
-              {errorMessage === 1 ? (
-                <div className="text-danger w-100">
-                  Demolishing Letter file greater than 10 MB
-                </div>
-              ) : null}
-
-              {errorMessage === 2 ? (
-                <div className="text-danger w-100">
-                  Site Plan file greater than 10 MB
-                </div>
-              ) : null}
-
-              {errorMessage === 3 ? (
-                <div className="text-danger w-100">
-                  Floor Plan file greater than 10 MB
-                </div>
-              ) : null}
-
-              {errorMessage === 4 ? (
-                <div className="text-danger w-100">
-                  Layout Plan file greater than 10 MB
-                </div>
-              ) : null}
-              {errorMessage === 5 ? (
-                <div className="text-danger w-100">
-                  Completion Plan file greater than 10 MB
-                </div>
-              ) : null}
-
-              {errorMessage === 6 ? (
-                <div className="text-danger w-100">
-                  Contractor Plan file greater than 10 MB
-                </div>
-              ) : null}
+           
 
               <p
                 style={{
@@ -1233,7 +1203,7 @@ const ApplyWWPR = () => {
             </>
           )}
 
-        {!valid ? (
+        {/* {!valid ? (
           <h3
             style={{
               color: "red",
@@ -1245,7 +1215,67 @@ const ApplyWWPR = () => {
           >
             Please fill in all required fields (*)
           </h3>
-        ) : null}
+        ) : null} */}
+
+{errorMessage === 1 ? (
+                <div className="text-danger w-100">
+                  Demolishing Letter file greater than 10 MB
+                </div>
+              ) : errorMessage === 2 ? (
+                <div className="text-danger w-100">
+                  Site Plan file greater than 10 MB
+                </div>
+              ) : errorMessage === 3 ? (
+                <div className="text-danger w-100">
+                  Floor Plan file greater than 10 MB
+                </div>
+              ): errorMessage === 4 ? (
+                <div className="text-danger w-100">
+                  Layout Plan file greater than 10 MB
+                </div>
+              ) : errorMessage === 5 ? (
+                <div className="text-danger w-100">
+                  Completion Plan file greater than 10 MB
+                </div>
+              ) : errorMessage === 6 ? (
+                <div className="text-danger w-100">
+                  Contractor Plan file greater than 10 MB
+                </div>
+              ) : !valid ? (
+                <div className="text-danger w-100">
+               Please fill in all required fields (*)
+              </div>
+              ) : null}
+
+              {/* {errorMessage === 2 ? (
+                <div className="text-danger w-100">
+                  Site Plan file greater than 10 MB
+                </div>
+              ) : null} */}
+
+              {/* {errorMessage === 3 ? (
+                <div className="text-danger w-100">
+                  Floor Plan file greater than 10 MB
+                </div>
+              ) : null} */}
+
+              {/* {errorMessage === 4 ? (
+                <div className="text-danger w-100">
+                  Layout Plan file greater than 10 MB
+                </div>
+              ) : null} */}
+              {/* {errorMessage === 5 ? (
+                <div className="text-danger w-100">
+                  Completion Plan file greater than 10 MB
+                </div>
+              ) : null} */}
+
+              {/* {errorMessage === 6 ? (
+                <div className="text-danger w-100">
+                  Contractor Plan file greater than 10 MB
+                </div>
+              ) : null} */}
+
       </ComplaintContainer>
       <Backdrop open={openPopup}>
         {Backloading ? (
