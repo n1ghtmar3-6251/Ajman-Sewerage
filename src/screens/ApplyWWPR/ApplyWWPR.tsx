@@ -29,6 +29,8 @@ const ApplyWWPR = () => {
   const navigate = useNavigate();
 
   const [valid, setValid] = useState(true);
+  const [validParcelId, setValidParcelId] = useState(true);
+  const [validText, setValidText] = useState("");
   const [alert, setAlert] = useState({
     type: "",
     title: "",
@@ -39,7 +41,8 @@ const ApplyWWPR = () => {
   const [attachmentFile, setAttachmentFile] = useState(false);
   //const [isDisabled, setIsDisabled] = useState(true);
   const [agreementChecked, setAgreementChecked] = useState("false");
-  const [agreementCheckedCompletionPlan, setAgreementCheckedCompletionPlan] = useState("false");
+  const [agreementCheckedCompletionPlan, setAgreementCheckedCompletionPlan] =
+    useState("false");
 
   //Drop down list and preset data
   const [ShowTradeLicenseFlag, setShowTradeLicenseFlag] = useState(false);
@@ -79,13 +82,14 @@ const ApplyWWPR = () => {
   const onCheckboxClick = () => {
     if (agreementChecked === "true") setAgreementChecked("false");
     else setAgreementChecked("true");
-    
+
     //return canBeSubmitted();
   };
   const onCheckboxClickCompletionPlan = () => {
-    if (agreementCheckedCompletionPlan === "true") setAgreementCheckedCompletionPlan("false");
+    if (agreementCheckedCompletionPlan === "true")
+      setAgreementCheckedCompletionPlan("false");
     else setAgreementCheckedCompletionPlan("true");
-    
+
     //return canBeSubmitted();
   };
   useEffect(() => {
@@ -162,6 +166,12 @@ const ApplyWWPR = () => {
       .then((response) => {
         console.log("RESPONSE: " + JSON.stringify(response));
         if (response && response.status === 200) {
+          if(response?.data.result.valid == false){
+            setValidParcelId(false);
+        setValidText(
+          "Please select propert type as Demolished or Existing to procees further, as there is a property existing in the Plot"
+        );
+          }
           console.log("Valid: " + response.data.result.valid);
           console.log("Message: " + response.data.result.message);
 
@@ -180,6 +190,9 @@ const ApplyWWPR = () => {
         console.log("ERROR: " + JSON.stringify(error));
         //TODOSD: handle when api is rendering failure
         setPropertyValid(false);
+        setValidParcelId(false);
+        setValidText(error.response.data.error)
+         
         if (error.statusCode === 419) {
           console.log("41999999999");
           //this.spinnerService.hide();
@@ -193,6 +206,7 @@ const ApplyWWPR = () => {
 
   const submit = async () => {
     setValid(true);
+    setValidParcelId(true);
 
     let engine = new RequestEngine();
     var userid = Memory.getItem("userId");
@@ -238,8 +252,7 @@ const ApplyWWPR = () => {
       setErrorMessage(5);
       setValid(false);
       return;
-    } 
-    else if (
+    } else if (
       ContractorPlanFile !== undefined &&
       ContractorPlanFile?.size > 10 * 1024 * 1024
     ) {
@@ -247,8 +260,7 @@ const ApplyWWPR = () => {
       setErrorMessage(6);
       setValid(false);
       return;
-    }
-    else if (
+    } else if (
       !ParcelNumber ||
       !PropertyType ||
       !BuildingTypeId ||
@@ -259,6 +271,7 @@ const ApplyWWPR = () => {
       return;
     } else {
       setValid(true);
+      setValidParcelId(true);
     }
 
     // if (
@@ -591,7 +604,7 @@ const ApplyWWPR = () => {
                 }`,
               }}
             >
-            {language?.result?.cm_apply_for_wwpr
+              {language?.result?.cm_apply_for_wwpr
                 ? language?.result?.cm_apply_for_wwpr.label
                 : "Apply for WWPR "}
             </span>
@@ -693,12 +706,20 @@ const ApplyWWPR = () => {
         </div>
       )}
 
-      {/* {!valid
-        ? <h3 style={{ color: 'red', width: '80%', margin: 'auto', paddingLeft: 60, paddingTop: 15, backgroundColor: '#fff' }}>
-          Please fill in all required fields (*)
+      {/* {!valid ? (
+        <h3
+          style={{
+            color: "red",
+            width: "80%",
+            margin: "auto",
+            paddingLeft: 60,
+            paddingTop: 15,
+            backgroundColor: "#fff",
+          }}
+        >
+          {validText}
         </h3>
-        : null
-      } */}
+      ) : null} */}
 
       <ComplaintContainer>
         <Label style={{ width: "100%", fontWeight: "400" }}>
@@ -718,6 +739,19 @@ const ApplyWWPR = () => {
             }}
             style={{ width: "100%" }}
           />
+          {!validParcelId ? (
+            <span
+              style={{
+                color: "red",
+                width: "100%",
+                margin: "auto",
+                paddingTop: 15,
+                backgroundColor: "#fff",
+              }}
+            >
+              {validText}
+            </span>
+          ) : null}
         </Label>
         <Label style={{ width: "100%", fontWeight: "400" }}>
           {language?.result?.cm_nocpropertytype
@@ -792,20 +826,19 @@ const ApplyWWPR = () => {
         </Label>
 
         {PropertyType === "new" && (
-          <>
-            <ButtonSecondary
-              onClick={() => validateProperty()}
-              style={{
-                background: "#101e8e",
-                color: "#fff",
-                gridColumn: "1 /span 2",
-                width: "25%",
-                placeSelf: "end",
-              }}
-            >
-              VALIDATE
-            </ButtonSecondary>
-          </>
+          <ButtonSecondary
+            onClick={() => validateProperty()}
+            style={{
+              background: "#101e8e",
+              color: "#fff",
+              gridColumn: "1 /span 2",
+              width: "25%",
+              placeSelf: "end",
+              cursor: "pointer",
+            }}
+          >
+            VALIDATE
+          </ButtonSecondary>
         )}
 
         {PropertyType !== "" &&
@@ -841,7 +874,9 @@ const ApplyWWPR = () => {
                   >
                     <Checkbox
                       style={{ width: "20px" }}
-                      checked={agreementCheckedCompletionPlan === "true" ? true : false}
+                      checked={
+                        agreementCheckedCompletionPlan === "true" ? true : false
+                      }
                       onClick={() => {
                         onCheckboxClickCompletionPlan();
                         setAttachmentFile(!attachmentFile);
@@ -912,7 +947,7 @@ const ApplyWWPR = () => {
                 />
               ) : null}
 
-{errorMessage === 1 ? (
+              {errorMessage === 1 ? (
                 <div className="text-danger w-100">
                   Demolishing Letter file greater than 10 MB
                 </div>
@@ -941,7 +976,7 @@ const ApplyWWPR = () => {
                 </div>
               ) : null}
 
-{errorMessage === 6 ? (
+              {errorMessage === 6 ? (
                 <div className="text-danger w-100">
                   Contractor Plan file greater than 10 MB
                 </div>
@@ -1210,9 +1245,7 @@ const ApplyWWPR = () => {
           >
             Please fill in all required fields (*)
           </h3>
-        ) : (
-          <h3></h3>
-        )}
+        ) : null}
       </ComplaintContainer>
       <Backdrop open={openPopup}>
         {Backloading ? (

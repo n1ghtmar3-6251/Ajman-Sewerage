@@ -20,7 +20,7 @@ import Checkbox from "@mui/material/Checkbox";
 import { Backdrop, CircularProgress } from "@mui/material";
 import PopupMessage from "../../components/PopupMessage/popupMessage";
 
-import '../../../src/App.css'
+import "../../../src/App.css";
 
 const ApplyExcavation = () => {
   const navigate = useNavigate();
@@ -50,7 +50,6 @@ const ApplyExcavation = () => {
   const [loadingModal, setLoadingModal] = useState(false);
   const [error, setError] = useState<number>(0);
 
-
   //Fields to send
   const [Comments, setComments] = useState("");
   const [ParcelId, setParcelId] = useState("");
@@ -64,9 +63,6 @@ const ApplyExcavation = () => {
   const [attachmentsFileError, setAttachmentsFileError] = useState<number>(0);
   const [SitePlanFile, setSitePlanFile] = useState<File>();
 
-
-
-  
   const [ConstructionDetailsFile, setConstructionDetailsFile] =
     useState<File>();
   const [PaymentFee, setPaymentFee] = useState<any>();
@@ -75,8 +71,6 @@ const ApplyExcavation = () => {
     if (agreementChecked === "true") setAgreementChecked("false");
     else setAgreementChecked("true");
   };
-
-
 
   useEffect(() => {
     prepareData();
@@ -128,18 +122,17 @@ const ApplyExcavation = () => {
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
       const file = e.target.files[0];
-  
+
       // Check if file size exceeds the maximum allowed size
       if (file.size > MAX_FILE_SIZE) {
         // alert("File size exceeds 10 MB limit.");
         // console.log("10 MB")
-        setAttachmentsFileError(1)
+        setAttachmentsFileError(1);
         return;
+      } else {
+        setAttachmentsFileError(2);
       }
-      else{
-        setAttachmentsFileError(2)
-      }
-  
+
       // Set the state based on the input name
       switch (e.target.name) {
         case "constructionDetailsFile":
@@ -159,7 +152,7 @@ const ApplyExcavation = () => {
   };
 
   // useEffect(()=>{
-    // validate()
+  // validate()
   // })
 
   // console.log("LocationDetails", LocationDetails)
@@ -168,76 +161,56 @@ const ApplyExcavation = () => {
   const validate = async () => {
     setValid(true);
 
-    if( !(ContactPersonName.length > 3)){
+    if (!(ContactPersonName.length > 3)) {
       // setValid(false);
-     setError(1)
-    
-    }
-    else if(!(ContactPersonPhoneNumber.length > 8)){
-      setError(2)
-    }
-    else if(!(TypeOfWorkIds.length>0)){
-      setError(3)
-    }
-
-     else if((LocationDetails.includes('select'))){
-      setError(4)
-    }
-
-    else if((LocationDetails.includes('1'))){
+      setError(1);
+    } else if (!(ContactPersonPhoneNumber.length > 8)) {
+      setError(2);
+    } else if (!(TypeOfWorkIds.length > 0)) {
+      setError(3);
+    } else if (LocationDetails.includes("select")) {
+      setError(4);
+    } else if (LocationDetails.includes("1")) {
       // setError(44)
-      if(!/^\d{9}$/.test(ParcelId)){
-        setError(5)
-      }
-
-      else if(!(attachmentsFileError == 2)){
-        setError(6)
+      if (!/^\d{9}$/.test(ParcelId)) {
+        setError(5);
+      } else if (!(attachmentsFileError == 2)) {
+        setError(6);
         // console.log("10 MBb")
-      }
-
-      else if((SitePlanFile===undefined)){
-        setError(6)
+      } else if (SitePlanFile === undefined) {
+        setError(6);
         // console.log("10 MBb")
-      }
-
-      else if((ConstructionDetailsFile===undefined)){
-        setError(6)
+      } else if (ConstructionDetailsFile === undefined) {
+        setError(6);
         // console.log("10 MBb")
-      }
-
-      else{
-        setError(0)
+      } else {
+        setError(0);
         setValid(false);
       }
-    }
-
-    else if((LocationDetails.includes('4'))){
+    } else if (LocationDetails.includes("4")) {
       // setError(44)
       // if(!(Longitude.length>1)){
-        if(!/^\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$/.test(Longitude)){
-        setError(55)
-      }
-     else if(!/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/.test(Latitude)){
-        setError(66)
-      }
-      else if(!(attachmentsFileError == 2)){
-        setError(6)
+      if (
+        !/^\\s*[-+]?(180(\\.0+)?|((1[0-7]\\d)|([1-9]?\\d))(\\.\\d+)?)$/.test(
+          Longitude
+        )
+      ) {
+        setError(55);
+      } else if (!/^[-+]?([1-8]?\d(\.\d+)?|90(\.0+)?)$/.test(Latitude)) {
+        setError(66);
+      } else if (!(attachmentsFileError == 2)) {
+        setError(6);
         // console.log("10 MBb")
-      }
-      else{
-        setError(0)
+      } else {
+        setError(0);
         setValid(false);
       }
-    }
-    
-   
-    
-    else{
-      setError(0)
+    } else {
+      setError(0);
       setValid(false);
     }
 
-    console.log("ConstructionDetailsFile", ConstructionDetailsFile)
+    console.log("ConstructionDetailsFile", ConstructionDetailsFile);
 
     // if (
     //   ContactPersonName &&
@@ -258,16 +231,14 @@ const ApplyExcavation = () => {
     navigate("/consultation");
   };
 
+  const submitBtn = async (token: string) => {
+    let engine = new RequestEngine();
+    let currentDateTime = format(new Date(), "MM/dd/yyyy, h:mm:ss a");
+    var userid: any = Memory.getItem("userId");
 
-const submitBtn = async(token: string)=>{
+    var data = new FormData();
 
-  let engine = new RequestEngine();
-  let currentDateTime = format(new Date(), "MM/dd/yyyy, h:mm:ss a");
-  var userid:any = Memory.getItem("userId");
-
-  var data = new FormData();
-
-  data.append("UserId", userid);
+    data.append("UserId", userid);
     data.append("ContactPersonName", ContactPersonName);
     data.append("ContactPersonPhoneNumber", ContactPersonPhoneNumber);
     data.append("Type", LocationDetails);
@@ -291,25 +262,22 @@ const submitBtn = async(token: string)=>{
     if (AttachmentsFile !== undefined)
       data.append("Attachments", AttachmentsFile!, AttachmentsFile!.name);
     if (SitePlanFile !== undefined)
-      data.append("SitePlan", SitePlanFile!, SitePlanFile!.name); 
+      data.append("SitePlan", SitePlanFile!, SitePlanFile!.name);
     if (ConstructionDetailsFile !== undefined)
       data.append(
         "ConstructionDetails",
         ConstructionDetailsFile!,
         ConstructionDetailsFile!.name
       );
-      
+
     // @ts-ignore
     const response = await engine.saveItemData(
       "api/noc/applyExcavationNoc",
       data
-      
     );
 
-    console.log("response====>", response)
-
-}
-
+    console.log("response====>", response);
+  };
 
   const submit = async (token: string) => {
     let engine = new RequestEngine();
@@ -351,40 +319,29 @@ const submitBtn = async(token: string)=>{
         ConstructionDetailsFile!.name
       );
 
-console.log('datttaaa=====>1',userid)  
-console.log('datttaaa=====>2',ContactPersonName)  
-console.log(userid)  
-    console.log("datttaaa=====>", data)
+    console.log("datttaaa=====>1", userid);
+    console.log("datttaaa=====>2", ContactPersonName);
+    console.log(userid);
+    console.log("datttaaa=====>", data);
     for (const entry of data.entries()) {
-      console.log("datttaaa=====>ind",entry);
+      console.log("datttaaa=====>ind", entry);
     }
-      // return;
-      
-
+    // return;
 
     // @ts-ignore
     const response = await engine.saveItemData(
       "api/noc/applyExcavationNoc",
       data
-      
     );
 
-
     if (response && response.status === 200) {
-
-
-
-
-
-
-      console.log("ressss", response)
+      console.log("ressss", response);
       Memory.setItem("referenceId", response.data.result.referenceId);
 
       let referenceId = response.data.result.referenceId;
       let rings = Memory.getItemInfo("Rings");
 
       try {
-       
         if (LocationDetails === "2") {
           let mapData = [
             {
@@ -419,22 +376,19 @@ console.log(userid)
           if (response && response.status === 200) {
             //TODOSD: Nothing to add only a comment to handle it properly later Polygon has been saved
             console.log("HAAAAAAALELOUYYYYA");
-            console.log("hellooooooo")
-
+            console.log("hellooooooo");
           }
         }
-
       } catch (e) {
         // setLoader(0)
-        console.log("ressss1catch", response)
+        console.log("ressss1catch", response);
       }
-// console.log("response.data.result.redirectUrl", response.data.result.redirectUrl)
-Memory.setItem('isPaymentExempt', true);
-
+      // console.log("response.data.result.redirectUrl", response.data.result.redirectUrl)
+      Memory.setItem("isPaymentExempt", true);
+console.log(response.data.result.redirectUrl, "_self")
       window.open(response.data.result.redirectUrl, "_self");
     } else {
-
-      console.log("ressss1", response)
+      console.log("ressss1", response);
       setAlert({
         type: "error",
         title: "Warning",
@@ -456,18 +410,19 @@ Memory.setItem('isPaymentExempt', true);
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const [language, setLanguage] =  useState<any>()
+  const [language, setLanguage] = useState<any>();
 
   const [fontSize, setFontSize] = useState<number>(14);
 
-  const [isPaymentExemptlocal, setIsPaymentExemptlocal] = useState<boolean>(false);
+  const [isPaymentExemptlocal, setIsPaymentExemptlocal] =
+    useState<boolean>(false);
 
   const [colorNumber, setColorNumber] = useState<number>(14);
 
-  useEffect(()=>{
-    const reciveLanguage:any = localStorage.getItem('LanguageChange');
-    const reciveLanguage1:any = JSON.parse(reciveLanguage)
-    setLanguage(reciveLanguage1)
+  useEffect(() => {
+    const reciveLanguage: any = localStorage.getItem("LanguageChange");
+    const reciveLanguage1: any = JSON.parse(reciveLanguage);
+    setLanguage(reciveLanguage1);
 
     const storedFontSize = localStorage.getItem("fontSizeLocal");
     if (storedFontSize) {
@@ -480,16 +435,14 @@ Memory.setItem('isPaymentExempt', true);
     }
 
     const isPaymentExemptlocal1 = localStorage.getItem("isPaymentExempt");
-    if (isPaymentExemptlocal1=='true') {
+    if (isPaymentExemptlocal1 == "true") {
       setIsPaymentExemptlocal(true);
-    }
-    else if(isPaymentExemptlocal1=='false'){
+    } else if (isPaymentExemptlocal1 == "false") {
       setIsPaymentExemptlocal(false);
     }
 
     // setIsPaymentExemptlocal(isPaymentExemptlocal1);
-
-  })
+  });
 
   // console.log("colorNumber", fontSize)
 
@@ -503,11 +456,8 @@ Memory.setItem('isPaymentExempt', true);
   }
 `;
 
-
   return (
-    <div className="font-segoe " style={{ background: "#eee",
-  
-    }}>
+    <div className="font-segoe " style={{ background: "#eee" }}>
       {isLargeScreen ? (
         // <MoveInHeader
         //   style={{
@@ -532,15 +482,15 @@ Memory.setItem('isPaymentExempt', true);
         //           minHeight: "1.875rem",
         //           fontWeight: "400",
         //           border: "1px solid #fff",
-        //           fontSize: `${fontSize === 1 ? '1.675rem' 
+        //           fontSize: `${fontSize === 1 ? '1.675rem'
         //           : fontSize === 2 ? '1.775rem'
-        //           : fontSize === 3 ? '1.875rem' 
+        //           : fontSize === 3 ? '1.875rem'
         //           : fontSize === 4 ? '1.975rem'
         //           : fontSize === 5 ? '2.075rem'
         //           : '1.875rem'}`,
-                 
+
         //         }}
-               
+
         //       >
         //        {language?.result?.cm_back ? language?.result?.cm_back.label:'BACK' }
         //       </ButtonSecondary>
@@ -556,9 +506,9 @@ Memory.setItem('isPaymentExempt', true);
         //           minHeight: "1.875rem",
         //           fontWeight: "400",
         //           border: "1px solid #fff",
-        //           fontSize: `${fontSize === 1 ? '1.675rem' 
+        //           fontSize: `${fontSize === 1 ? '1.675rem'
         //       : fontSize === 2 ? '1.775rem'
-        //       : fontSize === 3 ? '1.875rem' 
+        //       : fontSize === 3 ? '1.875rem'
         //       : fontSize === 4 ? '1.975rem'
         //       : fontSize === 5 ? '2.075rem'
         //       : '1.875rem'}`
@@ -570,9 +520,9 @@ Memory.setItem('isPaymentExempt', true);
         //     </MiniNav>
 
         //     <div style={{ fontWeight:"400",
-        //        fontSize: `${fontSize === 1 ? '2.925rem' 
+        //        fontSize: `${fontSize === 1 ? '2.925rem'
         //       : fontSize === 2 ? '3.025rem'
-        //       : fontSize === 3 ? '3.125rem' 
+        //       : fontSize === 3 ? '3.125rem'
         //       : fontSize === 4 ? '3.225rem'
         //       : fontSize === 5 ? '3.325rem'
         //       : '3.125rem'}`, marginTop: 10 }}
@@ -583,7 +533,17 @@ Memory.setItem('isPaymentExempt', true);
         // </MoveInHeader>
         <div
           className="pb-4"
-          style={{ backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#62AA51', paddingLeft: "10%" }}
+          style={{
+            backgroundColor:
+              colorNumber === 1
+                ? "#101E8E"
+                : colorNumber === 2
+                ? "#1D1D1B"
+                : colorNumber === 3
+                ? "#62AA51"
+                : "#62AA51",
+            paddingLeft: "10%",
+          }}
         >
           <div className="d-flex pt-3 pb-4">
             <div
@@ -592,14 +552,25 @@ Memory.setItem('isPaymentExempt', true);
                 navigate("/");
               }}
               className=" mr-2 top-back-form-btn d-flex justify-content-center align-items-center"
-              style={{ fontSize: `${fontSize === 1 ? '10px' 
-              : fontSize === 2 ? '12px'
-              : fontSize === 3 ? '14px' 
-              : fontSize === 4 ? '16px'
-              : fontSize === 5 ? '18px'
-              : '14px'}` }}
-           >
-              {language?.result?.cm_back ? language?.result?.cm_back.label:'BACK' }
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "10px"
+                    : fontSize === 2
+                    ? "12px"
+                    : fontSize === 3
+                    ? "14px"
+                    : fontSize === 4
+                    ? "16px"
+                    : fontSize === 5
+                    ? "18px"
+                    : "14px"
+                }`,
+              }}
+            >
+              {language?.result?.cm_back
+                ? language?.result?.cm_back.label
+                : "BACK"}
             </div>
             <div
               onClick={() => {
@@ -607,33 +578,66 @@ Memory.setItem('isPaymentExempt', true);
                 navigate("/");
               }}
               className=" ml-2 top-dashboard-form-btn d-flex justify-content-center align-items-center"
-              style={{ fontSize: `${fontSize === 1 ? '10px' 
-                  : fontSize === 2 ? '12px'
-                  : fontSize === 3 ? '14px' 
-                  : fontSize === 4 ? '16px'
-                  : fontSize === 5 ? '18px'
-                  : '14px'}` }}
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "10px"
+                    : fontSize === 2
+                    ? "12px"
+                    : fontSize === 3
+                    ? "14px"
+                    : fontSize === 4
+                    ? "16px"
+                    : fontSize === 5
+                    ? "18px"
+                    : "14px"
+                }`,
+              }}
             >
-              {language?.result?.cm_dashboard ? language?.result?.cm_dashboard.label:'DASHBOARD ' }
+              {language?.result?.cm_dashboard
+                ? language?.result?.cm_dashboard.label
+                : "DASHBOARD "}
             </div>
           </div>
           <div>
-            <span className="top-back-form-text "
-            style={{ fontSize: `${fontSize === 1 ? '46px' 
-            : fontSize === 2 ? '48px'
-            : fontSize === 3 ? '50px' 
-            : fontSize === 4 ? '52px'
-            : fontSize === 5 ? '54px'
-            : '50px'}` }}
+            <span
+              className="top-back-form-text "
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "46px"
+                    : fontSize === 2
+                    ? "48px"
+                    : fontSize === 3
+                    ? "50px"
+                    : fontSize === 4
+                    ? "52px"
+                    : fontSize === 5
+                    ? "54px"
+                    : "50px"
+                }`,
+              }}
             >
-               {language?.result?.cm_apply_for_excavation_noc ? language?.result?.cm_apply_for_excavation_noc.label:'Apply for Excavation NOC ' }
+              {language?.result?.cm_apply_for_excavation_noc
+                ? language?.result?.cm_apply_for_excavation_noc.label
+                : "Apply for Excavation NOC "}
             </span>
           </div>
         </div>
       ) : (
         <div
           className="pb-4"
-          style={{ backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#62AA51', paddingLeft: "19px" }}
+          style={{
+            backgroundColor:
+              colorNumber === 1
+                ? "#101E8E"
+                : colorNumber === 2
+                ? "#1D1D1B"
+                : colorNumber === 3
+                ? "#62AA51"
+                : "#62AA51",
+            paddingLeft: "19px",
+          }}
         >
           <div className="d-flex pt-3 pb-4">
             <div
@@ -642,14 +646,25 @@ Memory.setItem('isPaymentExempt', true);
                 navigate("/");
               }}
               className=" mr-2 top-back-form-btn d-flex justify-content-center align-items-center"
-              style={{ fontSize: `${fontSize === 1 ? '10px' 
-              : fontSize === 2 ? '12px'
-              : fontSize === 3 ? '14px' 
-              : fontSize === 4 ? '16px'
-              : fontSize === 5 ? '18px'
-              : '14px'}` }}
-           >
-              {language?.result?.cm_back ? language?.result?.cm_back.label:'BACK' }
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "10px"
+                    : fontSize === 2
+                    ? "12px"
+                    : fontSize === 3
+                    ? "14px"
+                    : fontSize === 4
+                    ? "16px"
+                    : fontSize === 5
+                    ? "18px"
+                    : "14px"
+                }`,
+              }}
+            >
+              {language?.result?.cm_back
+                ? language?.result?.cm_back.label
+                : "BACK"}
             </div>
             <div
               onClick={() => {
@@ -657,26 +672,49 @@ Memory.setItem('isPaymentExempt', true);
                 navigate("/");
               }}
               className=" ml-2 top-dashboard-form-btn d-flex justify-content-center align-items-center"
-              style={{ fontSize: `${fontSize === 1 ? '10px' 
-                  : fontSize === 2 ? '12px'
-                  : fontSize === 3 ? '14px' 
-                  : fontSize === 4 ? '16px'
-                  : fontSize === 5 ? '18px'
-                  : '14px'}` }}
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "10px"
+                    : fontSize === 2
+                    ? "12px"
+                    : fontSize === 3
+                    ? "14px"
+                    : fontSize === 4
+                    ? "16px"
+                    : fontSize === 5
+                    ? "18px"
+                    : "14px"
+                }`,
+              }}
             >
-              {language?.result?.cm_dashboard ? language?.result?.cm_dashboard.label:'DASHBOARD ' }
+              {language?.result?.cm_dashboard
+                ? language?.result?.cm_dashboard.label
+                : "DASHBOARD "}
             </div>
           </div>
           <div>
-            <span className="top-back-form-text "
-            style={{ fontSize: `${fontSize === 1 ? '32px' 
-            : fontSize === 2 ? '34px'
-            : fontSize === 3 ? '36px' 
-            : fontSize === 4 ? '38px'
-            : fontSize === 5 ? '40px'
-            : '36px'}` }}
+            <span
+              className="top-back-form-text "
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "32px"
+                    : fontSize === 2
+                    ? "34px"
+                    : fontSize === 3
+                    ? "36px"
+                    : fontSize === 4
+                    ? "38px"
+                    : fontSize === 5
+                    ? "40px"
+                    : "36px"
+                }`,
+              }}
             >
-              {language?.result?.cm_apply_for_excavation_noc ? language?.result?.cm_apply_for_excavation_noc.label:'Apply for Excavation NOC ' }
+              {language?.result?.cm_apply_for_excavation_noc
+                ? language?.result?.cm_apply_for_excavation_noc.label
+                : "Apply for Excavation NOC "}
             </span>
           </div>
         </div>
@@ -699,9 +737,6 @@ Memory.setItem('isPaymentExempt', true);
 
       {showPayment ? (
         <ComplaintContainer>
-
-
-
           <Frames
             config={{
               debug: true,
@@ -743,15 +778,16 @@ Memory.setItem('isPaymentExempt', true);
               submit(e.token);
             }}
           >
-            
             <Table
               style={{ width: "50%", gridColumn: "1 / span 2", border: "none" }}
             >
               <tbody>
                 <tr>
                   <td>
-                  {language?.result?.cm_amount ? language?.result?.cm_amount.label:'Amount' }
-                    </td>
+                    {language?.result?.cm_amount
+                      ? language?.result?.cm_amount.label
+                      : "Amount"}
+                  </td>
                   {/* <td>52.50 (AED)</td> */}
                   <td>{PaymentFee && PaymentFee.total}</td>
                 </tr>
@@ -766,14 +802,18 @@ Memory.setItem('isPaymentExempt', true);
                 <tr>
                   <td style={{ border: "none" }}>
                     <label style={{ float: "left" }}>
-                    {language?.result?.cm_expiry_date ? language?.result?.cm_expiry_date.label:'Expiry Date' }
-                      </label>
+                      {language?.result?.cm_expiry_date
+                        ? language?.result?.cm_expiry_date.label
+                        : "Expiry Date"}
+                    </label>
                     <ExpiryDate style={{ height: "35px" }} />
                   </td>
                   <td style={{ border: "none" }}>
                     <label style={{ float: "left" }}>
-                    {language?.result?.cm_cvv_number ? language?.result?.cm_cvv_number.label:'CVV Number' }
-                      </label>
+                      {language?.result?.cm_cvv_number
+                        ? language?.result?.cm_cvv_number.label
+                        : "CVV Number"}
+                    </label>
                     <Cvv style={{ height: "35px" }} />
                   </td>
                 </tr>
@@ -794,7 +834,7 @@ Memory.setItem('isPaymentExempt', true);
                       <ButtonSecondary
                         onClick={() => {
                           Frames.submitCard();
-                          setLoader(1)
+                          setLoader(1);
                         }}
                         style={{
                           background: "#101e8e",
@@ -803,11 +843,15 @@ Memory.setItem('isPaymentExempt', true);
                           placeSelf: "start",
                         }}
                       >
-                        
-                     {
-                      loader ===0 ? `${language?.result?.cm_paynow ? language?.result?.cm_paynow.label:'PAY NOW' }`: <SpinnerRaw />
-                     }    
-                        
+                        {loader === 0 ? (
+                          `${
+                            language?.result?.cm_paynow
+                              ? language?.result?.cm_paynow.label
+                              : "PAY NOW"
+                          }`
+                        ) : (
+                          <SpinnerRaw />
+                        )}
                       </ButtonSecondary>
                     )}
                   </td>
@@ -819,16 +863,27 @@ Memory.setItem('isPaymentExempt', true);
       ) : (
         <ComplaintContainer>
           <Label style={{ width: "100%" }}>
-            <span className="contact-form-style pb-2 font-segoe" 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-            : fontSize === 2 ? '14px'
-            : fontSize === 3 ? '16px' 
-            : fontSize === 4 ? '18px'
-            : fontSize === 5 ? '20px'
-            : '16px'}` }}
+            <span
+              className="contact-form-style pb-2 font-segoe"
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "12px"
+                    : fontSize === 2
+                    ? "14px"
+                    : fontSize === 3
+                    ? "16px"
+                    : fontSize === 4
+                    ? "18px"
+                    : fontSize === 5
+                    ? "20px"
+                    : "16px"
+                }`,
+              }}
             >
-              {language?.result?.cm_contact_persons_name ? language?.result?.cm_contact_persons_name.label:"Contact Person's Name*" }
-            
+              {language?.result?.cm_contact_persons_name
+                ? language?.result?.cm_contact_persons_name.label
+                : "Contact Person's Name*"}
             </span>
             <input
               type="text"
@@ -837,24 +892,42 @@ Memory.setItem('isPaymentExempt', true);
                 setContactPersonName(e.target.value);
               }}
             />
-            {error == 1 ? <span className="text-danger">Name length less than 3 character</span> : '' }
-            
+            {error == 1 ? (
+              <span className="text-danger">
+                Name length less than 3 character
+              </span>
+            ) : (
+              ""
+            )}
           </Label>
 
-          <Label  style={{ width: "100%" }}>
-            
-            <span className="contact-form-style pb-2 font-segoe " 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '14px'
-                  : fontSize === 3 ? '16px' 
-                  : fontSize === 4 ? '18px'
-                  : fontSize === 5 ? '20px'
-                  : '16px'}` }}
+          <Label style={{ width: "100%" }}>
+            <span
+              className="contact-form-style pb-2 font-segoe "
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "12px"
+                    : fontSize === 2
+                    ? "14px"
+                    : fontSize === 3
+                    ? "16px"
+                    : fontSize === 4
+                    ? "18px"
+                    : fontSize === 5
+                    ? "20px"
+                    : "16px"
+                }`,
+              }}
             >
-               {language?.result?.cm_contact_number ? language?.result?.cm_contact_number.label:"Contact Number*" }
-          
+              {language?.result?.cm_contact_number
+                ? language?.result?.cm_contact_number.label
+                : "Contact Number*"}
             </span>
-            <div className="d-flex" style={{ width: "100%", gridColumn: "1 / span 2" }}>
+            <div
+              className="d-flex"
+              style={{ width: "100%", gridColumn: "1 / span 2" }}
+            >
               <input
                 style={{ width: "18%", marginRight: "2%" }}
                 type="text"
@@ -870,18 +943,38 @@ Memory.setItem('isPaymentExempt', true);
                 }}
               />
             </div>
-            {error == 2 ? <span className="text-danger">Number length less than 9 character</span> : '' }
+            {error == 2 ? (
+              <span className="text-danger">
+                Number length less than 9 character
+              </span>
+            ) : (
+              ""
+            )}
           </Label>
-          <Label  style={{ width: "100%",
-          fontSize: `${fontSize === 1 ? '12px' 
-          : fontSize === 2 ? '14px'
-          : fontSize === 3 ? '16px' 
-          : fontSize === 4 ? '18px'
-          : fontSize === 5 ? '20px'
-          : '16px'}`
-         }}>
-            
-            <span className="contact-form-style pb-2 font-segoe " >{language?.result?.cm_typ_work ? language?.result?.cm_typ_work.label:'Type Of Work' }*</span>
+          <Label
+            style={{
+              width: "100%",
+              fontSize: `${
+                fontSize === 1
+                  ? "12px"
+                  : fontSize === 2
+                  ? "14px"
+                  : fontSize === 3
+                  ? "16px"
+                  : fontSize === 4
+                  ? "18px"
+                  : fontSize === 5
+                  ? "20px"
+                  : "16px"
+              }`,
+            }}
+          >
+            <span className="contact-form-style pb-2 font-segoe ">
+              {language?.result?.cm_typ_work
+                ? language?.result?.cm_typ_work.label
+                : "Type Of Work"}
+              *
+            </span>
             <select
               onChange={(e) => {
                 addTypeOfWork(e);
@@ -898,19 +991,36 @@ Memory.setItem('isPaymentExempt', true);
                 );
               })}
             </select>
-            {error == 3 ? <span className="text-danger">Type of work not select</span> : '' }
+            {error == 3 ? (
+              <span className="text-danger">Type of work not select</span>
+            ) : (
+              ""
+            )}
           </Label>
           <label></label>
           <Label style={{ width: "100%" }}>
-          <span className="contact-form-style pb-2 font-segoe " 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '14px'
-                  : fontSize === 3 ? '16px' 
-                  : fontSize === 4 ? '18px'
-                  : fontSize === 5 ? '20px'
-                  : '16px'}` }}
+            <span
+              className="contact-form-style pb-2 font-segoe "
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "12px"
+                    : fontSize === 2
+                    ? "14px"
+                    : fontSize === 3
+                    ? "16px"
+                    : fontSize === 4
+                    ? "18px"
+                    : fontSize === 5
+                    ? "20px"
+                    : "16px"
+                }`,
+              }}
             >
-            {language?.result?.cm_loct_details ? language?.result?.cm_loct_details.label:'Location Details' }*
+              {language?.result?.cm_loct_details
+                ? language?.result?.cm_loct_details.label
+                : "Location Details"}
+              *
             </span>
             <select
               value={LocationDetails}
@@ -923,20 +1033,29 @@ Memory.setItem('isPaymentExempt', true);
                 Select Location Input
               </option>
               <option key="1" value="1">
-                {language?.result?.cm_mob_prclid ? language?.result?.cm_mob_prclid.label:'Parcel Id' }
+                {language?.result?.cm_mob_prclid
+                  ? language?.result?.cm_mob_prclid.label
+                  : "Parcel Id"}
               </option>
               <option key="2" value="2">
-                {language?.result?.cm_mapdrawing ? language?.result?.cm_mapdrawing.label:'Map Drawing' }
+                {language?.result?.cm_mapdrawing
+                  ? language?.result?.cm_mapdrawing.label
+                  : "Map Drawing"}
               </option>
               <option key="3" value="3">
-                
-                {language?.result?.cm_mob_attachment ? language?.result?.cm_mob_attachment.label:'Attachments' }
+                {language?.result?.cm_mob_attachment
+                  ? language?.result?.cm_mob_attachment.label
+                  : "Attachments"}
               </option>
               <option key="4" value="4">
                 Cordinates
               </option>
             </select>
-            {error == 4 ? <span className="text-danger">Location details not select</span> : '' }
+            {error == 4 ? (
+              <span className="text-danger">Location details not select</span>
+            ) : (
+              ""
+            )}
           </Label>
           {LocationDetails.toString() === "2" && (
             <div
@@ -948,15 +1067,28 @@ Memory.setItem('isPaymentExempt', true);
           )}
           {LocationDetails.toString() === "1" && (
             <Label style={{ width: "100%" }}>
-               <span className="contact-form-style pb-2 font-segoe" 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '14px'
-                  : fontSize === 3 ? '16px' 
-                  : fontSize === 4 ? '18px'
-                  : fontSize === 5 ? '20px'
-                  : '16px'}` }}
-            >
-              {language?.result?.cm_mob_prclid ? language?.result?.cm_mob_prclid.label:'Parcel Id' }*
+              <span
+                className="contact-form-style pb-2 font-segoe"
+                style={{
+                  fontSize: `${
+                    fontSize === 1
+                      ? "12px"
+                      : fontSize === 2
+                      ? "14px"
+                      : fontSize === 3
+                      ? "16px"
+                      : fontSize === 4
+                      ? "18px"
+                      : fontSize === 5
+                      ? "20px"
+                      : "16px"
+                  }`,
+                }}
+              >
+                {language?.result?.cm_mob_prclid
+                  ? language?.result?.cm_mob_prclid.label
+                  : "Parcel Id"}
+                *
               </span>
               <input
                 type="text"
@@ -965,7 +1097,11 @@ Memory.setItem('isPaymentExempt', true);
                   setParcelId(e.target.value);
                 }}
               />
-              {error == 5 ? <span className="text-danger">Parcel Id less then 3</span> : '' }
+              {error == 5 ? (
+                <span className="text-danger">Parcel Id less then 3</span>
+              ) : (
+                ""
+              )}
               {/* {error == 44 ? <span className="text-danger">Test Parcel Id less then 3</span> : '' } */}
             </Label>
           )}
@@ -980,7 +1116,11 @@ Memory.setItem('isPaymentExempt', true);
                   setLongitude(e.target.value);
                 }}
               />
-              {error == 55 ? <span className="text-danger">Please enter Longitude</span> : '' }
+              {error == 55 ? (
+                <span className="text-danger">Please enter Longitude</span>
+              ) : (
+                ""
+              )}
             </Label>
           )}
 
@@ -994,7 +1134,11 @@ Memory.setItem('isPaymentExempt', true);
                   setLatitude(e.target.value);
                 }}
               />
-              {error == 66 ? <span className="text-danger">Please enter Latitude</span> : '' }
+              {error == 66 ? (
+                <span className="text-danger">Please enter Latitude</span>
+              ) : (
+                ""
+              )}
             </Label>
           )}
 
@@ -1014,40 +1158,65 @@ Memory.setItem('isPaymentExempt', true);
               placeSelf: "start",
             }}
           >
-             <span className="contact-form-style pb-0" 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '14px'
-                  : fontSize === 3 ? '16px' 
-                  : fontSize === 4 ? '18px'
-                  : fontSize === 5 ? '20px'
-                  : '16px'}` }}
+            <span
+              className="contact-form-style pb-0"
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "12px"
+                    : fontSize === 2
+                    ? "14px"
+                    : fontSize === 3
+                    ? "16px"
+                    : fontSize === 4
+                    ? "18px"
+                    : fontSize === 5
+                    ? "20px"
+                    : "16px"
+                }`,
+              }}
             >
-            {language?.result?.cm_nocmandatoryattachments ? language?.result?.cm_nocmandatoryattachments.label:'Required Documents*' }
+              {language?.result?.cm_nocmandatoryattachments
+                ? language?.result?.cm_nocmandatoryattachments.label
+                : "Required Documents*"}
             </span>
-            
           </p>
 
-          
-        
-              <Document
-                exists={false}
-                mainText={language?.result?.cm_siteplan ? language?.result?.cm_siteplan.label:'Site Plan' }
-                subText={language?.result?.cm_mandatory_document ? language?.result?.cm_mandatory_document.label:"Mandatory Document" }
-                
-                onChange={handleFileChange}
-                inputName={"sitePlanFile"}
-              />
+          <Document
+            exists={false}
+            mainText={
+              language?.result?.cm_siteplan
+                ? language?.result?.cm_siteplan.label
+                : "Site Plan"
+            }
+            subText={
+              language?.result?.cm_mandatory_document
+                ? language?.result?.cm_mandatory_document.label
+                : "Mandatory Document"
+            }
+            onChange={handleFileChange}
+            inputName={"sitePlanFile"}
+          />
 
-              <Document
-                exists={false}
-                mainText={language?.result?.cm_const_details ? language?.result?.cm_const_details.label:"Construction Details" }
-                
-                subText={"Mandatory Document"}
-                onChange={handleFileChange}
-                inputName={"constructionDetailsFile"}
-              />
-          
-          {error == 6 ? <span className="text-danger font-weight-bold">Please upload file that have less than 10 MB</span> : '' }
+          <Document
+            exists={false}
+            mainText={
+              language?.result?.cm_const_details
+                ? language?.result?.cm_const_details.label
+                : "Construction Details"
+            }
+            subText={"Mandatory Document"}
+            onChange={handleFileChange}
+            inputName={"constructionDetailsFile"}
+          />
+
+          {error == 6 ? (
+            <span className="text-danger font-weight-bold">
+              Please upload file that have less than 10 MB
+            </span>
+          ) : (
+            ""
+          )}
           <hr
             style={{
               width: "95%",
@@ -1058,15 +1227,27 @@ Memory.setItem('isPaymentExempt', true);
             }}
           />
           <Label style={{ gridColumn: "1 / span 2", width: "100%" }}>
-          <span className="contact-form-style pb-2 font-segoe" 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '14px'
-                  : fontSize === 3 ? '16px' 
-                  : fontSize === 4 ? '18px'
-                  : fontSize === 5 ? '20px'
-                  : '16px'}` }}
+            <span
+              className="contact-form-style pb-2 font-segoe"
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "12px"
+                    : fontSize === 2
+                    ? "14px"
+                    : fontSize === 3
+                    ? "16px"
+                    : fontSize === 4
+                    ? "18px"
+                    : fontSize === 5
+                    ? "20px"
+                    : "16px"
+                }`,
+              }}
             >
-            {language?.result?.cm_cmts ? language?.result?.cm_cmts.label:' Comments' }
+              {language?.result?.cm_cmts
+                ? language?.result?.cm_cmts.label
+                : " Comments"}
             </span>
             <textarea
               name=""
@@ -1083,21 +1264,36 @@ Memory.setItem('isPaymentExempt', true);
                 resize: "none",
                 border: "1px solid #b6bfdc",
               }}
-              placeholder={language?.result?.cm_mob_select ? language?.result?.cm_mob_select.label:'Select' }
+              placeholder={
+                language?.result?.cm_mob_select
+                  ? language?.result?.cm_mob_select.label
+                  : "Select"
+              }
             ></textarea>
           </Label>
 
           <Label style={{ width: "100%" }}>
-          <span className="contact-form-style pb-2 font-segoe" 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '14px'
-                  : fontSize === 3 ? '16px' 
-                  : fontSize === 4 ? '18px'
-                  : fontSize === 5 ? '20px'
-                  : '16px'}` }}
+            <span
+              className="contact-form-style pb-2 font-segoe"
+              style={{
+                fontSize: `${
+                  fontSize === 1
+                    ? "12px"
+                    : fontSize === 2
+                    ? "14px"
+                    : fontSize === 3
+                    ? "16px"
+                    : fontSize === 4
+                    ? "18px"
+                    : fontSize === 5
+                    ? "20px"
+                    : "16px"
+                }`,
+              }}
             >
-              {language?.result?.cm_owners_id_proof_non_mandatory ? language?.result?.cm_owners_id_proof_non_mandatory.label:" Owner's ID Proof (Non Mandatory)" }
-           
+              {language?.result?.cm_owners_id_proof_non_mandatory
+                ? language?.result?.cm_owners_id_proof_non_mandatory.label
+                : " Owner's ID Proof (Non Mandatory)"}
             </span>
             <select
               defaultValue={OwnerIdProof}
@@ -1107,12 +1303,19 @@ Memory.setItem('isPaymentExempt', true);
               }}
               style={{ width: "100%", background: "#e5eff2" }}
             >
-              <option value="select">{language?.result?.cm_mob_select ? language?.result?.cm_mob_select.label:'Select' }</option>
-              <option value="0">Emirates ID
-              {/* {language?.result?.cm_attachment3 ? language?.result?.cm_attachment3.label:'' } */}
+              <option value="select">
+                {language?.result?.cm_mob_select
+                  ? language?.result?.cm_mob_select.label
+                  : "Select"}
+              </option>
+              <option value="0">
+                Emirates ID
+                {/* {language?.result?.cm_attachment3 ? language?.result?.cm_attachment3.label:'' } */}
               </option>
               <option value="1">
-              {language?.result?.cm_tdlic ? language?.result?.cm_tdlic.label:'Trade License' }
+                {language?.result?.cm_tdlic
+                  ? language?.result?.cm_tdlic.label
+                  : "Trade License"}
               </option>
             </select>
           </Label>
@@ -1120,19 +1323,33 @@ Memory.setItem('isPaymentExempt', true);
           {ShowEmiratesFlag && (
             <>
               <Label style={{ width: "100%" }}>
-              <span className="contact-form-style pb-2 font-segoe" 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '14px'
-                  : fontSize === 3 ? '16px' 
-                  : fontSize === 4 ? '18px'
-                  : fontSize === 5 ? '20px'
-                  : '16px'}` }}
-            >
-                Emirates ID
+                <span
+                  className="contact-form-style pb-2 font-segoe"
+                  style={{
+                    fontSize: `${
+                      fontSize === 1
+                        ? "12px"
+                        : fontSize === 2
+                        ? "14px"
+                        : fontSize === 3
+                        ? "16px"
+                        : fontSize === 4
+                        ? "18px"
+                        : fontSize === 5
+                        ? "20px"
+                        : "16px"
+                    }`,
+                  }}
+                >
+                  Emirates ID
                 </span>
                 <input
                   type="text"
-                  placeholder={language?.result?.cm_mob_select ? language?.result?.cm_mob_select.label:'Select' }
+                  placeholder={
+                    language?.result?.cm_mob_select
+                      ? language?.result?.cm_mob_select.label
+                      : "Select"
+                  }
                   onChange={(e) => {
                     setEmiratesIdOrTradeLicense(e.target.value);
                   }}
@@ -1140,16 +1357,28 @@ Memory.setItem('isPaymentExempt', true);
                 />
               </Label>
               <Label style={{ width: "100%" }}>
-              <span className="contact-form-style pb-2 font-segoe" 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '14px'
-                  : fontSize === 3 ? '16px' 
-                  : fontSize === 4 ? '18px'
-                  : fontSize === 5 ? '20px'
-                  : '16px'}` }}
-            >
-                {language?.result?.cm_atch_uni ? language?.result?.cm_atch_uni.label:'Attach Emirates ID' }
-               </span>
+                <span
+                  className="contact-form-style pb-2 font-segoe"
+                  style={{
+                    fontSize: `${
+                      fontSize === 1
+                        ? "12px"
+                        : fontSize === 2
+                        ? "14px"
+                        : fontSize === 3
+                        ? "16px"
+                        : fontSize === 4
+                        ? "18px"
+                        : fontSize === 5
+                        ? "20px"
+                        : "16px"
+                    }`,
+                  }}
+                >
+                  {language?.result?.cm_atch_uni
+                    ? language?.result?.cm_atch_uni.label
+                    : "Attach Emirates ID"}
+                </span>
                 <input
                   name="emiratesIDFile"
                   type="file"
@@ -1167,19 +1396,35 @@ Memory.setItem('isPaymentExempt', true);
           {ShowTradeLicenseFlag && (
             <>
               <Label style={{ width: "100%" }}>
-              <span className="contact-form-style pb-2 font-segoe" 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '14px'
-                  : fontSize === 3 ? '16px' 
-                  : fontSize === 4 ? '18px'
-                  : fontSize === 5 ? '20px'
-                  : '16px'}` }}
-            >
-                {language?.result?.cm_tdlic ? language?.result?.cm_tdlic.label:'Trade License' }
-               </span>
+                <span
+                  className="contact-form-style pb-2 font-segoe"
+                  style={{
+                    fontSize: `${
+                      fontSize === 1
+                        ? "12px"
+                        : fontSize === 2
+                        ? "14px"
+                        : fontSize === 3
+                        ? "16px"
+                        : fontSize === 4
+                        ? "18px"
+                        : fontSize === 5
+                        ? "20px"
+                        : "16px"
+                    }`,
+                  }}
+                >
+                  {language?.result?.cm_tdlic
+                    ? language?.result?.cm_tdlic.label
+                    : "Trade License"}
+                </span>
                 <input
                   type="text"
-                  placeholder={language?.result?.cm_mob_select ? language?.result?.cm_mob_select.label:'Select' }
+                  placeholder={
+                    language?.result?.cm_mob_select
+                      ? language?.result?.cm_mob_select.label
+                      : "Select"
+                  }
                   onChange={(e) => {
                     setEmiratesIdOrTradeLicense(e.target.value);
                   }}
@@ -1187,21 +1432,35 @@ Memory.setItem('isPaymentExempt', true);
                 />
               </Label>
               <Label style={{ width: "100%" }}>
-              <span className="contact-form-style pb-2 font-segoe" 
-            style={{ fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '14px'
-                  : fontSize === 3 ? '16px' 
-                  : fontSize === 4 ? '18px'
-                  : fontSize === 5 ? '20px'
-                  : '16px'}` }}
-            >
-                Attach Trade License
-             </span>
+                <span
+                  className="contact-form-style pb-2 font-segoe"
+                  style={{
+                    fontSize: `${
+                      fontSize === 1
+                        ? "12px"
+                        : fontSize === 2
+                        ? "14px"
+                        : fontSize === 3
+                        ? "16px"
+                        : fontSize === 4
+                        ? "18px"
+                        : fontSize === 5
+                        ? "20px"
+                        : "16px"
+                    }`,
+                  }}
+                >
+                  Attach Trade License
+                </span>
                 <input
                   name="tradeLicenseFile"
                   type="file"
                   accept="application/pdf"
-                  placeholder={language?.result?.cm_mob_select ? language?.result?.cm_mob_select.label:'Select' }
+                  placeholder={
+                    language?.result?.cm_mob_select
+                      ? language?.result?.cm_mob_select.label
+                      : "Select"
+                  }
                   onChange={(e) => {
                     handleFileChange(e);
                   }}
@@ -1211,69 +1470,124 @@ Memory.setItem('isPaymentExempt', true);
             </>
           )}
 
-          { 
-         !isPaymentExemptlocal ?
-          <Table style={{ width: "100%", gridColumn: "1 / span 2" }}>
-            <thead>
-              <tr>
-                <th 
-                  style={{ fontWeight:"600", fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '10px'
-                  : fontSize === 3 ? '12px' 
-                  : fontSize === 4 ? '14px'
-                  : fontSize === 5 ? '16px'
-                  : '12px'}` }}
-                >
-                  {language?.result?.cm_description ? language?.result?.cm_description.label:'Description' }
+          {!isPaymentExemptlocal ? (
+            <Table style={{ width: "100%", gridColumn: "1 / span 2" }}>
+              <thead>
+                <tr>
+                  <th
+                    style={{
+                      fontWeight: "600",
+                      fontSize: `${
+                        fontSize === 1
+                          ? "12px"
+                          : fontSize === 2
+                          ? "10px"
+                          : fontSize === 3
+                          ? "12px"
+                          : fontSize === 4
+                          ? "14px"
+                          : fontSize === 5
+                          ? "16px"
+                          : "12px"
+                      }`,
+                    }}
+                  >
+                    {language?.result?.cm_description
+                      ? language?.result?.cm_description.label
+                      : "Description"}
                   </th>
-                <th
-                 style={{ fontWeight:"600", fontSize: `${fontSize === 1 ? '12px' 
-                  : fontSize === 2 ? '10px'
-                  : fontSize === 3 ? '12px' 
-                  : fontSize === 4 ? '14px'
-                  : fontSize === 5 ? '16px'
-                  : '12px'}` }}>
-                {language?.result?.cm_amt_due ? language?.result?.cm_amt_due.label:'Amount Due' }
-                   (AED)</th>
-              </tr>
-            </thead>
-            <tbody>
-              <tr>
-                <td
-                >
-                {language?.result?.cm_exc_fee ? language?.result?.cm_exc_fee.label:'Excavation NOC Fee' }
-                </td>
-                <td>{PaymentFee && PaymentFee.excavationFees}</td>
-              </tr>
-              <tr>
-                <td>
-                {language?.result?.cm_vat_excnocfees ? language?.result?.cm_vat_excnocfees.label:'VAT for Excavation NOC Fees' }
-                   (5%)</td>
-                <td>{PaymentFee && PaymentFee.vatAmount}</td>
-              </tr>
-              <tr>
-                <td
-                style={{ fontWeight:"600", fontSize: `${fontSize === 1 ? '12px' 
-                : fontSize === 2 ? '10px'
-                : fontSize === 3 ? '12px' 
-                : fontSize === 4 ? '14px'
-                : fontSize === 5 ? '16px'
-                : '12px'}` }}
-                >
-                {language?.result?.cm_total_amt ? language?.result?.cm_total_amt.label:'Total Amount' }
-                </td>
-                <td
-                style={{ fontWeight:"600", fontSize: `${fontSize === 1 ? '12px' 
-                : fontSize === 2 ? '10px'
-                : fontSize === 3 ? '12px' 
-                : fontSize === 4 ? '14px'
-                : fontSize === 5 ? '16px'
-                : '12px'}` }}>{PaymentFee && PaymentFee.total}</td>
-              </tr>
-            </tbody>
-          </Table> 
-          : ''}
-
+                  <th
+                    style={{
+                      fontWeight: "600",
+                      fontSize: `${
+                        fontSize === 1
+                          ? "12px"
+                          : fontSize === 2
+                          ? "10px"
+                          : fontSize === 3
+                          ? "12px"
+                          : fontSize === 4
+                          ? "14px"
+                          : fontSize === 5
+                          ? "16px"
+                          : "12px"
+                      }`,
+                    }}
+                  >
+                    {language?.result?.cm_amt_due
+                      ? language?.result?.cm_amt_due.label
+                      : "Amount Due"}
+                    (AED)
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr>
+                  <td>
+                    {language?.result?.cm_exc_fee
+                      ? language?.result?.cm_exc_fee.label
+                      : "Excavation NOC Fee"}
+                  </td>
+                  <td>{PaymentFee && PaymentFee.excavationFees}</td>
+                </tr>
+                <tr>
+                  <td>
+                    {language?.result?.cm_vat_excnocfees
+                      ? language?.result?.cm_vat_excnocfees.label
+                      : "VAT for Excavation NOC Fees"}
+                    (5%)
+                  </td>
+                  <td>{PaymentFee && PaymentFee.vatAmount}</td>
+                </tr>
+                <tr>
+                  <td
+                    style={{
+                      fontWeight: "600",
+                      fontSize: `${
+                        fontSize === 1
+                          ? "12px"
+                          : fontSize === 2
+                          ? "10px"
+                          : fontSize === 3
+                          ? "12px"
+                          : fontSize === 4
+                          ? "14px"
+                          : fontSize === 5
+                          ? "16px"
+                          : "12px"
+                      }`,
+                    }}
+                  >
+                    {language?.result?.cm_total_amt
+                      ? language?.result?.cm_total_amt.label
+                      : "Total Amount"}
+                  </td>
+                  <td
+                    style={{
+                      fontWeight: "600",
+                      fontSize: `${
+                        fontSize === 1
+                          ? "12px"
+                          : fontSize === 2
+                          ? "10px"
+                          : fontSize === 3
+                          ? "12px"
+                          : fontSize === 4
+                          ? "14px"
+                          : fontSize === 5
+                          ? "16px"
+                          : "12px"
+                      }`,
+                    }}
+                  >
+                    {PaymentFee && PaymentFee.total}
+                  </td>
+                </tr>
+              </tbody>
+            </Table>
+          ) : (
+            ""
+          )}
 
           <div
             className="check-box-button"
@@ -1286,79 +1600,104 @@ Memory.setItem('isPaymentExempt', true);
             }}
           >
             <div className="d-flex justify-content-center align-items-center">
-            <Checkbox
-            style={{width:"0%"}}
-              checked={agreementChecked === "true" ? true : false}
-              onClick={onCheckboxClick}
-             className="pr-3"
-            />
+              <Checkbox
+                style={{ width: "0%" }}
+                checked={agreementChecked === "true" ? true : false}
+                onClick={onCheckboxClick}
+                className="pr-3"
+              />
             </div>
             <div>
               <Label style={{ width: "100%", paddingTop: "10px" }}>
-
-              {language?.result?.cm_checkbox_declaration ? language?.result?.cm_checkbox_declaration.label:'For each Excavation form submission, a declaration text will be displayed with checkbox, which the customer has to check to submit the application and is mandatory.' }
-
-               
+                {language?.result?.cm_checkbox_declaration
+                  ? language?.result?.cm_checkbox_declaration.label
+                  : "For each Excavation form submission, a declaration text will be displayed with checkbox, which the customer has to check to submit the application and is mandatory."}
               </Label>
             </div>
           </div>
 
-
-{
-   !isPaymentExemptlocal ?
-          <ButtonSecondary
-
-            disabled={agreementChecked === "false" ? true : false}
-            onClick={() => {
-              validate();
-              !valid && setShowPayment(true);
-            }}
-            style={{
-              backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E',
-              color: "#fff",
-              gridColumn: "1 /span 2",
-              padding:"10px 15px",
-              width: "45%",
-              placeSelf: "start",
-              opacity: agreementChecked === "true" ? "1" : "0.5",
-              fontSize: `${fontSize === 1 ? '10px' 
-                  : fontSize === 2 ? '12px'
-                  : fontSize === 3 ? '14px' 
-                  : fontSize === 4 ? '16px'
-                  : fontSize === 5 ? '18px'
-                  : '14px'}`
-            }}
-          >
-            {language?.result?.cm_proceed_to_pay ? language?.result?.cm_proceed_to_pay.label:'PROCEED TO PAY' }
-            
-          </ButtonSecondary>
-
-:  <ButtonSecondary
-disabled={agreementChecked === "false" ? true : false}
-onClick={() => {
-  validate();
-  // !valid && setShowPayment(false);
-  submitBtn('token')
-}}
-style={{
-  backgroundColor: colorNumber === 1? '#101E8E' : colorNumber ===2 ? '#1D1D1B' : colorNumber ===3? '#62AA51' : '#101E8E',
-  color: "#fff",
-  gridColumn: "1 /span 2",
-  width: "25%",
-  placeSelf: "start",
-  opacity: agreementChecked === "true" ? "1" : "0.5",
-  fontSize: `${fontSize === 1 ? '10px' 
-      : fontSize === 2 ? '12px'
-      : fontSize === 3 ? '14px' 
-      : fontSize === 4 ? '16px'
-      : fontSize === 5 ? '18px'
-      : '14px'}`
-}}
->
-{/* {language?.result?.cm_proceed_to_pay ? language?.result?.cm_proceed_to_pay.label:'PROCEED TO PAY' } */}
-Submit
-</ButtonSecondary>
-}
+          {!isPaymentExemptlocal ? (
+            <ButtonSecondary
+              disabled={agreementChecked === "false" ? true : false}
+              onClick={() => {
+                validate();
+                !valid && setShowPayment(true);
+              }}
+              style={{
+                backgroundColor:
+                  colorNumber === 1
+                    ? "#101E8E"
+                    : colorNumber === 2
+                    ? "#1D1D1B"
+                    : colorNumber === 3
+                    ? "#62AA51"
+                    : "#101E8E",
+                color: "#fff",
+                gridColumn: "1 /span 2",
+                padding: "10px 15px",
+                width: "45%",
+                placeSelf: "start",
+                opacity: agreementChecked === "true" ? "1" : "0.5",
+                fontSize: `${
+                  fontSize === 1
+                    ? "10px"
+                    : fontSize === 2
+                    ? "12px"
+                    : fontSize === 3
+                    ? "14px"
+                    : fontSize === 4
+                    ? "16px"
+                    : fontSize === 5
+                    ? "18px"
+                    : "14px"
+                }`,
+              }}
+            >
+              {language?.result?.cm_proceed_to_pay
+                ? language?.result?.cm_proceed_to_pay.label
+                : "PROCEED TO PAY"}
+            </ButtonSecondary>
+          ) : (
+            <ButtonSecondary
+              disabled={agreementChecked === "false" ? true : false}
+              onClick={() => {
+                validate();
+                // !valid && setShowPayment(false);
+                submitBtn("token");
+              }}
+              style={{
+                backgroundColor:
+                  colorNumber === 1
+                    ? "#101E8E"
+                    : colorNumber === 2
+                    ? "#1D1D1B"
+                    : colorNumber === 3
+                    ? "#62AA51"
+                    : "#101E8E",
+                color: "#fff",
+                gridColumn: "1 /span 2",
+                width: "25%",
+                placeSelf: "start",
+                opacity: agreementChecked === "true" ? "1" : "0.5",
+                fontSize: `${
+                  fontSize === 1
+                    ? "10px"
+                    : fontSize === 2
+                    ? "12px"
+                    : fontSize === 3
+                    ? "14px"
+                    : fontSize === 4
+                    ? "16px"
+                    : fontSize === 5
+                    ? "18px"
+                    : "14px"
+                }`,
+              }}
+            >
+              {/* {language?.result?.cm_proceed_to_pay ? language?.result?.cm_proceed_to_pay.label:'PROCEED TO PAY' } */}
+              Submit
+            </ButtonSecondary>
+          )}
 
           {valid ? (
             <h3

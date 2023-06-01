@@ -8,7 +8,7 @@ import { Memory } from "../../core/Memory";
 import { format } from "date-fns";
 import { Backdrop, CircularProgress } from "@mui/material";
 import PopupMessage from "../../components/PopupMessage/popupMessage";
-import ExperienceFeedback from "../../components/experienceFeedback/experienceFeedback.component";
+import ExperienceFeedback from "../../components/experienceFeedback/experienceFeedback";
 
 interface PaymentSuccessProps {
   setPaymentPopupState: (state: any) => void;
@@ -23,7 +23,7 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({
 
   const [openPopupMessage, setOpenPopupMessage] = useState<boolean>(false);
   const [Backloading, setBackLoading] = useState<boolean>(false);
-  const [experincePayment, setExperincePayment] = useState<boolean>(false);
+  const [experincePayment, setExperincePayment] = useState<any>(false);
   const [modalOpen, setModalOpen] = useState<boolean>(false);
   const [alert, setAlert] = useState({
     type: "",
@@ -49,7 +49,15 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({
   useEffect(() => {
     prepareData();
   }, []);
-
+  interface CardItem {
+    id: number | string;
+    platform: number | string;
+    dueAmount: number | string;
+    totalAmount: number | string;
+    paymentDateTime: number | string;
+    token: number | string;
+    last4: number | string;
+  }
   const prepareData = async () => {
     console.log(location.pathname);
 
@@ -60,17 +68,25 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({
 
     let referenceId = Memory.getItem("referenceId");
 
-    let currentDateTime = format(new Date(), "MM/dd/yyyy, h:mm:ss a");
-    let sendData = {
-      id: referenceId,
-      threeDSToken: ckoSessionId,
-      paymentDateTime: currentDateTime,
-      platform: "Web",
+    let currentDateTime = format(new Date(), "MM/dd/yyyy HH:mm:ss");
+    const cardItem = JSON.parse(
+      localStorage.getItem("cardItem") || "{}"
+    ) as CardItem;
+    let newCard = {
+      ...cardItem,
+      ["threeDSToken"]: ckoSessionId,
+      ["paymentDateTime"]: currentDateTime,
     };
+    // let sendData = {
+    //   id: referenceId,
+    //   threeDSToken: ckoSessionId,
+    //   paymentDateTime: currentDateTime,
+    //   platform: "Web",
+    // };
 
     const response: any = await engine.postItem(
-      Constants.EXCAVATION_NOC_AFTER_THREE_DS,
-      sendData
+      Constants.CONNECTION_NOC_AFTER_THREE_DS,
+      newCard
     );
 
     if (response && response.status === 200) {
@@ -92,8 +108,6 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({
       setOpenPopupMessage(true);
     }
   };
-
-  console.log("openPopupMessage", openPopupMessage);
 
   return (
     <Container>

@@ -26,6 +26,7 @@ const NavbarMobile: FC<Props> = ({
   const [menu2, setMenu2] = useState(false);
 
   useEffect(() => {
+    
     // fetch("http://213.42.234.23:8901/api/resourcesV2", {
     fetch("http://213.42.234.23:8901/CustomerSelfServiceAPI/api/resourcesV2", {
       method: "GET",
@@ -38,6 +39,8 @@ const NavbarMobile: FC<Props> = ({
   }, []);
 
   const addLanguage = (data: any) => {
+    console.log("currentLanguage", data)
+    localStorage.setItem("currentLanguage", data);
     // console.log("first");
     // fetch("http://213.42.234.23:8901/api/resourcesV2", {
     fetch("http://213.42.234.23:8901/CustomerSelfServiceAPI/api/resourcesV2", {

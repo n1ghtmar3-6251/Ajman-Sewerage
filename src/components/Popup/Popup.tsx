@@ -1,4 +1,11 @@
-import { ChangeEvent, FC, ReactElement, useEffect, useState, useRef, } from "react";
+import {
+  ChangeEvent,
+  FC,
+  ReactElement,
+  useEffect,
+  useState,
+  useRef,
+} from "react";
 import CardContent from "@mui/material/CardContent";
 import CloseIcon from "../../assets/CloseIcon.svg";
 import {
@@ -10,7 +17,10 @@ import {
 } from "./popup.styled";
 import { Props } from "./popup.interface";
 import { Label } from "../extras/styled";
-import { Table, ComplaintContainer } from "../../screens/ApplyWWPR/Apply.styled";
+import {
+  Table,
+  ComplaintContainer,
+} from "../../screens/ApplyWWPR/Apply.styled";
 import { DocumentDownload } from "../../components/documentDownload/documentDownload.styled";
 import Constants from "../../core/Constants";
 import RequestEngine from "../../core/RequestEngine";
@@ -21,7 +31,6 @@ import Modal from "@mui/material/Modal";
 import { Frames, CardNumber, ExpiryDate, Cvv } from "frames-react";
 import axios from "axios";
 
-
 const style = {
   position: "absolute",
   top: "50%",
@@ -29,10 +38,12 @@ const style = {
   transform: "translate(-50%, -50%)",
   width: 400,
   bgcolor: "background.paper",
-  border: "2px solid #000",
+  // border: "2px solid #000",
+  borderRadius: "12px",
   boxShadow: 24,
-  p: 4,
-  height: "436px",
+  // p: 4,
+  // height: "436px",
+  outline: "0",
 };
 
 const Popup: FC<Props> = ({
@@ -55,7 +66,7 @@ const Popup: FC<Props> = ({
         "http://213.42.234.23:8904/CustomerAPI/api/noc/getDueAmount",
         {
           params: {
-            ParcelId: 104262745,
+            ParcelId: application?.parcelId,
             RequestId: application.requestId,
           },
         }
@@ -126,7 +137,7 @@ const Popup: FC<Props> = ({
   const [language, setLanguage] = useState<any>();
 
   const [fontSize, setFontSize] = useState<number>(14);
-  const [username, setUserName] = useState<string>('');
+  const [username, setUserName] = useState<string>("");
 
   const [colorNumber, setColorNumber] = useState<number>(14);
 
@@ -153,9 +164,7 @@ const Popup: FC<Props> = ({
 
   console.log("application=>", application);
 
-
-
-  const postData = async (token:any) => {
+  const postData = async (token: any) => {
     try {
       // const url = 'http://213.42.234.23:8904/CustomerAPI/api/payment/ConnectionNocUpdatePaymentDetails';
       const url =
@@ -164,12 +173,12 @@ const Popup: FC<Props> = ({
         id: application.requestId,
         platform: "Web",
         last4: token.last4,
-        totalAmount: framesRef?.current?.costEstimationReport?.totalAmount,
+        totalAmount: application.costEstimationReport.totalAmount,
         // totalAmount: '38220',
         token: token.token,
         // dueAmount: getDueAmountData?.result?.dueAmount,
         dueAmount: getDueAmountDataRef?.current?.result?.dueAmount,
-      
+
         // dueAmount: '746482.5',
         paymentDateTime: token.expires_on,
         failureUrl: Constants.FAILURE_PAYMENT_URL,
@@ -178,7 +187,17 @@ const Popup: FC<Props> = ({
           getDueAmountDataRef?.current?.result?.dueServiceTransactionId,
         // dueAmountTransactionId: '820230259355'
       };
-
+      const cardItem = {
+        id: application.requestId,
+        platform: "Web",
+        dueAmount: getDueAmountDataRef?.current?.result?.dueAmount,
+        totalAmount: application.costEstimationReport.totalAmount,
+        paymentDateTime: token.expires_on,
+        token: token.token,
+        last4: token.last4,
+      }
+    
+      localStorage.setItem("cardItem",JSON.stringify(cardItem))
       const response = await axios.post(url, data, {
         headers: {
           Authorization: "bearer " + localStorage.getItem("token"),
@@ -187,19 +206,16 @@ const Popup: FC<Props> = ({
           "Content-Type": "application/json",
           "Accept-Language": "en-US",
         },
+      });
+      if (response.status === 200) {
+        window.open(response.data.result.redirectUrl , "_self")
+        handleClose();
       }
-      );
-     if(response.status === 200){
-      handleClose()
-     }
       // setResponse(JSON.stringify(response.data));
     } catch (error) {
       console.error("error is:", error);
     }
   };
-
-
-
 
   return (
     <Card style={{ color: "#101E8E" }}>
@@ -297,7 +313,10 @@ const Popup: FC<Props> = ({
             </CardSpacer>
           ) : (
             <>
-              <div className="d-flex justify-content-between pb-3" style={{backgroundColor:"rgb(237, 244, 246)"}}>
+              <div
+                className="d-flex justify-content-between pb-3"
+                style={{ backgroundColor: "rgb(237, 244, 246)" }}
+              >
                 <div className="px-4">
                   <div className="pt-3 pb-4 ">
                     <div>
@@ -329,53 +348,58 @@ const Popup: FC<Props> = ({
                     </div>
                   </div>
 
-                  <div className='mt-3'>
+                  <div className="mt-3">
                     <div>
-                      <span className="form-heading-top"     style={{
-                    fontSize: `${
-                      fontSize === 1
-                        ? "12px"
-                        : fontSize === 2
-                        ? "14px"
-                        : fontSize === 3
-                        ? "16px"
-                        : fontSize === 4
-                        ? "18px"
-                        : fontSize === 5
-                        ? "20px"
-                        : "16px"
-                    }`,
-                  }}>
-                      {language?.result?.cm_consultant
+                      <span
+                        className="form-heading-top"
+                        style={{
+                          fontSize: `${
+                            fontSize === 1
+                              ? "12px"
+                              : fontSize === 2
+                              ? "14px"
+                              : fontSize === 3
+                              ? "16px"
+                              : fontSize === 4
+                              ? "18px"
+                              : fontSize === 5
+                              ? "20px"
+                              : "16px"
+                          }`,
+                        }}
+                      >
+                        {language?.result?.cm_consultant
                           ? language?.result?.cm_consultant.label
-                          : "Consultant"} {' '}
-                          {language?.result?.cm_email
+                          : "Consultant"}{" "}
+                        {language?.result?.cm_email
                           ? language?.result?.cm_email.label
                           : "Email"}
                       </span>
                     </div>
                     <div>
-                      <span className="form-heading-text"   style={{
-                    fontWeight: "400",
-                    fontSize: `${
-                      fontSize === 1
-                        ? "12px"
-                        : fontSize === 2
-                        ? "14px"
-                        : fontSize === 3
-                        ? "16px"
-                        : fontSize === 4
-                        ? "18px"
-                        : fontSize === 5
-                        ? "20px"
-                        : "16px"
-                    }`,
-                  }}>
+                      <span
+                        className="form-heading-text"
+                        style={{
+                          fontWeight: "400",
+                          fontSize: `${
+                            fontSize === 1
+                              ? "12px"
+                              : fontSize === 2
+                              ? "14px"
+                              : fontSize === 3
+                              ? "16px"
+                              : fontSize === 4
+                              ? "18px"
+                              : fontSize === 5
+                              ? "20px"
+                              : "16px"
+                          }`,
+                        }}
+                      >
                         {username}
                       </span>
                     </div>
                   </div>
-
                 </div>
 
                 <div>
@@ -452,13 +476,18 @@ const Popup: FC<Props> = ({
                   placeSelf: "start",
                 }}
               >
-             {language?.result?.cm_application_documents
-                    ? language?.result?.cm_application_documents.label
-                    : "Application Documents"}
+                {language?.result?.cm_application_documents
+                  ? language?.result?.cm_application_documents.label
+                  : "Application Documents"}
               </p>
 
               {application && application.demolishLetter && (
-                <Label style={{ marginBottom: "10px", width: isLargeScreen? "90%": '100%' }}>
+                <Label
+                  style={{
+                    marginBottom: "10px",
+                    width: isLargeScreen ? "90%" : "100%",
+                  }}
+                >
                   <DocumentDownload
                     exists={true}
                     mainText={"Demolition Letter"}
@@ -478,7 +507,12 @@ const Popup: FC<Props> = ({
                 </Label>
               )}
               {application && application.sitePlan && (
-                <Label style={{ marginBottom: "10px", width: isLargeScreen? "90%": '100%' }}>
+                <Label
+                  style={{
+                    marginBottom: "10px",
+                    width: isLargeScreen ? "90%" : "100%",
+                  }}
+                >
                   <DocumentDownload
                     exists={true}
                     mainText={"Site Plan"}
@@ -498,7 +532,12 @@ const Popup: FC<Props> = ({
                 </Label>
               )}
               {application && application.floorPlan && (
-                <Label style={{ marginBottom: "10px", width: isLargeScreen? "90%": '100%' }}>
+                <Label
+                  style={{
+                    marginBottom: "10px",
+                    width: isLargeScreen ? "90%" : "100%",
+                  }}
+                >
                   <DocumentDownload
                     exists={true}
                     mainText={
@@ -522,7 +561,12 @@ const Popup: FC<Props> = ({
                 </Label>
               )}
               {application && application.layoutPlan && (
-                <Label style={{ marginBottom: "10px", width: isLargeScreen? "90%": '100%' }}>
+                <Label
+                  style={{
+                    marginBottom: "10px",
+                    width: isLargeScreen ? "90%" : "100%",
+                  }}
+                >
                   <DocumentDownload
                     exists={true}
                     mainText={"Layout Plan"}
@@ -541,9 +585,14 @@ const Popup: FC<Props> = ({
                   />
                 </Label>
               )}
-              
+
               {application && application.emiratesIdOrTradeLicense && (
-                <Label style={{ marginBottom: "10px", width: isLargeScreen? "90%": '100%' }}>
+                <Label
+                  style={{
+                    marginBottom: "10px",
+                    width: isLargeScreen ? "90%" : "100%",
+                  }}
+                >
                   <DocumentDownload
                     exists={true}
                     mainText={"Owner’s Emirates ID"}
@@ -564,16 +613,12 @@ const Popup: FC<Props> = ({
                   />
                 </Label>
               )}
-             
             </div>
-
-
 
             <div className=" w-100 ">
               {/* <p className="my-3" style={{ fontWeight: "400" }}>
                 Detail:
               </p> */}
-
 
               {/* {application?.completionNocDetails ? (
               <div className='p-3 w-100 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
@@ -581,14 +626,14 @@ const Popup: FC<Props> = ({
 </div>
               ) : null} */}
 
-
               {application?.reasonForRejection ? (
-<div className='p-3 w-100 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
-                <p>Reason For Rejection: {' '}{application?.reasonForRejection}</p>
-</div>
+                <div
+                  className="p-3 w-100 my-3"
+                  style={{ backgroundColor: "rgb(237, 244, 246)" }}
+                >
+                  <p>Reason For Rejection: {application?.reasonForRejection}</p>
+                </div>
               ) : null}
-
-              
 
               {/* {application?.renewalNocDetails ? (
                 <>
@@ -714,23 +759,22 @@ const Popup: FC<Props> = ({
                 </>
               ) : null} */}
 
-
-{/* <div>
+              {/* <div>
       {Object.entries(application.costEstimationReport).map(([key, value]) => (
         <p key={key}>{key}: {value}</p>
       ))}
     </div> */}
-    
-    {/* {console.log("appppp", application )} */}
 
-{/* { application &&  Object.entries(application?.costEstimationReport).map(([key, val]:any, i) => 
+              {/* {console.log("appppp", application )} */}
+
+              {/* { application &&  Object.entries(application?.costEstimationReport).map(([key, val]:any, i) => 
 
     <>
     asdf
     </>
 )} */}
 
-{/* {application?.costEstimationReport ? (
+              {/* {application?.costEstimationReport ? (
                 <>
                   {
                     <div className='p-3 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
@@ -842,11 +886,7 @@ const Popup: FC<Props> = ({
                   }
                 </>
               ) : null} */}
-
-
             </div>
-
-
 
             <br />
             {application &&
@@ -1143,41 +1183,46 @@ const Popup: FC<Props> = ({
                   </TableContainer>
                 )}
 
-{application &&
+              {application &&
                 application.costEstimationReport.costEstimationReport && (
                   <TableContainer>
                     <p>NOC Documents</p>
-                   
 
-                    {application && application.costEstimationReport.costEstimationReport && (
-                <Label style={{ marginBottom: "10px" }}>
-                  <DocumentDownload
-                    exists={true}
-                    mainText={
-                      language?.result?.cm_costEstimationReport
-                        ? language?.result?.cm_costEstimationReport.label
-                        : "Cost Estimation Report"
-                    }
-                    subText={
-                      application && application.costEstimationReport.costEstimationReport
-                        ?application?.costEstimationReport.costEstimationReport.substring(
-                          application?.costEstimationReport.costEstimationReport.lastIndexOf("/") + 1
-                          )
-                        : ""
-                    }
-                    inputName={
-                      application && application.costEstimationReport.costEstimationReport
-                        ? application.costEstimationReport.costEstimationReport
-                        : ""
-                    }
-                  />
-                </Label>
-              )}
-
+                    {application &&
+                      application.costEstimationReport.costEstimationReport && (
+                        <Label style={{ marginBottom: "10px" }}>
+                          <DocumentDownload
+                            exists={true}
+                            mainText={
+                              language?.result?.cm_costEstimationReport
+                                ? language?.result?.cm_costEstimationReport
+                                    .label
+                                : "Cost Estimation Report"
+                            }
+                            subText={
+                              application &&
+                              application.costEstimationReport
+                                .costEstimationReport
+                                ? application?.costEstimationReport.costEstimationReport.substring(
+                                    application?.costEstimationReport.costEstimationReport.lastIndexOf(
+                                      "/"
+                                    ) + 1
+                                  )
+                                : ""
+                            }
+                            inputName={
+                              application &&
+                              application.costEstimationReport
+                                .costEstimationReport
+                                ? application.costEstimationReport
+                                    .costEstimationReport
+                                : ""
+                            }
+                          />
+                        </Label>
+                      )}
                   </TableContainer>
                 )}
-                
-             
 
               {application &&
                 application.costEstimationReport &&
@@ -1265,194 +1310,199 @@ const Popup: FC<Props> = ({
             <br />
 
             {application &&
-                application.costEstimationReport &&  application.costEstimationReport.paymentStatus === null &&
-                application.status  === 'Approved' &&
-              <>
-
-              <div className=" w-100 mt-4 d-flex justify-content-center">
-              {getDueAmountData ? (
-                <button
-                  style={{
-                    width: "190px",
-                    height: "55px",
-                    backgroundColor: "white",
-                    borderRadius: "12px",
-                  }}
-                  className="mr-3"
-                  onClick={() => {
-                    handleOpen();
-                  }}
-                >
-                  Pay Now
-                </button>
-              ) : null}
-
-              <button
-                style={{
-                  width: "190px",
-                  height: "55px",
-                  backgroundColor: "white",
-                  borderRadius: "12px",
-                }}
-                onClick={() => {
-                  setGetDueAmountLoading("Please Wait...");
-                  getDueAmount();
-                }}
-              >
-                Get Due Amount
-              </button>
-
-              <Modal
-                keepMounted
-                open={open}
-                onClose={handleClose}
-                aria-labelledby="keep-mounted-modal-title"
-                aria-describedby="keep-mounted-modal-description"
-              >
-                <Box sx={style}>
-                  <ComplaintContainer style={{ width: "100%" }}>
-                    <Frames
-                     
-                      config={{
-                        debug: true,
-                        //publicKey: 'pk_test_6e40a700-d563-43cd-89d0-f9bb17d35e73', //'pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit', //'pk_test_5fe58a54-8ef2-408b-99b3-14659cdebfcf','pk_sbox_ogynfaoply5o6ksuw3d3hcee3ez'
-                        publicKey: "pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit",
-                        schemeChoice: true,
-                        localization: {
-                          cardNumberPlaceholder: "",
-                          expiryMonthPlaceholder: "MM",
-                          expiryYearPlaceholder: "YY",
-                          cvvPlaceholder: "",
-                        },
-                        style: {
-                          base: {
-                            fontSize: "14px",
-                            background: "#e5eff2",
-                            color: "#101e8e",
-                            opacity: "1",
-                            padding: "1rem 0 !important",
-                            margin: "0",
-                            outline: "none",
-                            border: "1px solid #b6bfdc",
-                            width: "100%",
-                            height: "35px",
-                          },
-                        },
-                      }}
-                      ready={() => {}}
-                      frameActivated={(e) => {}}
-                      frameFocus={(e) => {}}
-                      frameBlur={(e) => {}}
-                      frameValidationChanged={(e) => {}}
-                      paymentMethodChanged={(e) => {}}
-                      cardValidationChanged={(e) => {}}
-                      cardSubmitted={() => {}}
-                      cardTokenizationFailed={(e) => {}}
-                      cardBinChanged={(e) => {}}
-                      cardTokenized={(e) => {
-                        postData(e);
-                      }}
-                    >
-                      <Table
+              application.costEstimationReport &&
+              application.costEstimationReport.paymentStatus === null &&
+              application.status === "Approved" && (
+                <>
+                  <div className=" w-100 mt-4 d-flex justify-content-center">
+                    {getDueAmountData ? (
+                      <ButtonSecondary
                         style={{
-                          width: "140%",
-                          gridColumn: "1 / span 2",
-                          border: "none",
+                          width: "190px",
+                        }}
+                        className="mr-3"
+                        onClick={() => {
+                          handleOpen();
                         }}
                       >
-                        <tbody style={{ width: "100%" }}>
-                          <tr>
-                            <td>
-                              <label style={{ float: "left" }}>
-                                {language?.result?.cm_amount
-                                  ? language?.result?.cm_amount.label
-                                  : "Amount"}
-                              </label>
-                            </td>
-                            <td> </td>
-                            {/* <td>52.50 (AED)</td> */}
-                            {/* <td>{PaymentFee && PaymentFee.total}</td> */}
-                          </tr>
-                          <tr>
-                            <td colSpan={2} style={{ border: "none" }}>
-                              <label style={{ float: "left" }}>
-                                Credit/Debit Card Number
-                              </label>
-                              <CardNumber
-                                style={{ height: "35px", width: "100%" }}
-                              />
-                            </td>
-                          </tr>
-                          <tr>
-                            <td style={{ border: "none" }}>
-                              <label style={{ float: "left" }}>
-                                {language?.result?.cm_expiry_date
-                                  ? language?.result?.cm_expiry_date.label
-                                  : "Expiry Date"}
-                              </label>
-                              <ExpiryDate style={{ height: "35px" }} />
-                            </td>
-                            <td style={{ border: "none" }}>
-                              <label style={{ float: "left" }}>
-                                {language?.result?.cm_cvv_number
-                                  ? language?.result?.cm_cvv_number.label
-                                  : "CVV Number"}
-                              </label>
-                              <Cvv style={{ height: "35px" }} />
-                            </td>
-                          </tr>
-                          <tr>
-                            <td colSpan={2} style={{ border: "none" }}></td>
-                          </tr>
-                          <tr style={{ background: "none" }}>
-                            <td
-                              colSpan={2}
+                        Pay Now
+                      </ButtonSecondary>
+                    ) : null}
+
+                    <ButtonSecondary
+                      style={{
+                        width: "190px",
+                      }}
+                      onClick={() => {
+                        setGetDueAmountLoading("Please Wait...");
+                        getDueAmount();
+                      }}
+                    >
+                      Get Due Amount
+                    </ButtonSecondary>
+
+                    <Modal
+                      keepMounted
+                      open={open}
+                      onClose={handleClose}
+                      aria-labelledby="keep-mounted-modal-title"
+                      aria-describedby="keep-mounted-modal-description"
+                    >
+                      <Box sx={style}>
+                        <ComplaintContainer
+                          style={{
+                            width: "100%",
+                            background: "transparent",
+                            padding: "0.6rem",
+                          }}
+                        >
+                          <Frames
+                            config={{
+                              debug: true,
+                              //publicKey: 'pk_test_6e40a700-d563-43cd-89d0-f9bb17d35e73', //'pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit', //'pk_test_5fe58a54-8ef2-408b-99b3-14659cdebfcf','pk_sbox_ogynfaoply5o6ksuw3d3hcee3ez'
+                              publicKey: "pk_sbox_x5mnr3fhoxv7tgnvnx2dbam3yit",
+                              schemeChoice: true,
+                              localization: {
+                                cardNumberPlaceholder: "",
+                                expiryMonthPlaceholder: "MM",
+                                expiryYearPlaceholder: "YY",
+                                cvvPlaceholder: "",
+                              },
+                              style: {
+                                base: {
+                                  fontSize: "14px",
+                                  background: "#e5eff2",
+                                  color: "#101e8e",
+                                  opacity: "1",
+                                  padding: "1rem 0 !important",
+                                  margin: "0",
+                                  outline: "0",
+                                  border: "1px solid #b6bfdc",
+                                  width: "100%",
+                                  height: "35px",
+                                },
+                              },
+                            }}
+                            ready={() => {}}
+                            frameActivated={(e) => {}}
+                            frameFocus={(e) => {}}
+                            frameBlur={(e) => {}}
+                            frameValidationChanged={(e) => {}}
+                            paymentMethodChanged={(e) => {}}
+                            cardValidationChanged={(e) => {}}
+                            cardSubmitted={() => {}}
+                            cardTokenizationFailed={(e) => {}}
+                            cardBinChanged={(e) => {}}
+                            cardTokenized={(e) => {
+                              postData(e);
+                            }}
+                          >
+                            <Table
                               style={{
+                                width: "100%",
+                                gridColumn: "1 / span 2",
                                 border: "none",
-                                backgroundColor: "none !important",
                               }}
                             >
-                              <ButtonSecondary
-                                onClick={() => {
-                                  Frames.submitCard();
-                                  // setLoader(1)
-                                }}
-                                style={{
-                                  background: "#101e8e",
-                                  color: "#fff",
-                                  gridColumn: "1 /span 2",
-                                  placeSelf: "start",
-                                }}
-                              >
-                                {/* {
+                              <tbody style={{ width: "100%" }}>
+                                <tr>
+                                  <td>
+                                    <label style={{ float: "left" }}>
+                                      {language?.result?.cm_amount
+                                        ? language?.result?.cm_amount.label
+                                        : "Amount"}
+                                    </label>
+                                  </td>
+                                  <td>
+                                    AED{" "}
+                                    {
+                                      application?.costEstimationReport
+                                        .totalAmount
+                                    }{" "}
+                                  </td>
+                                  {/* <td>52.50 (AED)</td> */}
+                                  {/* <td>{PaymentFee && PaymentFee.total}</td> */}
+                                </tr>
+                                <tr>
+                                  <td colSpan={2} style={{ border: "none" }}>
+                                    <label style={{ float: "left" }}>
+                                      Credit/Debit Card Number
+                                    </label>
+                                    <CardNumber
+                                      style={{ height: "35px", width: "100%" }}
+                                    />
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td style={{ border: "none" }}>
+                                    <label style={{ float: "left" }}>
+                                      {language?.result?.cm_expiry_date
+                                        ? language?.result?.cm_expiry_date.label
+                                        : "Expiry Date"}
+                                    </label>
+                                    <ExpiryDate style={{ height: "35px" }} />
+                                  </td>
+                                  <td style={{ border: "none" }}>
+                                    <label style={{ float: "left" }}>
+                                      {language?.result?.cm_cvv_number
+                                        ? language?.result?.cm_cvv_number.label
+                                        : "CVV Number"}
+                                    </label>
+                                    <Cvv style={{ height: "35px" }} />
+                                  </td>
+                                </tr>
+                                <tr>
+                                  <td
+                                    colSpan={2}
+                                    style={{ border: "none" }}
+                                  ></td>
+                                </tr>
+                                <tr style={{ background: "none" }}>
+                                  <td
+                                    colSpan={2}
+                                    style={{
+                                      border: "none",
+                                      backgroundColor: "none !important",
+                                    }}
+                                  >
+                                    <ButtonSecondary
+                                      onClick={() => {
+                                        Frames.submitCard();
+                                        // setLoader(1)
+                                      }}
+                                      style={{
+                                        background: "#101e8e",
+                                        color: "#fff",
+                                        gridColumn: "1 /span 2",
+                                        placeSelf: "start",
+                                      }}
+                                    >
+                                      {/* {
             loader ===0 ? `${language?.result?.cm_paynow ? language?.result?.cm_paynow.label:'PAY NOW' }`: <SpinnerRaw />
            }     */}
-                                PAY NOW
-                              </ButtonSecondary>
-                            </td>
-                          </tr>
-                        </tbody>
-                      </Table>
-                    </Frames>
-                  </ComplaintContainer>
+                                      PAY NOW
+                                    </ButtonSecondary>
+                                  </td>
+                                </tr>
+                              </tbody>
+                            </Table>
+                          </Frames>
+                        </ComplaintContainer>
 
-                  {/* <div className="d-flex justify-content-center"> <h5>Due Amount</h5></div> */}
+                        {/* <div className="d-flex justify-content-center"> <h5>Due Amount</h5></div> */}
 
-                  {/* <p className="mb-0"> NOC ID:   {getDueAmountData?.result?.nocId ? getDueAmountData?.result?.nocId : 'loading...'}</p>
+                        {/* <p className="mb-0"> NOC ID:   {getDueAmountData?.result?.nocId ? getDueAmountData?.result?.nocId : 'loading...'}</p>
       <p className="mb-0"> Parcel ID:   {getDueAmountData?.result?.parcelId ? getDueAmountData?.result?.parcelId : 'loading...'}</p>
       <p className="mb-0"> Service Transaction ID:   {getDueAmountData?.result?.dueServiceTransactionId? getDueAmountData?.result?.dueServiceTransactionId : 'loading...' }</p>
       <p className="mb-0"> Due Amount:   {getDueAmountData?.result?.dueAmount? getDueAmountData?.result?.dueAmount : 'loading...'}</p> */}
-                </Box>
-              </Modal>
-            </div>
-            <div className=" w-100 mt-4 d-flex justify-content-center">
-              {getDueAmountLoading}
-            </div>
-              
-              
-              </>
-
-            }
+                      </Box>
+                    </Modal>
+                  </div>
+                  <div className=" w-100 mt-4 d-flex justify-content-center">
+                    {getDueAmountLoading}
+                  </div>
+                </>
+              )}
 
             <br />
             <br />
@@ -1712,7 +1762,6 @@ const Popup: FC<Props> = ({
                 </span>
               </div>
 
-
               <div style={{ alignSelf: "center" }}>
                 <span
                   style={{
@@ -1731,12 +1780,12 @@ const Popup: FC<Props> = ({
                     }`,
                   }}
                 >
-                   {language?.result?.cm_consultant
-                          ? language?.result?.cm_consultant.label
-                          : "Consultant"} {' '}
-                          {language?.result?.cm_email
-                          ? language?.result?.cm_email.label
-                          : "Email"}
+                  {language?.result?.cm_consultant
+                    ? language?.result?.cm_consultant.label
+                    : "Consultant"}{" "}
+                  {language?.result?.cm_email
+                    ? language?.result?.cm_email.label
+                    : "Email"}
                 </span>
                 <span
                   style={{
@@ -1756,10 +1805,9 @@ const Popup: FC<Props> = ({
                     }`,
                   }}
                 >
-                   {username}
+                  {username}
                 </span>
               </div>
-              
             </CardSpacer>
           ) : (
             <div style={{ background: "rgba(229, 239, 242, 0.7)" }}>
@@ -1866,7 +1914,7 @@ const Popup: FC<Props> = ({
                     </div>
                   </div>
 
-                  <div className='mt-3'>
+                  <div className="mt-3">
                     <div>
                       <span
                         className="form-heading-top"
@@ -1887,8 +1935,8 @@ const Popup: FC<Props> = ({
                         }}
                       >
                         {language?.result?.cm_wrktypes
-                        ? language?.result?.cm_wrktypes.label
-                        : "Work Type"}
+                          ? language?.result?.cm_wrktypes.label
+                          : "Work Type"}
                       </span>
                     </div>
                     <div>
@@ -1910,11 +1958,10 @@ const Popup: FC<Props> = ({
                           }`,
                         }}
                       >
-                       {application?.workTypes.toString()}
+                        {application?.workTypes.toString()}
                       </span>
                     </div>
                   </div>
-
                 </div>
 
                 <div>
@@ -1986,9 +2033,6 @@ const Popup: FC<Props> = ({
                       </span>
                     </div>
 
-
-
-
                     <div>
                       <span
                         className="form-heading-tex
@@ -2005,7 +2049,7 @@ const Popup: FC<Props> = ({
                     </div>
                   </div>
 
-                  <div className='mt-3'>
+                  <div className="mt-3">
                     <div>
                       <span
                         className="form-heading-top"
@@ -2028,15 +2072,12 @@ const Popup: FC<Props> = ({
                         {" "}
                         {language?.result?.cm_consultant
                           ? language?.result?.cm_consultant.label
-                          : "Consultant"} {' '}
-                          {language?.result?.cm_email
+                          : "Consultant"}{" "}
+                        {language?.result?.cm_email
                           ? language?.result?.cm_email.label
                           : "Email"}
                       </span>
                     </div>
-
-
-
 
                     <div>
                       <span
@@ -2053,19 +2094,11 @@ const Popup: FC<Props> = ({
                       </span>
                     </div>
                   </div>
-
-                 
-                  
                 </div>
-
-
-                
               </div>
 
+              {/* work  */}
 
-{/* work  */}
-
-              
               {/* <div>
                 <div className="pl-4 pt-4 pb-3">
 
@@ -2113,9 +2146,6 @@ const Popup: FC<Props> = ({
                 </div>
                 
               </div> */}
-
-
-
             </div>
           )}
           <br />
@@ -2221,7 +2251,7 @@ const Popup: FC<Props> = ({
                   />
                 </Label>
               )}
-               {application && application.gisAttachment && (
+              {application && application.gisAttachment && (
                 <Label style={{ marginBottom: "10px" }}>
                   <DocumentDownload
                     exists={true}
@@ -2274,21 +2304,17 @@ const Popup: FC<Props> = ({
                 Detail:
               </p> */}
 
-
               {/* {application?.completionNocDetails ? (
               <div className='p-3 w-100 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
                 <p>Completion Noc Details:{' '}{application?.completionNocDetails}</p>
 </div>
               ) : null} */}
 
-
               {/* {application?.reasonForRejection ? (
 <div className='p-3 w-100 my-3' style={{backgroundColor:"rgb(237, 244, 246)"}}>
                 <p>Reason For Rejection: {' '}{application?.reasonForRejection}</p>
 </div>
               ) : null} */}
-
-              
 
               {/* {application?.renewalNocDetails ? (
                 <>

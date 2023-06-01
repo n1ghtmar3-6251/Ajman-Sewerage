@@ -1,0 +1,57 @@
+.experience-feedback-width {
+  width: 550px;
+}
+
+.question-bottom-btn {
+  display: flex;
+  align-items: center;
+  margin-left: 10%;
+}
+
+.question-all-btn {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.question-bottom-btn-add-comment {
+  margin: 15px 10px 15px 0px;
+}
+@media (max-width: "786px") {
+  .question-all-btn-back {
+    display: flex;
+    justify-content: start;
+    width: 100%;
+    margin-top: 5%;
+  }
+  .question-all-btn-back button {
+    border: none;
+    outline: none;
+    width: auto !important;
+    font-family: "Segoe UI";
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 130%;
+    text-align: center;
+    text-transform: uppercase;
+    color: #101e8e;
+  }
+  .question-bottom-btn-add-comment {
+    margin: 15px 0px 15px 0px;
+  }
+  .question-all-btn {
+    flex-direction: column-reverse;
+  }
+  .question-bottom-btn {
+    flex-direction: column;
+    margin-left: 0%;
+  }
+
+  .question-bottom-btn button {
+    width: 100%;
+  }
+  .experience-feedback-width {
+    width: 400px;
+  }
+}

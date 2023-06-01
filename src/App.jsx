@@ -18,7 +18,7 @@ import { HappyButton } from "./components/extras/styled";
 import MapContainer from "./components/map/MapContainer";
 import Login from "./screens/login.screen/Login";
 import {Memory} from "./core/Memory";
-import ExperienceFeedback from "./components/experienceFeedback/experienceFeedback.component";
+import ExperienceFeedback from "./components/experienceFeedback/experienceFeedback";
 import ForgotPassword from './screens/ForgotPassword/ForgotPassword';
 import UAERedirect from './screens/UaePassRedirection/UaePassRedirection';
 import Register from './screens/Registration/Registration';
