@@ -262,7 +262,7 @@ const ApplyWWPR = () => {
       return;
     } else if (
       !ParcelNumber ||
-      !PropertyType ||
+      !PropertyType || 
       !BuildingTypeId ||
       !EmiratesIdOrTradeLicense
       
