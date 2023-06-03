@@ -30,6 +30,7 @@ import Box from "@mui/material/Box";
 import Modal from "@mui/material/Modal";
 import { Frames, CardNumber, ExpiryDate, Cvv } from "frames-react";
 import axios from "axios";
+import { toast } from "react-toastify";
 
 const style = {
   position: "absolute",
@@ -187,6 +188,7 @@ const Popup: FC<Props> = ({
           getDueAmountDataRef?.current?.result?.dueServiceTransactionId,
         // dueAmountTransactionId: '820230259355'
       };
+
       const cardItem = {
         id: application.requestId,
         platform: "Web",
@@ -196,7 +198,7 @@ const Popup: FC<Props> = ({
         token: token.token,
         last4: token.last4,
       }
-    
+
       localStorage.setItem("cardItem",JSON.stringify(cardItem))
       const response = await axios.post(url, data, {
         headers: {
@@ -212,7 +214,8 @@ const Popup: FC<Props> = ({
         handleClose();
       }
       // setResponse(JSON.stringify(response.data));
-    } catch (error) {
+    } catch (error:any) {
+      toast.error(error.response.data.error, { autoClose: 3000 });
       console.error("error is:", error);
     }
   };
@@ -1311,8 +1314,9 @@ const Popup: FC<Props> = ({
 
             {application &&
               application.costEstimationReport &&
-              application.costEstimationReport.paymentStatus === null &&
-              application.status === "Approved" && (
+              application.costEstimationReport.paymentStatus !== 2 &&
+              application.isPDCEnabled === false &&
+               (
                 <>
                   <div className=" w-100 mt-4 d-flex justify-content-center">
                     {getDueAmountData ? (
@@ -1325,7 +1329,7 @@ const Popup: FC<Props> = ({
                           handleOpen();
                         }}
                       >
-                        Pay Now
+                        Pay Now 
                       </ButtonSecondary>
                     ) : null}
 
@@ -1417,7 +1421,7 @@ const Popup: FC<Props> = ({
                                     AED{" "}
                                     {
                                       application?.costEstimationReport
-                                        .totalAmount
+                                        .totalAmount +getDueAmountDataRef?.current?.result?.dueAmount
                                     }{" "}
                                   </td>
                                   {/* <td>52.50 (AED)</td> */}
@@ -2251,30 +2255,7 @@ const Popup: FC<Props> = ({
                   />
                 </Label>
               )}
-              {application && application.gisAttachment && (
-                <Label style={{ marginBottom: "10px" }}>
-                  <DocumentDownload
-                    exists={true}
-                    mainText={
-                      language?.result?.cm_gis_attachment
-                        ? language?.result?.cm_gis_attachment.label
-                        : "GIS Attachment"
-                    }
-                    subText={
-                      application && application.gisAttachment
-                        ? application.gisAttachment.substring(
-                            application.gisAttachment.lastIndexOf("/") + 1
-                          )
-                        : ""
-                    }
-                    inputName={
-                      application && application.gisAttachment
-                        ? application.gisAttachment
-                        : ""
-                    }
-                  />
-                </Label>
-              )}
+              
               {application && application.emiratesIdOrTradeLicense && (
                 <Label style={{ marginBottom: "10px" }}>
                   <DocumentDownload
@@ -2954,6 +2935,65 @@ const Popup: FC<Props> = ({
                     </Table>
                   </TableContainer>
                 )}
+
+
+{application && application.gisAttachment && (
+
+<>
+
+<TableContainer>
+                    <p>
+                      <span
+                        className="view-detail-font"
+                        style={{
+                          fontSize: `${
+                            fontSize === 1
+                              ? "21px"
+                              : fontSize === 2
+                              ? "23px"
+                              : fontSize === 3
+                              ? "25px"
+                              : fontSize === 4
+                              ? "27px"
+                              : fontSize === 5
+                              ? "29px"
+                              : "25px"
+                          }`,
+                        }}
+                      >
+                        GIS Attachment
+                      </span>
+                    </p>
+                    <DocumentDownload
+                    exists={true}
+                    mainText={
+                      language?.result?.cm_gis_attachment
+                        ? language?.result?.cm_gis_attachment.label
+                        : "GIS Attachment"
+                    }
+                    subText={
+                      application && application.gisAttachment
+                        ? application.gisAttachment.substring(
+                            application.gisAttachment.lastIndexOf("/") + 1
+                          )
+                        : ""
+                    }
+                    inputName={
+                      application && application.gisAttachment
+                        ? application.gisAttachment
+                        : ""
+                    }
+                  />
+
+                    
+                  </TableContainer>
+
+                 
+
+</>
+                
+              )}
+
 
               {application &&
                 application.costEstimationReport &&

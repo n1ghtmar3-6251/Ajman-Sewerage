@@ -408,7 +408,7 @@ const Registration = ({ Submit }: Props) => {
                 }}>
           {language?.result?.cm_full_name_company_name
                 ? language?.result?.cm_full_name_company_name.label
-                : "Full Name / Company Name"} *
+                : "Full Name / Company Name"}*
            
             <input type="text" placeholder={language?.result?.cm_full_name_company_name
                 ? language?.result?.cm_full_name_company_name.label

@@ -48,6 +48,7 @@ const Constants = {
 // zaher
 
 uaePassLoginLink :'https://stg-id.uaepass.ae/idshub/authorize?redirect_uri=http://213.42.234.23:8904/CustomerPortal/Home/redirect&client_id=sandbox_stage&response_type=code&state=_login_redirection_&scope=urn:uae:digitalid:profile:general&acr_values=urn:safelayer:tws:policies:authentication:level:low&ui_locales=en',
+// uaePassLoginLink :'https://stg-id.uaepass.ae/idshub/authorize?redirect_uri=http://localhost:3000/CustomerPortal/Home/redirect&client_id=sandbox_stage&response_type=code&state=_login_redirection_&scope=urn:uae:digitalid:profile:general&acr_values=urn:safelayer:tws:policies:authentication:level:low&ui_locales=en',
 // uaePassLogoutLink:'https://stg-id.uaepass.ae/trustedx-authserver/digitalid-idp/logout?redirect_uri==http://213.42.234.23:8904/CustomerPortal/',
 
 // after zaher change uaePassLogoutLink

@@ -50,25 +50,25 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({
     prepareData();
   }, []);
   interface CardItem {
-    id: number | string;
-    platform: number | string;
-    dueAmount: number | string;
-    totalAmount: number | string;
-    paymentDateTime: number | string;
-    token: number | string;
-    last4: number | string;
+    id: any;
+    platform: any;
+    dueAmount: any;
+    totalAmount: any;
+    paymentDateTime: any;
+    token: any;
+    last4: any;
   }
   const prepareData = async () => {
     console.log(location.pathname);
 
     let engine = new RequestEngine();
 
-    let ckoSessionId = searchParams.get("cko-session-id");
+    const ckoSessionId: any = searchParams.get("cko-session-id");
     console.log("cko-session-id: " + ckoSessionId);
 
     let referenceId = Memory.getItem("referenceId");
 
-    let currentDateTime = format(new Date(), "MM/dd/yyyy HH:mm:ss");
+    let currentDateTime = format(new Date(), "MM/dd/yyyy h:mm:ss");
     const cardItem = JSON.parse(
       localStorage.getItem("cardItem") || "{}"
     ) as CardItem;
@@ -76,21 +76,45 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({
       ...cardItem,
       ["threeDSToken"]: ckoSessionId,
       ["paymentDateTime"]: currentDateTime,
+      // ['dueAmount']: 123.50,
+      // ["totalAmount"]:123.50,
     };
-    // let sendData = {
-    //   id: referenceId,
-    //   threeDSToken: ckoSessionId,
-    //   paymentDateTime: currentDateTime,
-    //   platform: "Web",
-    // };
+    const formData = new FormData();
+    formData.append("threeDSToken", ckoSessionId);
+    formData.append("id", cardItem?.id);
+    formData.append("platform", "web");
+    formData.append("dueAmount", cardItem?.dueAmount);
+    formData.append("totalAmount", cardItem?.totalAmount);
+    formData.append("paymentDateTime", currentDateTime);
+    formData.append("token", cardItem?.token);
+    formData.append("last4", cardItem?.last4);
 
-    const response: any = await engine.postItem(
-      Constants.CONNECTION_NOC_AFTER_THREE_DS,
-      newCard
-    );
+    let sendData = {
+      id: referenceId,
+      threeDSToken: ckoSessionId,
+      paymentDateTime: currentDateTime,
+      platform: "Web",
+    };
+
+    const newRequest = () => {
+      if (cardItem.id) {
+        return engine.postItem(
+          Constants.CONNECTION_NOC_AFTER_THREE_DS,
+          formData
+        );
+      } else {
+        return engine.postItem(
+          Constants.EXCAVATION_NOC_AFTER_THREE_DS,
+          sendData
+        );
+      }
+    };
+
+    const response: any = await newRequest();
 
     if (response && response.status === 200) {
       setPaymentPopupState(response.data.result);
+      localStorage.removeItem("cardItem");
       localStorage.setItem(
         "paymentPopup",
         JSON.stringify(response.data.result)
