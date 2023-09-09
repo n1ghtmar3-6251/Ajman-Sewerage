@@ -72,15 +72,9 @@ const PaymentSuccess: React.FC<PaymentSuccessProps> = ({
     const cardItem = JSON.parse(
       localStorage.getItem("cardItem") || "{}"
     ) as CardItem;
-    let newCard = {
-      ...cardItem,
-      ["threeDSToken"]: ckoSessionId,
-      ["paymentDateTime"]: currentDateTime,
-      // ['dueAmount']: 123.50,
-      // ["totalAmount"]:123.50,
-    };
+ 
     const formData = new FormData();
-    formData.append("threeDSToken", ckoSessionId);
+    formData.append("threeDSSessionToken", ckoSessionId);
     formData.append("id", cardItem?.id);
     formData.append("platform", "web");
     formData.append("dueAmount", cardItem?.dueAmount);
