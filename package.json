@@ -19,7 +19,7 @@
     "@types/jest": "^27.5.2",
     "@types/mapbox__mapbox-gl-draw": "^1.2.3",
     "@types/node": "^16.18.12",
-    "@types/react": "^18.0.28",
+    "@types/react": "^18.3.12",
     "@types/react-dom": "^18.0.11",
     "axios": "^1.2.2",
     "crypto-js": "^4.1.1",
@@ -75,7 +75,7 @@
   "devDependencies": {
     "@types/jest": "^29.2.5",
     "@types/node": "^18.11.18",
-    "@types/react": "^18.0.26",
+    "@types/react": "^18.3.12",
     "@types/react-dom": "^18.0.10",
     "@types/styled-components": "^5.1.26",
     "env-cmd": "^10.1.0",
